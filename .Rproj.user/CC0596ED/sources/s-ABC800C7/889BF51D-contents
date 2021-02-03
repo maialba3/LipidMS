@@ -1,0 +1,4 @@
+library(rmarkdown)
+
+# simple invocation
+render("vignette.Rmd", pdf_document())

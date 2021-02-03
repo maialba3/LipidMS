@@ -2,7 +2,7 @@
 title: "LipidMS workflow"
 author: "M Isabel Alcoriza"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: pdf_document
 vignette: >
   %\VignetteIndexEntry{vignette.Rmd}
   %\VignetteEngine{knitr::rmarkdown}
