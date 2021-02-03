@@ -1,24 +1,24 @@
 {
-    "id": "6B1B8E00",
-    "path": "H:/Maribel/Paquetes/web/Tutorials/vignette.Rmd",
-    "project_path": null,
-    "type": "r_markdown",
+    "id": "0922851A",
+    "path": "H:/Maribel/Paquetes/Github/LipidMS/DESCRIPTION",
+    "project_path": "DESCRIPTION",
+    "type": "dcf",
     "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1612346084975.0,
+    "created": 1612354681086.0,
     "source_on_save": false,
     "relative_order": 1,
     "properties": {
-        "cursorPosition": "2,27",
+        "cursorPosition": "3,14",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1612346368,
+    "lastKnownWriteTime": 1612347918,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1612346368433,
+    "last_content_update": 1612347918,
     "read_only": false,
     "read_only_alternatives": []
 }

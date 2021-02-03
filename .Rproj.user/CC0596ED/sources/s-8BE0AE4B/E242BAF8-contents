@@ -90,9 +90,6 @@ readMSfile <- function(file){
 #' @return msobject
 #'
 #' @keywords internal
-#' 
-#' @references Peak-picking algorithm has been imported from enviPick R-package:
-#' https://cran.r-project.org/web/packages/enviPick/index.html
 #'
 #' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 partitioning <- function(msobject,
@@ -158,9 +155,6 @@ partitioning <- function(msobject,
 #' @return msobject
 #'
 #' @keywords internal
-#' 
-#' @references Peak-picking algorithm has been imported from enviPick R-package:
-#' https://cran.r-project.org/web/packages/enviPick/index.html
 #'
 #' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 clustering <- function(msobject,
@@ -245,9 +239,6 @@ clustering <- function(msobject,
 #' @return msobject
 #'
 #' @keywords internal
-#' 
-#' @references Peak-picking algorithm has been imported from enviPick R-package:
-#' https://cran.r-project.org/web/packages/enviPick/index.html
 #'
 #' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 peakdetection <- function(msobject,

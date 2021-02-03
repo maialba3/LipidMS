@@ -2,7 +2,7 @@
 title: "LipidMS workflow"
 author: "M Isabel Alcoriza"
 date: "`r Sys.Date()`"
-output: pdf_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{vignette.Rmd}
   %\VignetteEngine{knitr::rmarkdown}
@@ -23,6 +23,22 @@ LipidMS v2.0.0 is an R-package aimed to confidently identify lipid species in un
 
 
 <img src="abstract2.png" width="650">
+
+
+
+## Installation
+
+```{r, echo=T, eval=F}
+# Install LipidMS and LipidMSdata2
+install.packages("LipidMS", dependencies = c("Depends", "Imports"))
+devtools::install_github("maialba3/LipidMSdata2")
+
+# load LipidMS library
+library(LipidMS)
+
+# load example datasets
+library(LipidMSdata2)
+```
 
 
 ## Files conversion
@@ -211,7 +227,7 @@ LipidMSapp()
 ```
 
 
-## High customization of LipidMS
+## Highly customizable functions of LipidMS
 
 ### Data bases
 

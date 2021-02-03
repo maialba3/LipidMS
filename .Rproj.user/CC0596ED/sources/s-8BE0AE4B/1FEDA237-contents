@@ -98,9 +98,9 @@ plotLipids <- function(msobject, spar = 0.4){
     if ("classfragments" %in% names(msobject$detailsAnnotation[[parent$Class]])){
       class <- do.call(rbind, msobject$detailsAnnotation[[parent$Class]]$classfragments[c])
       if (length(class) > 0){
-        if (msobject$metaData$acquisitionmode == "DIA"){
+        if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
           peaksMS2 <- c(peaksMS2, class$peakID)
-        } else if (msobject$metaData$acquisitionmode == "DDA"){
+        } else if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
           peaksMS2 <- c(peaksMS2, class$m.z)
           scansMS2 <- c(scansMS2, class$peakID)
         }
@@ -110,7 +110,7 @@ plotLipids <- function(msobject, spar = 0.4){
 
     # extract chain fragments
     if ("chainfragments" %in% names(msobject$detailsAnnotation[[parent$Class]])){
-      if (msobject$metaData$acquisitionmode == "DIA"){
+      if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
         for (i in c){
           ch <- c()
           if (length(msobject$detailsAnnotation[[parent$Class]]$chainfragments[[i]]) > 0){
@@ -129,7 +129,7 @@ plotLipids <- function(msobject, spar = 0.4){
           namesMS2 <- unique(namesMS2)
           peaksMS2 <- unique(peaksMS2)
         }
-      } else if (msobject$metaData$acquisitionmode == "DDA"){
+      } else if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
         for (i in c){
           ch <- c()
           if (length(msobject$detailsAnnotation[[parent$Class]]$chainfragments[[i]]) > 0){
@@ -151,7 +151,7 @@ plotLipids <- function(msobject, spar = 0.4){
     }
 
     # id data is DDA, extract spectrum data
-    if (msobject$metaData$acquisitionmode == "DDA"){
+    if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
       rawMS <- c()
       for (i in c){
         f <- c()
@@ -172,7 +172,7 @@ plotLipids <- function(msobject, spar = 0.4){
                    "#C5D86D", "#969696FF", "#358359FF", "#9F4D23FF", "#D86C4FFF",
                    "#170C2EFF", "#473B75FF", "#F19C1FFF")
 
-    if (msobject$metaData$acquisitionmode == "DDA"){
+    if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
       nplots <- 1 + length(unique(rawMS$peakID))
     } else {
       nplots <- 2
@@ -241,7 +241,7 @@ plotLipids <- function(msobject, spar = 0.4){
     # plot MS2 info
     if (length(peaksMS2) > 0){
       # if data is DIA
-      if (msobject$metaData$acquisitionmode == "DIA"){
+      if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
         ssms2 <- msobject$MS2[msobject$MS2$peakID %in% peaksMS2,]
         minrt2 <- min(ssms2$RT)
         maxrt2 <- max(ssms2$RT)
@@ -300,7 +300,7 @@ plotLipids <- function(msobject, spar = 0.4){
                legend=formatC(ints2, format = "e", digits = 2),
                col=colorsMS2[1:length(peaksMS2)], lty = 5, lwd = 2, cex=0.6)
         # if data is DDA
-      } else if (msobject$metaData$acquisitionmode == "DDA"){
+      } else if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
         # for each scan
         for (s in unique(rawMS$peakID)){
           # subset raw data

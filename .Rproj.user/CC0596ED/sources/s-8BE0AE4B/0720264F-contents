@@ -1,0 +1,336 @@
+#
+# This is a Shiny web application. You can run the application by clicking
+# the 'Run App' button above.
+#
+# Find out more about building applications with Shiny here:
+#
+#    http://shiny.rstudio.com/
+#
+library(uuid)
+library(shiny)
+library(rstudioapi)
+library(shinythemes)
+library(shinydashboard)
+
+#Fonts
+#DOCKER https://stackoverflow.com/questions/49645201/run-shiny-app-on-shiny-server-installed-in-docker-container-from-windows-10-pro
+#Ejecutcar jobs en segundo plano http://datacornering.com/how-to-run-r-script-from-another-r-script-and-use-as-a-source/#:~:text=You%20can%20execute%20R%20script,the%20file%20path%20contains%20space.
+#Subir archivos shiny https://shiny.rstudio.com/articles/upload.html
+#JobRunScript para segundo plano https://rdrr.io/cran/rstudioapi/man/jobRunScript.html
+#Ejecutar shiny en segundo plano https://solutions.rstudio.com/examples/jobs-overview/
+#mailR in Linux https://stackoverflow.com/questions/61871960/r-mailr-package-not-loading-java
+#Esto no es en backgroud, lo utilice al principio system("cmd.exe", input = paste('"C:\\Program Files\\R\\R-4.0.3\\bin\\Rscript.exe" ',getwd(),'/',u,'/',u,'.R',sep=""))
+#https://www.datanalytics.com/2015/01/21/donde-guardar-los-paquetes-de-r-en-linux-al-menos/
+
+#Obligado para shiny server docker
+#Instalar rJava R Linux primer   https://sigfridumest.wordpress.com/2018/07/23/installing-rjava-r-in-debian-9-stretch/  después https://www.r-bloggers.com/2018/02/installing-rjava-on-ubuntu/
+#Instalar readmz https://howtoinstall.co/es/debian/jessie/r-cran-readmzxmldata
+# instalar RStudio https://ubunlog.com/rstudio-instalar-ide-r/
+# dependencia Rstudio https://github.com/rstudio/rstudio/issues/4670
+
+#Functions
+createScriptCopy <- function(u,email,acquisitionmode,polarity,dmzagglom_ms1,dmzagglom_ms2, drtagglom_ms1, drtagglom_ms2, drtclust_ms1, drtclust_ms2,
+                             minpeak_ms1, minpeak_ms2, drtgap_ms1, drtgap_ms2, drtminpeak_ms1, drtminpeak_ms2, drtmaxpeak_ms1, drtmaxpeak_ms2, recurs_ms1, recurs_ms2, sb_ms1, sb_ms2, sn_ms1, sn_ms2,
+                             minint_ms1, minint_ms2, weight_ms1, weight_ms2, dmzIso_ms1, dmzIso_ms2, drtIso_ms1, drtIso_ms2,
+                             dmzprecursor,dmzproducts,rttol,coelcutoff,jobname){
+
+  tx  <- readLines("script_LipidMS.R")
+  tx  <- gsub(pattern = "#EMAIL", replace = email, x = tx)
+  tx  <- gsub(pattern = "#GUID", replace = u, x = tx)
+  tx  <- gsub(pattern = "#ACQUISITIONMODE", replace = acquisitionmode, x = tx)
+  tx  <- gsub(pattern = "#POLARITY", replace = polarity, x = tx)
+  tx  <- gsub(pattern = "#dmzagglom_ms1", replace = dmzagglom_ms1, x = tx)
+  tx  <- gsub(pattern = "#dmzagglom_ms2", replace = dmzagglom_ms2, x = tx)
+  tx  <- gsub(pattern = "#drtagglom_ms1", replace = drtagglom_ms1, x = tx)
+  tx  <- gsub(pattern = "#drtagglom_ms2", replace = drtagglom_ms2, x = tx)
+  tx  <- gsub(pattern = "#drtclust_ms1", replace = drtclust_ms1, x = tx)
+  tx  <- gsub(pattern = "#drtclust_ms2", replace = drtclust_ms2, x = tx)
+  tx  <- gsub(pattern = "#minpeak_ms1", replace = minpeak_ms1, x = tx)
+  tx  <- gsub(pattern = "#minpeak_ms2", replace = minpeak_ms2, x = tx)
+  tx  <- gsub(pattern = "#drtgap_ms1", replace = drtgap_ms1, x = tx)
+  tx  <- gsub(pattern = "#drtgap_ms2", replace = drtgap_ms2, x = tx)
+  tx  <- gsub(pattern = "#drtminpeak_ms1", replace = drtminpeak_ms1, x = tx)
+  tx  <- gsub(pattern = "#drtminpeak_ms2", replace = drtminpeak_ms2, x = tx)
+  tx  <- gsub(pattern = "#drtmaxpeak_ms1", replace = drtmaxpeak_ms1, x = tx)
+  tx  <- gsub(pattern = "#drtmaxpeak_ms2", replace = drtmaxpeak_ms2, x = tx)
+  tx  <- gsub(pattern = "#recurs_ms1", replace = recurs_ms1, x = tx)
+  tx  <- gsub(pattern = "#recurs_ms2", replace = recurs_ms2, x = tx)
+  tx  <- gsub(pattern = "#sb_ms1", replace = sb_ms1, x = tx)
+  tx  <- gsub(pattern = "#sb_ms2", replace = sb_ms2, x = tx)
+  tx  <- gsub(pattern = "#sn_ms1", replace = sn_ms1, x = tx)
+  tx  <- gsub(pattern = "#sn_ms2", replace = sn_ms2, x = tx)
+  tx  <- gsub(pattern = "#minint_ms1", replace = minint_ms1, x = tx)
+  tx  <- gsub(pattern = "#minint_ms2", replace = minint_ms2, x = tx)
+  tx  <- gsub(pattern = "#weight_ms1", replace = weight_ms1, x = tx)
+  tx  <- gsub(pattern = "#weight_ms2", replace = weight_ms2, x = tx)
+  tx  <- gsub(pattern = "#dmzIso_ms1", replace = dmzIso_ms1, x = tx)
+  tx  <- gsub(pattern = "#dmzIso_ms2", replace = dmzIso_ms2, x = tx)
+  tx  <- gsub(pattern = "#drtIso_ms1", replace = drtIso_ms1, x = tx)
+  tx  <- gsub(pattern = "#drtIso_ms2", replace = drtIso_ms2, x = tx)
+  tx  <- gsub(pattern = "#dmzprecursor", replace = dmzprecursor, x = tx)
+  tx  <- gsub(pattern = "#dmzproducts", replace = dmzproducts, x = tx)
+  tx  <- gsub(pattern = "#rttol", replace = rttol, x = tx)
+  tx  <- gsub(pattern = "#coelcutoff", replace = coelcutoff, x = tx)
+  tx  <- gsub(pattern = "#jobname", replace = jobname, x = tx)
+
+
+  writeLines(tx, con=paste(u,"/",u,".R",sep=""))
+
+  #Prueba para ver directorio trabajo
+  # fileConn<-file(paste(u,"/",u,".R",sep =""))
+  # writeLines(c("a<-1"), fileConn)
+  # writeLines(c("Hello<-1","World<-2"), fileConn)
+  # close(fileConn)
+
+}
+
+startWork <-function(files,filesname,email,acquisitionmode,polarity,dmzagglom_ms1,dmzagglom_ms2, drtagglom_ms1, drtagglom_ms2, drtclust_ms1, drtclust_ms2,
+                     minpeak_ms1, minpeak_ms2, drtgap_ms1, drtgap_ms2, drtminpeak_ms1, drtminpeak_ms2, drtmaxpeak_ms1, drtmaxpeak_ms2, recurs_ms1, recurs_ms2, sb_ms1, sb_ms2, sn_ms1, sn_ms2,
+                     minint_ms1, minint_ms2, weight_ms1, weight_ms2, dmzIso_ms1, dmzIso_ms2, drtIso_ms1, drtIso_ms2,
+                     dmzprecursor,dmzproducts,rttol,coelcutoff, jobname){
+  id<- UUIDgenerate()
+  dir.create(id)
+  for (f in 1:length(files)){
+    file.copy(files[f], paste(id, "/", filesname[f],sep="")) # borro ,".csv"
+  }
+
+
+  #I create a copy of the base script in the job directory
+  createScriptCopy(id,email,acquisitionmode,polarity,dmzagglom_ms1,dmzagglom_ms2, drtagglom_ms1, drtagglom_ms2, drtclust_ms1, drtclust_ms2,
+                   minpeak_ms1, minpeak_ms2, drtgap_ms1, drtgap_ms2, drtminpeak_ms1, drtminpeak_ms2, drtmaxpeak_ms1, drtmaxpeak_ms2, recurs_ms1, recurs_ms2, sb_ms1, sb_ms2, sn_ms1, sn_ms2,
+                   minint_ms1, minint_ms2, weight_ms1, weight_ms2, dmzIso_ms1, dmzIso_ms2, drtIso_ms1, drtIso_ms2,
+                   dmzprecursor,dmzproducts,rttol,coelcutoff, jobname)
+
+  #Execute work in background
+  # jobRunScript(
+  #   paste(getwd(),'/',id,'/',id,'.R',sep=""),
+  #   name = paste("Job",id),
+  #   encoding = "unknown",
+  #   workingDir = paste(getwd(),'/',id,'/',sep=""),
+  #   importEnv = FALSE,
+  #   exportEnv = ""
+  # )
+
+
+  system2("Rscript",args = c(paste("/srv/shiny-server/LipidMS/",id,"/",id,".R",sep="")), stdout = 'stdout.txt', stderr = 'stderr.txt', wait = FALSE)
+  # system2("Rscript",args = c(paste("\\\\iislafe88/Docker/Shiny-server/app/LipidMS/",id,"/",id,".R",sep="")), stdout = 'stdout.txt', stderr = 'stderr.txt', wait = FALSE)
+  #system2("Rscript",args = c("srv/shiny-server/LipidMS/sys.R"), stdout = 'stdout.txt', stderr = 'stderr.txt', wait = FALSE)
+  #https://community.rstudio.com/t/system-call-within-r-shiny/11405/6
+
+  #system("cmd.exe", input = paste('"C:\\Program Files\\R\\R-4.0.2\\bin\\Rscript.exe" D:\\LipidMS\\script.R'))
+
+
+}
+
+
+# Define UI for application that draws a histogram
+#Basic elements https://shiny.rstudio.com/tutorial/written-tutorial/lesson3/
+ui <- tagList(
+  navbarPage(
+    title = div(img(src='iconohorizontal.png',style="margin-top: -14px; padding-right:0px; padding-left:0px; padding-bottom:10px", height = 60, width = 100)),
+    # title = "LipidMS",
+    id = "inTabset",
+    theme = shinytheme("flatly"),
+    tabPanel(title = "Data import", value = "tab1",
+             h4("LipidMS: Lipid annotation for LC-MS/MS data"),
+             tags$hr(),
+             mainPanel(widht = 4,
+                       textInput("jobname", "Job Name"),
+                       fileInput("file1", "Choose your mzXML File/s",
+                                 multiple = TRUE,
+                                 accept = c("text/plain",
+                                            ".mzXML")),
+                       radioButtons("sI_acquisitionmode", "Acquisition Mode",
+                                    choices = c(DIA = "DIA",
+                                                DDA = "DDA"),
+                                    selected = "DIA"),
+                       radioButtons("sI_polarity", "Polarity",
+                                    choices = c(Positive = "positive",
+                                                Negative = "negative"),
+                                    selected = "positive"),
+                       actionButton("JumpTo2", "Next >", width = "100px", 
+                                    style="margin:40px 0px")
+             )
+    ),
+    tabPanel(title = "Data processing", value = "tab2",
+             h4("LipidMS: Lipid annotation for LC-MS/MS data"),
+             tags$hr(),
+             tags$head(
+               tags$style(HTML("input[type=\"number\"] {
+                               height: 35px; font-size:11px
+                               }"))),
+             mainPanel(
+               position="left",
+               fluidRow(column(6, h5(strong("dmzagglom (in ppm)")),
+                               h6(em("m/z tolerance used for partitioning and clustering. 5 by default."), style = "color:grey")),
+                        column(3, numericInput("dmzagglom_ms1", "MS1", value = 5, min = 0, max = 100, step = 1)),
+                        column(3, numericInput("dmzagglom_ms2", "MS2", value = 5, min = 0, max = 100, step = 1))),
+               fluidRow(column(6, h5(strong("drtagglom (in seconds)")),
+                               h6(em("rt window used for partitioning (in seconds). 25 by default."), style = "color:grey")),
+                        column(3, numericInput("drtagglom_ms1", "MS1", value = 25, min = 0, max = 500, step = 1)),
+                        column(3, numericInput("drtagglom_ms2", "MS2", value = 25, min = 0, max = 500, step = 1))),
+               fluidRow(column(6, h5(strong("drtclust (in seconds)")),
+                               h6(em("rt window used for clustering (in seconds). 25 by default."), style = "color:grey")),
+                        column(3, numericInput("drtclust_ms1", "MS1", value = 25, min = 0, max = 500, step = 1)),
+                        column(3, numericInput("drtclust_ms2", "MS2", value = 25, min = 0, max = 500, step = 1))),
+               fluidRow(column(6, h5(strong("minpeak")),
+                               h6(em("minimum number of measurements required for a peak. By default, 5 for MS1 and 4 for MS2."), style = "color:grey")),
+                        column(3, numericInput("minpeak_ms1", "MS1", value = 5, min = 1, max = 25, step = 1)),
+                        column(3, numericInput("minpeak_ms2", "MS2", value = 4, min = 1, max = 25, step = 1))),
+               fluidRow(column(6, h5(strong("minint")),
+                               h6(em("minimum intensity of a peak. By default, 1000 for MS1 and 100 for MS2."), style = "color:grey")),
+                        column(3, numericInput("minint_ms1", "MS1", value = 1000, min = 0, max = 1e5, step = 1)),
+                        column(3, numericInput("minint_ms2", "MS2", value = 100, min = 0, max = 1e5, step = 1))),
+               fluidRow(column(6, h5(strong("grtgap (in seconds)")),
+                               h6(em("maximum rt gap length to be filled. 5 by default."), style = "color:grey")),
+                        column(3, numericInput("drtgap_ms1", "MS1", value = 5, min = 0, max = 30, step = 1)),
+                        column(3, numericInput("drtgap_ms2", "MS2", value = 5, min = 0, max = 30, step = 1))),
+               fluidRow(column(6, h5(strong("drtminpeak (in seconds)")),
+                               h6(em("minimum rt width of a peak. 15 by default. At least minpeak within the drtminpeak window are required to define a peak."), style = "color:grey")),
+                        column(3, numericInput("drtminpeak_ms1", "MS1", value = 15, min = 0, max = 500, step = 1)),
+                        column(3, numericInput("drtminpeak_ms2", "MS2", value = 15, min = 0, max = 500, step = 1))),
+               fluidRow(column(6, h5(strong("drtmaxpeak (in seconds)")),
+                               h6(em("maximum rt width of a single peak. 100 by default."), style = "color:grey")),
+                        column(3, numericInput("drtmaxpeak_ms1", "MS1", value = 100, min = 0, max = 500, step = 1)),
+                        column(3, numericInput("drtmaxpeak_ms2", "MS2", value = 100, min = 0, max = 500, step = 1))),
+               fluidRow(column(6, h5(strong("maxeicpeaks")),
+                               h6(em("maximum number of peaks within one EIC. By default, 5 for 10 and 3 for MS2."), style = "color:grey")),
+                        column(3, numericInput("recurs_ms1", "MS1", value = 5, min = 1, max = 50, step = 1)),
+                        column(3, numericInput("recurs_ms2", "MS2", value = 10, min = 1, max = 50, step = 1))),
+               fluidRow(column(6, h5(strong("weight")),
+                               h6(em("weight for assigning measurements to a peak. By default, 2 for MS1 and 3 for MS2."), style = "color:grey")),
+                        column(3, numericInput("weight_ms1", "MS1", value = 2, min = 1, max = 10, step = 1)),
+                        column(3, numericInput("weight_ms2", "MS2", value = 3, min = 1, max = 10, step = 1))),
+               fluidRow(column(6, h5(strong("SN")),
+                               h6(em("signal-to-noise ratio. By default, 3 for MS1 and 2 for MS2."), style = "color:grey")),
+                        column(3, numericInput("sn_ms1", "MS1", value = 3, min = 1, max = 10, step = 1)),
+                        column(3, numericInput("sn_ms2", "MS2", value = 2, min = 1, max = 10, step = 1))),
+               fluidRow(column(6, h5(strong("SB")),
+                               h6(em("signal-to-base ratio. By default, 3 for MS1 and 2 for MS2."), style = "color:grey")),
+                        column(3, numericInput("sb_ms1", "MS1", value = 3, min = 1, max = 10, step = 1)),
+                        column(3, numericInput("sb_ms2", "MS2", value = 2, min = 1, max = 10, step = 1))),
+               fluidRow(column(6, h5(strong("dmzIso (in ppm)")),
+                               h6(em("mass tolerance for isotope matching. 5 by default."), style = "color:grey")),
+                        column(3, numericInput("dmzIso_ms1", "MS1", value = 5, min = 0, max = 100, step = 1)),
+                        column(3, numericInput("dmzIso_ms2", "MS2", value = 5, min = 0, max = 10, step = 1))),
+               fluidRow(column(6, h5(strong("drtIso")),
+                               h6(em("rt window for isotope matching. 5 by default."), style = "color:grey")),
+                        column(3, numericInput("drtIso_ms1", "MS1", value = 5, min = 0, max = 100, step = 1)),
+                        column(3, numericInput("drtIso_ms2", "MS2", value = 5, min = 0, max = 100, step = 1))),
+               fluidRow(actionButton("GoBackTo1", "< Previous", width = "100px", 
+                                     style="margin:40px 0px"), 
+                        actionButton("JumpTo3", "Next >", width = "100px", 
+                                     style="margin:40px 0px"))
+               )),
+    tabPanel(title = "Annotation", value = "tab3",
+             h4("LipidMS: Lipid annotation for LC-MS/MS data"),
+             tags$hr(),
+             mainPanel(fluidRow(column(6, h5(strong("dmzprecursor")),
+                                       h6(em("mass tolerance for precursor ions. 5 by default."), style = "color:grey")),
+                                column(3, numericInput("dmzprecursor", "", value = 5, min = 0, max = 100, step = 1))),
+                       fluidRow(column(6, h5(strong("dmzproducts")),
+                                       h6(em("mass tolerance for product ions. 10 by default."), style = "color:grey")),
+                                column(3, numericInput("dmzproducts", "", value = 10, min = 0, max = 100, step = 1))),
+                       fluidRow(column(6, h5(strong("rttol")),
+                                       h6(em("total rt window for coelution between precursor and product ions. 5 by default."), style = "color:grey")),
+                                column(3, numericInput("rttol", "", value = 5, min = 0, max = 50, step = 1))),
+                       fluidRow(column(6, h5(strong("coelcutoff")),
+                                       h6(em("coelution score threshold between parent and fragment ions. Only applied if rawData info is supplied. 0.7 by default."), style = "color:grey")),
+                                column(3, numericInput("coelcutoff", "", value = 0.7, min = 0, max = 1, step = 0.05))),
+                       fluidRow(actionButton("GoBackTo2", "< Previous", width = "100px", 
+                                             style="margin:40px 0px"), 
+                                actionButton("JumpTo4", "Next >", width = "100px", 
+                                             style="margin:40px 0px"))
+             )),
+    tabPanel(title = "Run", value = "tab4",
+             h4("LipidMS: Lipid annotation for LC-MS/MS data"),
+             mainPanel(
+               textInput("email","Email (to send your results):", value = NULL),
+               actionButton("do", "Run", 
+                            style="color: #fff; background-color: #336666; border-color: #000"),
+               textOutput("txt_result"),
+               actionButton("GoBackTo3", "< Previous", width = "100px", 
+                            style="margin:40px 0px")
+             ))
+
+  )
+)
+
+
+# Define server logic required to draw a histogram
+server <- function(input, output,session) {
+  observeEvent(input$JumpTo2, {
+    updateTabsetPanel(session, "inTabset",
+                      selected = "tab2")
+  })
+  
+  observeEvent(input$GoBackTo1, {
+    updateTabsetPanel(session, "inTabset",
+                      selected = "tab1")
+  })
+  
+  observeEvent(input$JumpTo3, {
+    updateTabsetPanel(session, "inTabset",
+                      selected = "tab3")
+  })
+  
+  observeEvent(input$GoBackTo2, {
+    updateTabsetPanel(session, "inTabset",
+                      selected = "tab2")
+  })
+  
+  observeEvent(input$JumpTo4, {
+    updateTabsetPanel(session, "inTabset",
+                      selected = "tab4")
+  })
+  
+  observeEvent(input$GoBackTo3, {
+    updateTabsetPanel(session, "inTabset",
+                      selected = "tab3")
+  })
+  
+  observeEvent(input$do, {
+    startWork(input$file1$datapath, input$file1$name, input$email,
+              input$sI_acquisitionmode, input$sI_polarity,
+              input$dmzagglom_ms1,input$dmzagglom_ms2,
+              input$drtagglom_ms1, input$drtagglom_ms2,
+              input$drtclust_ms1, input$drtclust_ms2,
+              input$minpeak_ms1, input$minpeak_ms2,
+              input$drtgap_ms1, input$drtgap_ms2,
+              input$drtminpeak_ms1, input$drtminpeak_ms2,
+              input$drtmaxpeak_ms1, input$drtmaxpeak_ms2,
+              input$recurs_ms1, input$recurs_ms2,
+              input$sb_ms1, input$sb_ms2,
+              input$sn_ms1, input$sn_ms2,
+              input$minint_ms1, input$minint_ms2,
+              input$weight_ms1, input$weight_ms2,
+              input$dmzIso_ms1, input$dmzIso_ms2,
+              input$drtIso_ms1, input$drtIso_ms2,
+              input$dmzprecursor,
+              input$dmzproducts,
+              input$rttol,
+              input$coelcutoff,
+              input$jobname)
+    output$txt_result <- renderText({
+      paste("Your job has been released. You will receive your results at", input$email)
+    })
+    #Quitar botones
+
+
+    session$sendCustomMessage(type = 'testmessage',
+                              message = 'Thank you for clicking')
+  })
+  # output$distPlot <- renderPlot({
+  #     # generate bins based on input$bins from ui.R
+  #     x    <- faithful[, 2]
+  #     bins <- seq(min(x), max(x), length.out = input$bins + 1)
+  #
+  #     # draw the histogram with the specified number of bins
+  #     hist(x, breaks = bins, col = 'darkgray', border = 'white')
+  # })
+}
+
+# Run the application
+options(shiny.maxRequestSize=500*1024^2)
+shinyApp(ui = ui, server = server)
+
