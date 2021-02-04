@@ -3375,7 +3375,7 @@ idTGpos <- function(msobject,
     msobject$detailsAnnotation$TG$classfragments <- classConf$fragments
     msobject$detailsAnnotation$TG$chainfragments <- chainsComb$fragments
     if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
-      msobject$detailsAnnotation$DG$coelfrags <- coelfrags
+      msobject$detailsAnnotation$TG$coelfrags <- coelfrags
     }
   } else {
     res <- data.frame()

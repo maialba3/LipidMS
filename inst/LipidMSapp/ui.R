@@ -128,7 +128,7 @@ ui <- tagList(
                                                                "DG" = "DG",
                                                                "TG" = "TG"),
                                                              selected = c("MG", "LPC", "LPE", "PC", "PE", "PG", "Sph",
-                                                                          "SphP", "Cer", "SM", "Car", "CE", "DG", "TG"))),
+                                                                          "SphP", "Cer", "SM", "Carnitines", "CE", "DG", "TG"))),
                                 column(6, checkboxGroupInput("lipidClassesNeg", "Lipid classes to annotate for ESI+ :",
                                                              c("FA" = "FA",
                                                                "FAHFA" = "FAHFA",
