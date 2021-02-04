@@ -43,7 +43,7 @@ idPOS <- function(msobject,
                   rttol = 5,
                   coelCutoff = 0.8,
                   lipidClasses = c("MG", "LPC", "LPE", "PC", "PE", "PG", "Sph",
-                                   "SphP", "Cer", "SM", "Car", "CE", "DG", "TG"),
+                                   "SphP", "Cer", "SM", "Carnitines", "CE", "DG", "TG"),
                   dbs){
 
   if (msobject$metaData$generalMetadata$polarity != "positive"){
@@ -57,9 +57,9 @@ idPOS <- function(msobject,
     cat("OK")
   }
   if (!all(lipidClasses %in% c("MG", "LPC", "LPE", "PC", "PE", "PG", "Sph", "SphP",
-                               "Cer", "SM", "Car", "CE", "DG", "TG"))){
-    stop("Lipid classes allowed for negative annotation are: MG, LPC, LPE, PC,
-          PE, PG, Sph, SphP, Cer, SM, Car, CE, DG, TG")
+                               "Cer", "SM", "Carnitines", "CE", "DG", "TG"))){
+    stop("Lipid classes allowed for positive annotation are: MG, LPC, LPE, PC,
+          PE, PG, Sph, SphP, Cer, SM, Carnitines, CE, DG, TG")
   }
   if (missing(dbs)){
     dbs <- assignDB()
@@ -141,7 +141,7 @@ idPOS <- function(msobject,
     cat("OK")
 
   }
-  if ("Car" %in% lipidClasses){
+  if ("Carnitines" %in% lipidClasses){
     cat("\n  Searching for Carnitines...")
     msobject <-  idCarpos(msobject = msobject, ppm_precursor= ppm_precursor,
                           ppm_products = ppm_products, rttol = rttol,
@@ -2595,9 +2595,9 @@ idCarpos <- function(msobject,
     }
   }
   if ("detailsAnnotation" %in% names(msobject)){
-    if("Car" %in% names(msobject$detailsAnnotation)){
+    if("Carnitine" %in% names(msobject$detailsAnnotation)){
       cat("\nPrevious Carnitine annotations removed")
-      msobject$detailsAnnotation$Car <- list()
+      msobject$detailsAnnotation$Carnitine <- list()
     }
   }
   ##############################################################################
@@ -2653,12 +2653,12 @@ idCarpos <- function(msobject,
     } else {
       msobject$results <- res
     }
-    msobject$detailsAnnotation$Car <- list()
-    msobject$detailsAnnotation$Car$candidates <- candidates
-    msobject$detailsAnnotation$Car$classfragments <- classConf$fragments
-    msobject$detailsAnnotation$Car$chainfragments <- chainsComb$fragments
+    msobject$detailsAnnotation$Carnitine <- list()
+    msobject$detailsAnnotation$Carnitine$candidates <- candidates
+    msobject$detailsAnnotation$Carnitine$classfragments <- classConf$fragments
+    msobject$detailsAnnotation$Carnitine$chainfragments <- chainsComb$fragments
     if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
-      msobject$detailsAnnotation$Car$coelfrags <- coelfrags
+      msobject$detailsAnnotation$Carnitine$coelfrags <- coelfrags
     }
   } else {
     res <- data.frame()
@@ -2667,7 +2667,7 @@ idCarpos <- function(msobject,
     } else {
       msobject$results <- res
     }
-    msobject$detailsAnnotation$Car <- list()
+    msobject$detailsAnnotation$Carnitine <- list()
   }
   return(msobject)
 }

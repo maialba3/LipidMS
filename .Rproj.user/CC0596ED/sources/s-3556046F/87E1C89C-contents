@@ -136,7 +136,7 @@ MassSM <- function(SM){
   return(c(formula, mass))
 }
 
-# MassCarnitine
+# MassCarnitines
 #' Calculate formula and mass of carnitines
 #'
 #' Calculate formula and mass of carnitines

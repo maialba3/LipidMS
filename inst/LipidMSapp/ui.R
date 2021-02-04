@@ -123,7 +123,7 @@ ui <- tagList(
                                                                "Sphingoid bases phosphate" = "SphP",
                                                                "Cer" = "Cer",
                                                                "SM" = "SM",
-                                                               "Carnitines" = "Car",
+                                                               "Carnitines" = "Carnitines",
                                                                "CE" = "CE",
                                                                "DG" = "DG",
                                                                "TG" = "TG"),

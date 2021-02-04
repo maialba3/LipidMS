@@ -74,8 +74,10 @@ if (polarity == "positive"){
                                       ppm_products = dmzproducts,
                                       rttol = rttol,
                                       coelCutoff = coelcutoff,
-                                      lipidClasses = c("MG", "LPC", "LPE", "PC", "PE", "Sph", 
-                                                       "SphP", "Cer", "SM", "Car", "CE", "DG", "TG"))
+                                      lipidClasses = c("MG", "LPC", "LPE", "PC", 
+                                                       "PE", "Sph", "SphP", "Cer", 
+                                                       "SM", "Carnitines", "CE", 
+                                                       "DG", "TG"))
   }
 }
 
@@ -87,8 +89,9 @@ if (polarity == "negative"){
                                       ppm_products = dmzproducts,
                                       rttol = rttol,
                                       coelCutoff = coelcutoff,
-                                      lipidClasses = c("FA", "FAHFA", "LPC", "LPE", "LPG", "LPI", 
-                                                       "LPS", "PC", "PE", "PG", "PI", "PS", "Sph", 
+                                      lipidClasses = c("FA", "FAHFA", "LPC", "LPE", 
+                                                       "LPG", "LPI", "LPS", "PC", 
+                                                       "PE", "PG", "PI", "PS", "Sph", 
                                                        "SphP", "Cer", "CL", "BA"))
   }
 }
