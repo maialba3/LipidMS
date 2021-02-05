@@ -1,24 +1,24 @@
 {
-    "id": "5B666DA3",
-    "path": "H:/Maribel/Paquetes/web/Tutorials/appTutorial.Rmd",
+    "id": "59AE6884",
+    "path": "H:/Maribel/Paquetes/web/Tutorials/vignette.Rmd",
     "project_path": null,
     "type": "r_markdown",
     "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1612437431227.0,
+    "created": 1612513244550.0,
     "source_on_save": false,
-    "relative_order": 4,
+    "relative_order": 2,
     "properties": {
-        "cursorPosition": "71,0",
-        "scrollLine": "58"
+        "cursorPosition": "42,0",
+        "scrollLine": "26"
     },
     "folds": "",
-    "lastKnownWriteTime": 1612437606,
+    "lastKnownWriteTime": 1612513852,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1612437606356,
+    "last_content_update": 1612513852337,
     "read_only": false,
     "read_only_alternatives": []
 }

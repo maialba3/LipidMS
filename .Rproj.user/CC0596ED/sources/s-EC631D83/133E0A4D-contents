@@ -3,9 +3,10 @@ title: "LipidMS app workflow"
 author: "Maribel Alcoriza Balaguer"
 date: "`r Sys.Date()`"
 output:
+  pdf_document: default
+  word_document: default
   html_document:
     df_print: paged
-  word_document: default
 vignette: |
   %\VignetteIndexEntry{vignette.Rmd} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
 ---
@@ -22,13 +23,15 @@ knitr::opts_chunk$set(
 
 LipidMS v2.0.0 is an R-package aimed to confidently identify lipid species in untargeted LC-MS for DIA or DDA data analysis. It combines a set of fragmentation and intensity rules and a parent-to-fragment co-elution score (PFCS, only applied for DIA analysis) calculated in predefined retention time windows. Depending on the MS evidence reached by the annotations, lipids can be identified at three different levels: i) subclasslevel, e.g., PG(34:1); ii) fatty acyl level, e.g., PG(16:0_18:1); and iii) fatty acyl position level, e.g., PG(16:0/18:1). As a general rule, parent ions will be found when no collision energy is applied, while fragment ions will be found when it is. Each lipid class has characteristic ionization and fragmentation properties that allow to filter informative fragments among all fragment ions to reconstruct the parent's structure. Next figure summarizes the basics of LipidMS.
 
-<img src="abstract2.png" width="100%">
+![LipidMS abstract](abstract2.png){width=100%}
 
 
+
+\break
 
 ### Installation
 
-The LipidMS application can be accessed locally from R or through our website at \link(https://www.iislafe.es/es/software/lipidomicstools/lipidomics-tools/). In case you want to run LipidMS locally you need to install the package, otherwise skip this step.
+The LipidMS application can be accessed locally from R or through our website at (https://www.iislafe.es/es/software/lipidomicstools-description/). In case you want to run LipidMS locally you need to install the package, otherwise skip this step.
 
 ```{r, echo=T, eval=F}
 # Install LipidMS and LipidMSdata2
@@ -44,7 +47,7 @@ To start the MS analysis raw files need to be converted into mzXML format first 
 
 ### Example data files
 
-Some .mzXML example files are available at \link(https://www.iislafe.es/es/software/lipidomicstools/about/).
+Some .mzXML example files and extra documentation are available at (https://www.iislafe.es/es/software/lipidomicstools-about/).
 
 
 ## LipidMS application
@@ -62,32 +65,42 @@ LipidMSapp()
 ```
 
 
+\break
+
 ## Data Import
 
 Once all your files have been converted to mzXML and the app is running, upload your files and tune the parameters. At the first tab, data acquisition mode (DIA or DDA) and polarity must be specified:
 
-<img src="Tab1.png" width="80%">
+![Data import tab of LipidMS app](Tab1.png){width=80%}
 
 
+\ 
 
 If you have samples acquired with different polarities or acquisition modes, analyze them in different batches.
 
+\break
 
 ## Data Processing
 
 At the second tab we find all parameters required for peak-picking. More detailed information about all these parameters can be found at the documentation page of the dataProcessing function.
 
-<img src="Tab2.png" width="80%">
+![Data processing tab of LipidMS app](Tab2.png){width=80%}
 
 
+\ 
+
+\break
 
 ## Annotation
 
 The third tab contains parameters related with the annotation step and lipid classes included in the analysis.
 
-<img src="Tab2.png" width="80%">
+![Annotation tab of LipidMS app](Tab3.png){width=80%}
 
 
+\ 
+
+\break
 
 ## Run
 
@@ -96,13 +109,14 @@ Finally, run your job. You will obtain two csv files with the results tables (th
 If you are using the web application, an email will be required to send your results back. Otherwise, if you are using LipidMSapp() on your computer, you will find three buttons to download your results. Wait until you can see the results on the main panel to download (you may need to write the extension .zip to save your files properly).
 
 
-
-<img src="Tab4.png" width="80%">
-
+![Run tab of LipidMS application](Tab4.png){width=60%}
 
 
-<img src="Tab4results.png" width="100%">
+\ 
 
+![Results shown on the main panel (just for the local app)](Tab4results.png){width=60%}
+
+\ 
 
 If you have any further questions, please do not hesitate to contact us at:
 maribel_alcoriza@iislafe.es or maribel_alcoriza@hotmail.com

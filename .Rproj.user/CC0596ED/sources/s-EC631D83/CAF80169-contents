@@ -1,0 +1,167 @@
+
+################################################################################
+# LipidMS 2.0.0
+################################################################################
+
+################################################################################
+#Libraries
+library(LipidMS)
+library(emayili)
+
+# Input
+id <- "#GUID"
+to <- "#EMAIL"
+jobname <- "#jobname"
+
+# Configuración
+setwd(paste("/srv/shiny-server/LipidMS/",id,sep=""))
+# setwd(paste("\\\\iislafe88/Docker/Shiny-server/app/LipidMS/",id,sep=""))
+
+files <- dir()[grep(".mzXML", dir())]
+
+# Parametros procesamiento
+acquisitionmode <- "#ACQUISITIONMODE"
+polarity <- "#POLARITY"
+dmzagglom <- c(#dmzagglom_ms1,#dmzagglom_ms2)
+drtagglom <- c(#drtagglom_ms1,#drtagglom_ms2)
+drtclust <- c(#drtclust_ms1,#drtclust_ms2)
+minpeak <- c(#minpeak_ms1,#minpeak_ms2)
+drtgap <- c(#drtgap_ms1,#drtgap_ms2)
+drtminpeak <- c(#drtminpeak_ms1,#drtminpeak_ms2)
+drtmaxpeak <- c(#drtmaxpeak_ms1,#drtmaxpeak_ms2)
+recurs <- c(#recurs_ms1,#recurs_ms2)
+sb <- c(#sb_ms1,#sb_ms2)
+sn <- c(#sn_ms1,#sn_ms2)
+minint <- c(#minint_ms1,#minint_ms2)
+weight <- c(#weight_ms1,#weight_ms2)
+dmzIso <- c(#dmzIso_ms1,#dmzIso_ms2)
+drtIso <- c(#drtIso_ms1,#drtIso_ms2)
+
+# parametros anotacion
+dmzprecursor <- #dmzprecursor
+dmzproducts <- #dmzproducts
+rttol <- #rttol
+coelcutoff <- #coelcutoff
+
+
+
+#######################################################################################
+#functions
+printExecutionLog <- function(text_){
+  print(paste("******************************************",text_,"******************************************"))
+}
+
+saveLog <- function(id, to, IP, country ){
+  
+  dataplus<- data.frame(id,Sys.time(), to,IP, country)
+  write.table( dataplus,  
+               file="./log.csv", 
+               append = T, 
+               sep=',', 
+               row.names=F, 
+               col.names=F )
+}
+
+
+SendResultMail <- function (id, jobname, to_, file_){
+
+  from_<- "notificaciones@iislafe.es"
+  subject_<- paste("LipidMS: Job finished", jobname)
+  msg_<- paste("Your job ", jobname, " ended successfully.\nJob id: ", id, "\n\n\n", sep="")
+  
+  email <- envelope(
+    from = from_,
+    to= to_,
+    subject = subject_,
+    text = msg_)
+  for (f in file_){
+    email <- attachment(email, f)
+  }
+  smtp <- server(host = "smtp.office365.com",
+                 port = 587,
+                 username = "notificacionesiislafe@iislafe.es",
+                 password = "long4nizas_torreb")
+  smtp(email, verbose = TRUE)
+}
+
+
+printExecutionLog("EMPIEZA")
+
+################################################################################
+# procesamiento
+printExecutionLog("Procesamiento")
+msobjects <- list()
+
+for (f in 1:length(files)){
+  msobjects[[f]] <- dataProcessing(file = files[f],
+                                   polarity = polarity,
+                                   acquisitionmode = acquisitionmode, 
+                                   dmzagglom = dmzagglom,
+                                   drtagglom = drtagglom,
+                                   drtclust = drtclust,
+                                   minpeak = minpeak,
+                                   drtgap = drtgap,
+                                   drtminpeak = drtminpeak,
+                                   drtmaxpeak = drtmaxpeak,
+                                   recurs = recurs,
+                                   sb = sb,
+                                   sn = sn,
+                                   minint = minint,
+                                   weight = weight,
+                                   dmzIso = dmzIso,
+                                   drtIso = drtIso)
+}
+
+################################################################################
+# anotacion
+printExecutionLog("Anotacion")
+annotated_msobjects <- list() # tambien podriamos sobreescribirlo sobre la misma lista que antes (msobjects)
+
+# Si polarity es positive
+if (polarity == "positive"){
+  for (m in 1:length(msobjects)){
+    annotated_msobjects[[m]] <- idPOS(msobjects[[m]],
+                                      ppm_precursor = dmzprecursor,
+                                      ppm_products = dmzproducts,
+                                      rttol = rttol,
+                                      coelCutoff = coelcutoff,
+                                      lipidClasses = c("MG", "LPC", "LPE", "PC", "PE", "Sph", 
+                                                       "SphP", "Cer", "SM", "Car", "CE", "DG", "TG"))
+  }
+}
+
+# Si polarity es negative
+if (polarity == "negative"){
+  for (m in 1:length(msobjects)){
+    annotated_msobjects[[m]] <- idNEG(msobjects[[m]],
+                                      ppm_precursor = dmzprecursor,
+                                      ppm_products = dmzproducts,
+                                      rttol = rttol,
+                                      coelCutoff = coelcutoff,
+                                      lipidClasses = c("FA", "FAHFA", "LPC", "LPE", "LPG", "LPI", 
+                                                       "LPS", "PC", "PE", "PG", "PI", "PS", "Sph", 
+                                                       "SphP", "Cer", "CL", "BA"))
+  }
+}
+
+################################################################################
+# output
+printExecutionLog("Output")
+
+for (f in 1:length(annotated_msobjects)){
+  fname <- gsub(".mzXML", "", annotated_msobjects[[f]]$metaData$generalMetadata$file)
+  write.csv(annotated_msobjects[[f]]$results, file = paste(fname, "_summaryResults.csv", sep=""),
+            row.names = FALSE)
+  write.csv(annotated_msobjects[[f]]$annotatedPeaklist, 
+            file = paste(fname, "_annotatedPeaklist.csv", sep=""),
+            row.names = FALSE)
+}
+
+#SendResultMail
+printExecutionLog("Send result Mail")
+attach_file <- dir()[grep(".csv", dir())]
+SendResultMail(id, jobname, to, attach_file)
+
+#END
+printExecutionLog("Job Completed")
+

@@ -2,7 +2,7 @@ ui <- tagList(
   navbarPage(
     theme = shinythemes::shinytheme("flatly"),
     title = div(img(src='iconohorizontal.png',style="margin-top: -14px; padding-right:0px; padding-left:0px; padding-bottom:10px", height = 60, width = 100)),
-    # title = "LipidMS",
+    windowTitle = "LipidMS",
     id = "inTabset",
     tabPanel(title = "Data import", value = "tab1",
              h4("LipidMS: Lipid annotation for LC-MS/MS data"),

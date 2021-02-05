@@ -91,7 +91,7 @@ startWork <-function(files,filesname,email,acquisitionmode,polarity,dmzagglom_ms
   id<- UUIDgenerate()
   dir.create(id)
   for (f in 1:length(files)){
-    file.copy(files[f], paste(id, "/", filesname[f],sep="")) # borro ,".csv"
+    file.copy(files[f], paste(id, "/", filesname[f], sep=""))
   }
 
 
