@@ -83,10 +83,10 @@ plotLipids <- function(msobject, spar = 0.4){
     mzpeaksMS1 <- ms1$m.z # to use in case data is DDA
     namesMS1 <- paste(as.character(round(ms1$m.z, 3)), ms1$adducts, sep="_")
     
-    eics <- list()
-    for (m in 1:length(mzpeaksMS1)){
-      eic
-    }
+    # eics <- list()
+    # for (m in 1:length(mzpeaksMS1)){
+    #   eic
+    # }
     
     ############################################################################
     # MS2 peaks
@@ -317,40 +317,26 @@ plotLipids <- function(msobject, spar = 0.4){
           namesmz2 <- namesMS2[scansMS2 == s]
           namesmz2 <- namesmz2[order(mz2, decreasing = FALSE)]
           mz2 <- mz2[order(mz2, decreasing = FALSE)]
-          scanprec <- unlist(strsplit(s, "_"))
-          mslevel <- scanprec[1]
-          if (mslevel == "MS1"){
-            mslevel <- 1
-          } else {
-            mslevel <- 2
-          }
-          collisionenergy <- as.numeric(scanprec[2])
-          scanprec <- as.numeric(scanprec[3])
-          precursor <- msobject$metaData$scansMetadata$precursor[
-            which(msobject$metaData$scansMetadata$msLevel == mslevel &
-                    msobject$metaData$scansMetadata$collisionEnergy == collisionenergy)[scanprec]]
-
+          
           # assign colors
           ssrawMS$color <- "black"
           ssrawMS$color[ssrawMS$m.z %in% mz2] <- colorsMS2[1:sum(ssrawMS$m.z %in% mz2)]
 
-          # check if there is any molecular ion in the MS/MS spectrum
-          mz1p <- as.numeric(unlist(sapply(mzpeaksMS1, mzMatch, ssrawMS$m.z, ppm = 10)))
-          if (length(mz1p) > 0){
-            mz1p <- mz1p[seq(1, length(mz1p), 2)]
-            mz1 <- ssrawMS$m.z[mz1p]
-            namesmz1 <- paste(round(mz1, 3), "_parent", sep="")
-            pr <- c()
-            for (m1 in 1:length(mz1p)){
-              if (ssrawMS$color[mz1p[m1]] == "black"){
-                pr <- append(pr, m1)
-              }
-            }
-            if (length(pr) > 0){
-              mz1p <- mz1p[pr]
-              namesmz1 <- namesmz1[pr]
-              ssrawMS$color[mz1p] <- colorsMS1[1:length(mz1p)]
-              namesmz2 <- c(namesmz2, namesmz1)
+          # Find precursor in the MS/MS spectrum
+          scanprec <- unlist(strsplit(s, "_"))
+          collisionenergy <- as.numeric(scanprec[2])
+          scanprec <- as.numeric(scanprec[3])
+          precursor <- msobject$metaData$scansMetadata$precursor[
+            which(msobject$metaData$scansMetadata$msLevel == 2 &
+                    msobject$metaData$scansMetadata$collisionEnergy == collisionenergy)[scanprec]]
+          prec <- as.numeric(unlist(sapply(precursor, mzMatch, ssrawMS$m.z, ppm = 10)))
+          if (length(prec) > 0){
+            prec <- prec[seq(1, length(prec), 2)]
+            mzprec <- ssrawMS$m.z[mz1p]
+            nameprec <- paste(round(mzprec, 3), "_precursor", sep="")
+            if (ssrawMS$color[prec] == "black"){
+              ssrawMS$color[prec] <- colorsMS2[length(namesmz2)+1]
+              namesmz2 <- c(namesmz2, nameprec)
             }
           }
 
