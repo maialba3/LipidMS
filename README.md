@@ -1,2 +1,2 @@
 # LipidMS
-LipidMS R package (v.2.0)
+LipidMS R package (v.2.1)
