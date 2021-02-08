@@ -10,6 +10,8 @@ License: GPL (>= 2)
 LazyData: TRUE
 RoxygenNote: 7.1.1
 Imports: readMzXmlData, CHNOSZ, scales, shinythemes, stats, graphics, grDevices
-Suggests: knitr, rmarkdown
-VignetteBuilder: knitr
 Encoding: UTF-8
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

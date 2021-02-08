@@ -1,21 +1,16 @@
 ---
 title: "LipidMS workflow"
-author: "Maribel Alcoriza Balaguer"
-date: "`r Sys.Date()`"
-output:
-  pdf_document: default
-  word_document: default
-  html_document:
-    df_print: paged
-vignette: |
-  %\VignetteIndexEntry{vignette.Rmd} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
+```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  fig.cap = TRUE
+  comment = "#>"
 )
 ```
 

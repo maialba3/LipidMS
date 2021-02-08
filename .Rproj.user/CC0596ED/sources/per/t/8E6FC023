@@ -1,0 +1,24 @@
+{
+    "id": "8E6FC023",
+    "path": "H:/Maribel/metabolomica/20210201_datasetLipidMS/Positivo/scriptProcesado.R",
+    "project_path": null,
+    "type": "r_source",
+    "hash": "2742515165",
+    "contents": "",
+    "dirty": false,
+    "created": 1612769261917.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "cursorPosition": "93,0",
+        "scrollLine": "68"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1612770283,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1612770283450,
+    "read_only": false,
+    "read_only_alternatives": []
+}
