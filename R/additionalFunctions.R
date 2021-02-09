@@ -85,7 +85,7 @@ plotLipids <- function(msobject, spar = 0.4){
     
     # eics <- list()
     # for (m in 1:length(mzpeaksMS1)){
-    #   eic
+    #   extract eic to add it to the MS1 plot
     # }
     
     ############################################################################
@@ -96,7 +96,7 @@ plotLipids <- function(msobject, spar = 0.4){
     class <- c()
     chains <- c()
 
-    # get index for all adducts
+    # get index for all adducts (from candidates df)
     c <- which(msobject$detailsAnnotation[[parent$Class]]$candidates$peakID %in% ms1$peakID)
 
     # extract class fragments
@@ -312,7 +312,7 @@ plotLipids <- function(msobject, spar = 0.4){
           ssrawMS <- rawMS[rawMS$peakID == s,]
           ssmaxrawMS <- max(ssrawMS$int)
           ssrawMS$int <- ssrawMS$int*100/max(ssrawMS$int)
-          ssrawMS$int[ssrawMS$int < 2] <- ssrawMS$int[ssrawMS$int < 2] + 2
+          ssrawMS$int[ssrawMS$int < 2] <- ssrawMS$int[ssrawMS$int < 2] + 2 # to improve visualization
           mz2 <- peaksMS2[scansMS2 == s]
           namesmz2 <- namesMS2[scansMS2 == s]
           namesmz2 <- namesmz2[order(mz2, decreasing = FALSE)]
@@ -331,8 +331,9 @@ plotLipids <- function(msobject, spar = 0.4){
                     msobject$metaData$scansMetadata$collisionEnergy == collisionenergy)[scanprec]]
           prec <- as.numeric(unlist(sapply(precursor, mzMatch, ssrawMS$m.z, ppm = 10)))
           if (length(prec) > 0){
-            prec <- prec[seq(1, length(prec), 2)]
-            mzprec <- ssrawMS$m.z[mz1p]
+            minppm <- which.min(prec[seq(2, length(prec), 2)])
+            prec <- prec[seq(1, length(prec), 2)][minppm]
+            mzprec <- ssrawMS$m.z[prec]
             nameprec <- paste(round(mzprec, 3), "_precursor", sep="")
             if (ssrawMS$color[prec] == "black"){
               ssrawMS$color[prec] <- colorsMS1[1]
@@ -340,9 +341,11 @@ plotLipids <- function(msobject, spar = 0.4){
             }
           }
           colors2 <- ssrawMS$color[ssrawMS$color != "black"]
-
+          blacks <- ssrawMS$color == "black"
+          
           #plot
-          plot(ssrawMS$m.z, ssrawMS$int, type = "h", col = scales::alpha(ssrawMS$color, 1),
+          plot(ssrawMS$m.z[blacks], ssrawMS$int[blacks], type = "h", 
+               col = scales::alpha(ssrawMS$color[blacks], 0.7),
                xlim = c(0, max(ssrawMS$m.z)+20), ylim = c(0, 132),
                lwd = 1, ylab = "Rel. Intensity", xlab = "m/z",
                main = paste("MS2: ", paste(parent$ID, as.character(round(parent$m.z, 2)),
@@ -350,12 +353,14 @@ plotLipids <- function(msobject, spar = 0.4){
                             paste("\nPrecursor: ", round(precursor, 3), sep = ""),
                             sep = ""),
                las = 1, cex.axis = 0.7, cex.lab = 1, cex.main = 1, lty = 1, yaxt = "n" )
+          lines(ssrawMS$m.z[!blacks], ssrawMS$int[!blacks], type = "h", 
+               col = scales::alpha(ssrawMS$color[!blacks], 1))
           graphics::axis(2,at=seq(2, 122, 20), labels = seq(0, 120, 20))
           graphics::legend("topright", legend=namesmz2,
                  col=colors2, lty = 1, lwd = 2, cex=0.6)
 
           # clean
-          ssrawMSclean <- ssrawMS[ssrawMS$color != "black",]
+          ssrawMSclean <- ssrawMS[!blacks,]
           plot(ssrawMSclean$m.z, ssrawMSclean$int, type = "h",
                col = scales::alpha(ssrawMSclean$color, 1),
                xlim = c(0, max(ssrawMS$m.z)+20), ylim = c(0, 132),
@@ -367,7 +372,7 @@ plotLipids <- function(msobject, spar = 0.4){
                las = 1, cex.axis = 0.7, cex.lab = 1, cex.main = 1, lty = 1, yaxt = "n" )
           graphics::axis(2,at=seq(2, 102, 20), labels = seq(0, 100, 20))
           graphics::legend("topright", legend=namesmz2,
-                 col=colorsMS2[1:length(namesmz2)], lty = 1, lwd = 2, cex=0.6)
+                 col=colors2, lty = 1, lwd = 2, cex=0.6)
         }
       }
     }
