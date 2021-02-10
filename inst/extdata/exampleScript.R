@@ -18,7 +18,7 @@ polarity <- "negative" # change to positive if required
 dmzagglom <- 5
 drtagglom <- 25
 drtclust <- 25
-minpeak <- c(4, 3)
+minpeak <- c(5, 3)
 drtgap <- 5
 drtminpeak <- 20
 drtmaxpeak <- 200
