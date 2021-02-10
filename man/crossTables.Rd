@@ -4,13 +4,10 @@
 \alias{crossTables}
 \title{Cross the original MS1 peaklist with the annotation results}
 \usage{
-crossTables(MS1, results, ppm = 5, rttol = 10, dbs)
+crossTables(msobject, ppm = 5, rttol = 10, dbs)
 }
 \arguments{
-\item{MS1}{data frame cointaining all peaks from the full MS function. It
-must have three columns: m.z, RT (in seconds) and int (intensity).}
-
-\item{results}{data frame. Output of identification functions.}
+\item{msobject}{annotated msobject}
 
 \item{ppm}{mass tolerance in ppm.}
 
@@ -35,8 +32,7 @@ devtools::install_github("maialba3/LipidMSdata2")
 
 library(LipidMS)
 msobject <- idPCneg(LipidMSdata2::msobjectDIAneg)
-crossTables(msobject$peaklist$MS1, msobject$results,
-ppm = 10, rttol = 10)}
+crossTables(msobject, ppm = 10, rttol = 10)}
 
 }
 \author{

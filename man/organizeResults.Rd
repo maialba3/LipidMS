@@ -12,7 +12,8 @@ organizeResults(
   intrules,
   intConf,
   nchains,
-  class
+  class,
+  acquisitionmode
 )
 }
 \arguments{
@@ -33,7 +34,7 @@ class.}
 \item{nchains}{number of chains of the targeted lipid class.}
 
 \item{class}{character value. Lipid class (i.e. PC, PE, DG, TG, etc.).}
-}
+\item{acquisitionmode}{character value. DIA or DDA.}}
 \description{
 Prepare a readable output for LipidMS identification functions.
 }
@@ -68,7 +69,7 @@ rates = c("2/1"), intrequired = c(TRUE), nchains=2, chainsComb)
 
 res <- organizeResults(candidates, clfrags = c(227.0326, 209.022, 74.0359),
 classConf, chainsComb, intrules = c("lysopg_sn1/lysopg_sn1"), intConf,
-nchains = 2, class="PG")
+nchains = 2, class="PG", acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
 }
 
 

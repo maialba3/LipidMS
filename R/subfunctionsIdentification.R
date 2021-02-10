@@ -923,7 +923,7 @@ checkIntensityRules <- function(intrules,
 #'
 #' res <- organizeResults(candidates, clfrags = c(227.0326, 209.022, 74.0359),
 #' classConf, chainsComb, intrules = c("lysopg_sn1/lysopg_sn1"), intConf,
-#' nchains = 2, class="PG")
+#' nchains = 2, class="PG", acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
 #' }
 #'
 #'
@@ -1241,8 +1241,7 @@ organizeResults <- function(candidates,
 #'
 #' library(LipidMS)
 #' msobject <- idPCneg(LipidMSdata2::msobjectDIAneg)
-#' crossTables(msobject$peaklist$MS1, msobject$results,
-#' ppm = 10, rttol = 10)}
+#' crossTables(msobject, ppm = 10, rttol = 10)}
 #'
 #' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 crossTables <- function(msobject,
