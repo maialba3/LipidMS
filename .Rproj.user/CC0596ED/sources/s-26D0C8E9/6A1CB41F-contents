@@ -1,0 +1,124 @@
+###############################################
+#
+# s010_DependencyScore_LUNG_NSCLC.R 
+# 10/04/2019
+#
+# Carga y filtrado datos Dependency Score
+#
+###############################################
+
+
+###############################################
+###############################################
+##
+## Cargamos las matrices del CCLE
+##
+## gene_effect_corrected.csv y DepMap-2019q1-celllines_v2.csv
+##
+###############################################
+###############################################
+
+
+depScore <- read.delim("datos_CCLE/gene_effect_corrected.csv", sep=",", 
+                       stringsAsFactors = F)
+
+cellLines <- read.delim("datos_CCLE/DepMap-2019q1-celllines_v2.csv", sep=",",
+                        stringsAsFactors = F)
+
+
+###############################################
+#
+# Exploramos los datos
+#
+###############################################
+
+dim(cellLines)
+dim(depScore)
+
+head(cellLines)
+depScore[1:10,1:10]
+
+
+###############################################
+#
+# Subset de las lineas de interes en cellLines
+#
+###############################################
+
+colnames(depScore)[1] <- "DepMap_ID"
+
+cellLines <- cellLines[grepl("NSCLC", cellLines$Subtype.Disease), 
+                       c("DepMap_ID", "CCLE_Name")]
+dim(cellLines)
+
+
+###############################################
+#
+# Cruzo los id de las lineas con depScore
+#
+###############################################
+
+depScore <- merge(cellLines, depScore, by="DepMap_ID")
+dim(depScore)
+
+
+###############################################
+#
+# Uso CCLE_Name como rownames y elimino las columnas de los id
+#
+###############################################
+
+rownames(depScore) <- depScore$CCLE_Name
+depScore <- depScore[,!colnames(depScore) %in% c("DepMap_ID", "CCLE_Name")]
+
+
+###############################################
+#
+# Arreglo los nombres de los genes (colnames) 
+# En el fichero original esta anotado con el Hugo Symbol seguido del Entrez
+# Me quedo solo con el primero
+#
+###############################################
+
+colnames(depScore) <- unlist(lapply(sapply(colnames(depScore), 
+                                           strsplit, "\\."), "[[", 1))
+depScore[1:10,1:10]
+
+
+###############################################
+#
+# Categorizo la variable del depScore: TRUE <= -0.5
+#
+###############################################
+
+depScore_categorical <- data.frame(apply(depScore, 2, cut, 
+                                         breaks = c(min(datasets_LUNG_NSCLC$depScore),-0.5, 
+                                                    max(datasets_LUNG_NSCLC$depScore)), 
+                                         labels = c(TRUE, FALSE), right = TRUE))
+rownames(depScore_categorical) <- rownames(depScore)
+
+###############################################
+#
+# Guardo todos los data frames en una lista
+#
+###############################################
+
+datasets_LUNG_NSCLC <- list()
+datasets_LUNG_NSCLC$cellLines_LUNG_NSCLC <- cellLines
+datasets_LUNG_NSCLC$depScore <- depScore
+datasets_LUNG_NSCLC$depScore_categorical <- depScore_categorical
+
+
+###############################################
+###############################################
+##
+## Guardo el data frame generado depScore
+##
+###############################################
+###############################################
+
+save(datasets_LUNG_NSCLC, file="datos/datasets_LUNG_NSCLC.RDa")
+
+
+
+sessionInfo()

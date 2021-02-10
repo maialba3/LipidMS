@@ -964,7 +964,7 @@ organizeResults <- function(candidates,
                                       ppm = round(candidates$ppms[c], 3),
                                       confidenceLevel = idlevel,
                                       peakID = candidates$peakID[c],
-                                      Score = round(score, 3),
+                                      PFCS = round(score, 3),
                                       stringsAsFactors = F))
         }
       }
@@ -992,28 +992,20 @@ organizeResults <- function(candidates,
               }
               
             } else {
-              if (acquisitionmode == "DIA"){
-                score <-  mean(chainsComb$fragments[[c]]$coelScore, na.rm = T)
-              } else {
-                score <- sum(chainsComb$fragments[[c]]$coelScore, na.rm = T)
-              }
+              score <-  mean(chainsComb$fragments[[c]]$coelScore, na.rm = T)
             }
             results <- rbind(results, data.frame(ID, Class, CDB, FAcomp, m.z, RT,
                                                  I, Adducts, ppm, confidenceLevel,
                                                  peakID = candidates$peakID[c],
-                                                 Score = round(score, 3),
+                                                 PFCS = round(score, 3),
                                                  stringsAsFactors = F))
           } else if (length(clfrags) > 0){
             confidenceLevel <- "Subclass"
-            if (acquisitionmode == "DIA"){
-              score <- mean(classConf$fragments[[c]]$coelScore, na.rm = T)
-            } else {
-              score <- sum(classConf$fragments[[c]]$coelScore, na.rm = T)
-            }
+            score <- mean(classConf$fragments[[c]]$coelScore, na.rm = T)
             results <- rbind(results, data.frame(ID, Class, CDB, FAcomp, m.z, RT,
                                                  I, Adducts, ppm, confidenceLevel,
                                                  peakID = candidates$peakID[c],
-                                                 Score = round(score, 3),
+                                                 PFCS = round(score, 3),
                                                  stringsAsFactors = F))
           }
         }
@@ -1042,28 +1034,18 @@ organizeResults <- function(candidates,
                 confidenceLevel <- "FA"
               }
               if (length(clfrags) > 0){
-                if (acquisitionmode == "DIA"){
-                  score <-  mean(c(classConf$fragments[[c]]$coelScore,
-                                   chainsComb$fragments[[c]][[comb]]$coelScore),
-                                 na.rm = T)
-                } else {
-                  score <-  sum(c(classConf$fragments[[c]]$coelScore,
-                                   chainsComb$fragments[[c]][[comb]]$coelScore),
-                                 na.rm = T)
-                }
+                score <-  mean(c(classConf$fragments[[c]]$coelScore,
+                                 chainsComb$fragments[[c]][[comb]]$coelScore),
+                               na.rm = T)
               } else {
-                if (acquisitionmode == "DIA"){
-                  score <-  mean(chainsComb$fragments[[c]][[comb]]$coelScore, na.rm = T)
-                } else {
-                  score <-  sum(chainsComb$fragments[[c]][[comb]]$coelScore, na.rm = T)
-                }
+                score <-  mean(chainsComb$fragments[[c]][[comb]]$coelScore, na.rm = T)
               }
               FAcomp <- paste(chainsComb$selected[[c]][comb,], collapse = " ")
               results <- rbind(results, data.frame(ID, Class, CDB, FAcomp, m.z,
                                                    RT, I, Adducts, ppm,
                                                    confidenceLevel,
                                                    peakID = candidates$peakID[c],
-                                                   Score = round(score, 3),
+                                                   PFCS = round(score, 3),
                                                    stringsAsFactors = F))
             }
           } else {
@@ -1071,16 +1053,12 @@ organizeResults <- function(candidates,
               ID <- paste(class, "(", CDB, ")", sep="")
               confidenceLevel <- "Subclass"
               FAcomp = ""
-              if (acquisitionmode == "DIA"){
-                score <- mean(classConf$fragments[[c]]$coelScore, na.rm = T)
-              } else {
-                score <- sum(classConf$fragments[[c]]$coelScore, na.rm = T)
-              }
+              score <- mean(classConf$fragments[[c]]$coelScore, na.rm = T)
               results <- rbind(results, data.frame(ID, Class, CDB, FAcomp, m.z,
                                                    RT, I, Adducts, ppm,
                                                    confidenceLevel,
                                                    peakID = candidates$peakID[c],
-                                                   Score = round(score, 3),
+                                                   PFCS = round(score, 3),
                                                    stringsAsFactors = F))
             }
           }
@@ -1136,30 +1114,19 @@ organizeResults <- function(candidates,
                 confidenceLevel <- "FA"
               }
               if (length(clfrags) > 0){
-                if (acquisitionmode == "DIA"){
-                  score <-  mean(c(classConf$fragments[[c]]$coelScore,
-                                   chainsComb$fragments[[c]][[comb]]$coelScore),
-                                 na.rm = T)
-                } else {
-                  score <-  sum(c(classConf$fragments[[c]]$coelScore,
-                                   chainsComb$fragments[[c]][[comb]]$coelScore),
-                                 na.rm = T)
-                }
+                score <-  mean(c(classConf$fragments[[c]]$coelScore,
+                                 chainsComb$fragments[[c]][[comb]]$coelScore),
+                               na.rm = T)
               } else {
-                if (acquisitionmode == "DIA"){
-                  score <-  mean(chainsComb$fragments[[c]][[comb]]$coelScore,
-                                 na.rm = T)
-                } else {
-                  score <-  sum(chainsComb$fragments[[c]][[comb]]$coelScore,
-                                 na.rm = T)
-                }
+                score <-  mean(chainsComb$fragments[[c]][[comb]]$coelScore,
+                               na.rm = T)
               }
               FAcomp <- paste(chainsComb$selected[[c]][comb,], collapse = " ")
               results <- rbind(results, data.frame(ID, Class, CDB, FAcomp, m.z, RT,
                                                    I, Adducts, ppm,
                                                    confidenceLevel,
                                                    peakID = candidates$peakID[c],
-                                                   Score = round(score, 3),
+                                                   PFCS = round(score, 3),
                                                    stringsAsFactors = F))
             }
           } else {
@@ -1167,16 +1134,12 @@ organizeResults <- function(candidates,
               ID <- paste(class, "(", CDB, ")", sep="")
               confidenceLevel <- "Subclass"
               FAcomp = ""
-              if (acquisitionmode == "DIA"){
-                score <- mean(classConf$fragments[[c]]$coelScore, na.rm = T)
-              } else {
-                score <- sum(classConf$fragments[[c]]$coelScore, na.rm = T)
-              }
+              score <- mean(classConf$fragments[[c]]$coelScore, na.rm = T)
               results <- rbind(results, data.frame(ID, Class, CDB, FAcomp, m.z,
                                                    RT, I, Adducts, ppm,
                                                    confidenceLevel,
                                                    peakID = candidates$peakID[c],
-                                                   Score = round(score, 3),
+                                                   PFCS = round(score, 3),
                                                    stringsAsFactors = F))
             }
           }
@@ -1262,12 +1225,12 @@ crossTables <- function(msobject,
                            factor(results$confidenceLevel,
                                   levels= c("FA position", "FA",
                                             "Subclass", "MSMS",
-                                            "MS-only")), -results$Score),]
+                                            "MS-only")), -results$PFCS),]
   adductsTable <- dbs$adductsTable
   confLevels <- LipidMS::confLevels
   rawPeaks <- data.frame(MS1, LipidMS_id = "", Adduct = "",
                          confidenceLevel = "",
-                         Score = "", stringsAsFactors = F)
+                         PFCS = "", stringsAsFactors = F)
   Form_Mn <- do.call(rbind, apply(results, 1, getFormula))
   Mn <- Form_Mn[,"Mn"]
   for (r in 1:nrow(results)){
@@ -1302,8 +1265,8 @@ crossTables <- function(msobject,
                 as.character(results$confidenceLevel[r])
               rawPeaks$Adduct[rows[matches[i]]] <-
                 as.character(adducts[m])
-              rawPeaks$Score[rows[matches[i]]] <-
-                as.character(results$Score[r])
+              rawPeaks$PFCS[rows[matches[i]]] <-
+                as.character(results$PFCS[r])
             } else if (rawPeaks$LipidMS_id[rows[matches[i]]] != "" &&
                        !grepl(results$ID[r],
                               rawPeaks$LipidMS_id[rows[matches[i]]], fixed = T)){
@@ -1327,9 +1290,9 @@ crossTables <- function(msobject,
                 rawPeaks$Adduct[rows[matches[i]]] <-
                   paste(as.character(rawPeaks$Adduct[rows[matches[i]]]),
                         as.character(adducts[m]), sep="|")
-                rawPeaks$Score[rows[matches[i]]] <-
-                  paste(rawPeaks$Score[rows[matches[i]]],
-                        as.character(results$Score[r]), sep="|")
+                rawPeaks$PFCS[rows[matches[i]]] <-
+                  paste(rawPeaks$PFCS[rows[matches[i]]],
+                        as.character(results$PFCS[r]), sep="|")
               } else if (newposition == 1){
                 rawPeaks$LipidMS_id[rows[matches[i]]] <-
                   paste(as.character(results$ID[r]),
@@ -1340,9 +1303,9 @@ crossTables <- function(msobject,
                 rawPeaks$Adduct[rows[matches[i]]] <-
                   paste(as.character(adducts[m]),
                         as.character(rawPeaks$Adduct[rows[matches[i]]]), sep="|")
-                rawPeaks$Score[rows[matches[i]]] <-
-                  paste(as.character(results$Score[r]),
-                        rawPeaks$Score[rows[matches[i]]], sep="|")
+                rawPeaks$PFCS[rows[matches[i]]] <-
+                  paste(as.character(results$PFCS[r]),
+                        rawPeaks$PFCS[rows[matches[i]]], sep="|")
               } else {
                 ids <- unlist(strsplit(as.character(rawPeaks$LipidMS_id[rows[matches[i]]]),
                                        "\\|"))
@@ -1350,7 +1313,7 @@ crossTables <- function(msobject,
                                            "\\|"))
                 adduc <- unlist(strsplit(as.character(rawPeaks$Adduct[rows[matches[i]]]),
                                          "\\|"))
-                score <- unlist(strsplit(as.character(rawPeaks$Score[rows[matches[i]]]),
+                score <- unlist(strsplit(as.character(rawPeaks$PFCS[rows[matches[i]]]),
                                          "\\|"))
                 rawPeaks$LipidMS_id[rows[matches[i]]] <-
                   paste(paste(ids[1:(newposition-1)], collapse="|"),
@@ -1369,9 +1332,9 @@ crossTables <- function(msobject,
                         paste(adduc[newposition:length(adduc)],
                               collapse = "|"),
                         sep="|")
-                rawPeaks$Score[rows[matches[i]]] <-
+                rawPeaks$PFCS[rows[matches[i]]] <-
                   paste(paste(score[1:(newposition-1)], collapse="|"),
-                        as.character(results$Score[r]),
+                        as.character(results$PFCS[r]),
                         paste(score[newposition:length(score)],
                               collapse = "|"),
                         sep="|")
