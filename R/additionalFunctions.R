@@ -178,7 +178,7 @@ plotLipids <- function(msobject, spar = 0.4){
                    "#170C2EFF", "#473B75FF", "#F19C1FFF")
 
     if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
-      nplots <- 1 + length(unique(rawMS$peakID))
+      nplots <- 1 + length(unique(scansMS2))
     } else {
       nplots <- 2
     }
@@ -307,7 +307,7 @@ plotLipids <- function(msobject, spar = 0.4){
         # if data is DDA
       } else if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
         # for each scan
-        for (s in unique(rawMS$peakID)){
+        for (s in unique(scansMS2)){
           # subset raw data
           ssrawMS <- rawMS[rawMS$peakID == s,]
           ssmaxrawMS <- max(ssrawMS$int)

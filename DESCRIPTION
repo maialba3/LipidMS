@@ -1,7 +1,7 @@
 Package: LipidMS
 Type: Package
 Title: Lipid Annotation for LC-MS/MS DDA or DIA Data
-Version: 2.1.1
+Version: 2.1.2
 Author: M Isabel Alcoriza-Balaguer, J Carlos Garcia-Canaveras
 Maintainer: M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 Description: Lipid annotation in untargeted liquid chromatography mass spectrometry lipidomics based on fragmentation rules. Alcoriza-Balaguer MI, Garcia-Canaveras JC, Lopez A, Conde I, Juan O, Carretero J, Lahoz A (2019) <doi:10.1021/acs.analchem.8b03409>.
