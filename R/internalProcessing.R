@@ -15,10 +15,21 @@ readMSfile <- function(file){
   ms <- readMzXmlData::readMzXmlFile(file.path(file))
 
   # 2. Extract metaData (general and scan by scan)
+  if (is.null(ms[[1]]$metaData$startTime)){
+    startTime <- min(unlist(lapply(ms, function(x) x$metaData$retentionTime)))
+    endTime <- max(unlist(lapply(ms, function(x) x$metaData$retentionTime)))
+  } else {
+    startTime <- ms[[1]]$metaData$startTime
+    endTime <- ms[[1]]$metaData$endTime
+  }
+  collisionEnergies <- sort(unique(unlist(lapply(ms, function(x) if(!is.null(x$metaData$collisionEnergy)){x$metaData$collisionEnergy} else {0}))))
+  
   generalMetadata <- list(file = file, scans = length(ms),
-                          startTime = ms[[1]]$metaData$startTime,
-                          endTime = ms[[1]]$metaData$endTime,
-                          collisionEnergies = unique(unlist(lapply(ms, function(x) if(!is.null(x$metaData$collisionEnergy)){x$metaData$collisionEnergy} else {0}))))
+                          startTime = startTime,
+                          endTime = endTime,
+                          collisionEnergies = collisionEnergies)
+  
+  
   scansMetadata <-
     data.frame(msLevel = unlist(lapply(ms, function(x) if(!is.null(x$metaData$msLevel)){x$metaData$msLevel} else {NA})),
                polarity = unlist(lapply(ms, function(x) if(!is.null(x$metaData$polarity)){x$metaData$polarity} else {NA})),
@@ -59,18 +70,30 @@ readMSfile <- function(file){
   scans <- data.frame(mz = mz, int = int, rt = rt, mslevel = mslevel,
                       collisionEnergy = collisionEnergy,
                       part = 0, clust = 0, peak = 0, Scan = scannum)
-
-  if (any(scansMetadata$collisionEnergy == 0)){
-    MS1 <-  scans[scans$collisionEnergy == 0,]
+  
+  if (all(c(1, 2) %in% unique(scansMetadata$msLevel))){
+    MS1 <-  scans[scans$mslevel == 1,]
     MS1 <- split(MS1, MS1$collisionEnergy)
     # Add MS1 to msobject
     msobject$MS1 <- MS1
-  }
-  if (any(scans$collisionEnergy > 0)){
-    MS2 <- scans[scans$collisionEnergy > 0,]
+    
+    MS2 <- scans[scans$mslevel == 2,]
     MS2 <- split(MS2, MS2$collisionEnergy)
     # Add MS2 to msobject
     msobject$MS2 <- MS2
+  } else {
+    if (any(scansMetadata$collisionEnergy == 0)){
+      MS1 <-  scans[scans$collisionEnergy == 0,]
+      MS1 <- split(MS1, MS1$collisionEnergy)
+      # Add MS1 to msobject
+      msobject$MS1 <- MS1
+    }
+    if (any(scansMetadata$collisionEnergy > 0)){
+      MS2 <- scans[scans$collisionEnergy > 0,]
+      MS2 <- split(MS2, MS2$collisionEnergy)
+      # Add MS2 to msobject
+      msobject$MS2 <- MS2
+    }
   }
   return(msobject)
 }
@@ -358,7 +381,7 @@ peakdetection <- function(msobject,
   }
 
   # create peaklist
-  maxit <- max(msobject[[mslevel]][[cE]]$peak)
+  maxit <- nrow(msobject$processing[[mslevel]]$peakIndex[[cE]])
   peaklist <- data.frame()
   if (maxit > 0){
     for (p in 1:nrow( msobject$processing[[mslevel]]$peakIndex[[cE]])){
@@ -371,11 +394,11 @@ peakdetection <- function(msobject,
       max_int <- max(msobject[[mslevel]][[cE]]$int[start:end])
       sumint <- sum(msobject[[mslevel]][[cE]]$int[start:end])
       area <- areas[p]
-      rt <- msobject[[mslevel]][[cE]]$rt[start:end][msobject[[mslevel]][[cE]]$int[start:end] == max_int]
+      rt <- mean(msobject[[mslevel]][[cE]]$rt[start:end][msobject[[mslevel]][[cE]]$int[start:end] == max_int])
       minrt <- min(msobject[[mslevel]][[cE]]$rt[start:end])
       maxrt <- max(msobject[[mslevel]][[cE]]$rt[start:end])
       peakid <- p
-
+      
       peaklist <- rbind(peaklist,
                         data.frame(m.z = mz, RT = rt, int = area,
                                    minRT = minrt, maxRT = maxrt,
