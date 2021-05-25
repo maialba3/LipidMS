@@ -10,8 +10,8 @@ idPOS(
   ppm_products = 10,
   rttol = 5,
   coelCutoff = 0.8,
-  lipidClasses = c("MG", "LPC", "LPE", "PC", "PE", "PG", "Sph", "SphP", "Cer", "SM",
-    "Carnitines", "CE", "DG", "TG"),
+  lipidClasses = c("MG", "LPC", "LPE", "PC", "PCo", "PCp", "PE", "PEo", "PEp", "PG",
+    "Sph", "SphP", "Cer", "AcylCer", "CerP", "SM", "Carnitines", "CE", "DG", "TG"),
   dbs
 )
 }
@@ -37,26 +37,23 @@ and \link{assignDB}.}
 }
 \value{
 annotated msobject (list with several elements). The results element
-is a data frame that shows: ID, class of lipid, CDB (total number of carbons
+is a data frame that shows: ID, lipid class, CDB (total number of carbons
 and double bounds), FA composition (specific chains composition if it has
-been confirmed), m.z, RT (in seconds), I (intensity), Adducts, ppm (m.z error),
+been confirmed), mz, RT (in seconds), I (intensity), Adducts, ppm (mz error),
 confidenceLevel (Subclass, FA level, where chains are known but not their
-positions, or FA position level), peakID, and PFCS (parent-fragment coelution
-score mean of all fragments used for the identification); and the
-annotatedPeaklist element shows the original MS1 peaklist with the annotations
-on it.
+positions, or FA position level), peakID, and Score (parent-fragment coelution 
+score mean in DIA data or relative sum intensity in DDA of all fragments used 
+for the identification); and the annotatedPeaklist element shows the original 
+MS1 peaklist with the annotations on it.
 }
 \description{
 Lipids annotation based on fragmentation patterns for LC-MS/MS DIA or DDA data
-acquired in positive mode. This function compiles all functions writen for
+acquired in positive mode. This function compiles all functions written for
 ESI+ annotations.
 }
 \examples{
 \dontrun{
-devtools::install_github("maialba3/LipidMSdata2")
-
-library(LipidMS)
-msobject <- idPOS(LipidMSdata2::msobjectDIApos)
+msobject <- idPOS(msobject)
 }
 
 }

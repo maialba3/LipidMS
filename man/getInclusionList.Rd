@@ -4,20 +4,23 @@
 \alias{getInclusionList}
 \title{Obtain an inclusion list from the annotation results}
 \usage{
-getInclusionList(results, adductsTable = LipidMS::adductsTable)
+getInclusionList(df, dbs)
 }
 \arguments{
-\item{results}{data frame. Output of identification functions.}
+\item{df}{data frame. Output of identification functions (results table from
+an msobject or feature table from an msbatch).}
 
-\item{adductsTable}{data frame with the adducts allowed and their mass
-difference.}
+\item{dbs}{list of data bases required for annotation. By default, dbs
+contains the required data frames based on the default fragmentation rules.
+If these rules are modified, dbs may need to be supplied. See \link{createLipidDB}
+and \link{assignDB}.}
 }
 \value{
 Data frame with 6 columns: formula, RT, neutral mass, m/z, adduct
-and the compound name.
+and the LipidMSid.
 }
 \description{
-Obtain an inclusion list from the annotation results.
+Obtain an inclusion list for the identified lipids.
 }
 \examples{
 \dontrun{

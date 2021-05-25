@@ -2,80 +2,76 @@
 % Please edit documentation in R/dataProcessing.R
 \name{dataProcessing}
 \alias{dataProcessing}
-\title{Process mzXML files: peakpicking and deisotoping}
+\title{Process mzXML files individually: peakpicking and isotope annotation}
 \usage{
 dataProcessing(
   file,
   acquisitionmode,
   polarity,
-  dmzagglom = 10,
+  dmzagglom = 15,
   drtagglom = 500,
   drtclust = 100,
   minpeak = c(5, 3),
   drtgap = 10,
-  drtminpeak = 20,
-  drtmaxpeak = 100,
+  drtminpeak = c(15, 15),
+  drtmaxpeak = c(100, 200),
   recurs = 5,
   sb = c(3, 2),
   sn = 2,
   minint = c(1000, 100),
   weight = c(2, 3),
-  dmzIso = 10,
+  dmzIso = 5,
   drtIso = 5
 )
 }
 \arguments{
-\item{file}{path of the mzXML input file.}
+\item{file}{file path.}
 
-\item{acquisitionmode}{character value: DIA or DDA (acquisition mode).}
+\item{acquisitionmode}{character value: MS, DIA or DDA.}
 
 \item{polarity}{character value: negative or positive.}
 
-\item{dmzagglom}{m/z tolerance (in ppm) used for partitioning and clustering.
-10 by default.}
+\item{dmzagglom}{mz tolerance (in ppm) used for partitioning and clustering.}
 
-\item{drtagglom}{rt window used for partitioning (in seconds). 500 by default.}
+\item{drtagglom}{RT window used for partitioning (in seconds).}
 
-\item{drtclust}{rt window used for clustering (in seconds). 100 by default.}
+\item{drtclust}{RT window used for clustering (in seconds).}
 
-\item{minpeak}{minimum number of measurements required for a peak. By default,
-5 for MS1 and 4 for MS2.}
+\item{minpeak}{minimum number of measurements required for a peak.}
 
-\item{drtgap}{maximum RT gap length to be filled (in seconds). 5 by default.}
+\item{drtgap}{maximum RT gap length to be filled (in seconds).}
 
-\item{drtminpeak}{minimum RT width of a peak (in seconds). 20 by default.
-At least minpeak within the drtminpeak window are required to
-define a peak.}
+\item{drtminpeak}{minimum RT width of a peak (in seconds). At least minpeak 
+within the drtminpeak window are required to define a peak.}
 
-\item{drtmaxpeak}{maximum RT width of a single peak (in seconds). 100 by default.}
+\item{drtmaxpeak}{maximum RT width of a single peak (in seconds).}
 
-\item{recurs}{maximum number of peaks within one EIC. 5 by default.}
+\item{recurs}{maximum number of peaks within one EIC.}
 
-\item{sb}{signal-to-base ratio. By default, 3 for MS1 and 2 for MS2.}
+\item{sb}{signal-to-base ratio.}
 
-\item{sn}{signal-to-noise ratio. 2 by default.}
+\item{sn}{signal-to-noise ratio.}
 
-\item{minint}{minimum intensity of a peak. By default, 1000 for MS1 and
-100 for MS2.}
+\item{minint}{minimum intensity of a peak.}
 
-\item{weight}{weight for assigning measurements to a peak. Optional.
-By default, 2 for MS1 and 3 for MS2.}
+\item{weight}{weight for assigning measurements to a peak.}
 
-\item{dmzIso}{numeric. Mass tolerance for isotope matching. 10 by default.}
+\item{dmzIso}{mass tolerance for isotope matching.}
 
-\item{drtIso}{numeric. Time windows for isotope matching. 5 by default.}
+\item{drtIso}{time window for isotope matching.}
 }
 \value{
-a msobject that contains metadata of the mzXML file, raw data and
+an msobject that contains metadata of the mzXML file, raw data and
 extracted peaks.
 }
 \description{
-Process mzXML files: peak-picking using enviPick and deisotoping
-using an adaptation of the CAMERA algorithm.
+Process mzXML files individually: peakpicking and isotope anotation
 }
 \details{
 This function executes 2 steps: 1) peak-picking based on enviPick
 package and 2) isotope annotation.
+
+Numeric arguments accept one or two values for MS1 and MS2, respectively.
 }
 \examples{
 \dontrun{
@@ -89,6 +85,9 @@ sn = 2, minint = c(1000, 100), weight = 2, dmzIso = 10, drtIso = 5)
 \references{
 Peak-picking algorithm has been imported from enviPick R-package:
 https://cran.r-project.org/web/packages/enviPick/index.html
+}
+\seealso{
+\link{batchdataProcessing} and \link{setmsbatch}
 }
 \author{
 M Isabel Alcoriza-Balaguer <maialba@iislafe.es>

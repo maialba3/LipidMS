@@ -77,14 +77,13 @@ If these rules are modified, dbs may need to be supplied. See
 }
 \value{
 annotated msobject (list with several elements). The results element
-is a data frame that shows: ID, class of lipid, CDB (total number of carbons
+is a data frame that shows: ID, lipid class, CDB (total number of carbons
 and double bounds), FA composition (specific chains composition if it has
-been confirmed), m.z, RT (in seconds), I (intensity), Adducts, ppm (m.z error),
+been confirmed), mz, RT (in seconds), I (intensity), Adducts, ppm (mz error),
 confidenceLevel (Subclass, FA level, where chains are known but not their
-positions, or FA position level), peakID, and PFCS (parent-fragment coelution
-score mean of all fragments used for the identification); and the
-annotatedPeaklist element shows the original MS1 peaklist with the annotations
-on it.
+positions, or FA position level), peakID, and Score (parent-fragment coelution 
+score mean in DIA data or relative sum intensity in DDA of all fragments used 
+for the identification).
 }
 \description{
 PE identification based on fragmentation patterns for LC-MS/MS DIA or DDA
@@ -97,32 +96,28 @@ fragments: loss of head group (DG as M+H-H2O) coeluting with the precursor
 ion. 3) Search of specific fragments that inform about chain composition at
 sn1 (MG as M+H-H2O resulting from the loss of the FA chain at sn2 and
 the head group or LPE as M+H-H2O resulting just from the loss of the FA chain)
-and sn2 (FA or MG chain from sn2as M+H-H2O or the difference between precursor
-and sn1 chain fragments). 4) Look for possible chains structure based on the
-combination of chain fragments. 5) Check intensity rules to confirm chains
-position. LPE or MG from sn1 is at least 3 times more intense than the ones
-from sn2.
+and sn2 (MG as M+H-H2O resulting from the loss of the head group and FA chain 
+from sn2). 4) Look for possible chains structure based on the combination of 
+chain fragments. 5) Check intensity rules to confirm chains position. 
+LPE or MG from sn1 is at least 3 times more intense than the ones from sn2.
 
-Results data frame shows: ID, class of lipid, CDB (total number
+Results data frame shows: ID, lipid class, CDB (total number
 of carbons and double bounds), FA composition (specific chains composition if
 it has been confirmed), mz, RT (in seconds), I (intensity, which comes
-directly from de input), Adducts, ppm (m.z error), confidenceLevel (Subclass,
+directly from de input), Adducts, ppm (mz error), confidenceLevel (Subclass,
 FA level, where chains are known but not their positions, or FA position
-level) and PFCS (parent-fragment coelution score mean of all fragments used
-for the identification).
+level) and Score (parent-fragment coelution score mean in DIA data or relative 
+sum intensity in DDA of all fragments used for the identification).
 }
 \note{
-This function has been writen based on fragmentation patterns
+This function has been written based on fragmentation patterns
 observed for three different platforms (QTOF 6550 from Agilent, Sinapt G2-Si
 from Waters and Q-exactive from Thermo), but it may need to be customized for
 other platforms or acquisition settings.
 }
 \examples{
 \dontrun{
-devtools::install_github("maialba3/LipidMSdata2")
-
-library(LipidMS)
-msobject <- idPEpos(LipidMSdata2::msobjectDIApos)
+msobject <- idPEpos(msobject)
 }
 
 }

@@ -1,60 +1,29 @@
-export("assignDB")
-export("chainFrags")
-export("checkClass")
-export("checkIntensityRules")
-export("coelutingFrags")
-export("ddaFrags")
-export("combineChains")
-export("createLipidDB")
-export("assignDB")
-export("crossTables")
-export("dataProcessing")
-export("findCandidates")
-export("getInclusionList")
-export("organizeResults")
-export("idBAneg")
-export("idCarpos")
-export("idCEpos")
-export("idCerneg")
-export("idCerpos")
-export("idDGpos")
-export("idFAHFAneg")
-export("idFAneg")
-export("idLPCpos")
-export("idLPCneg")
-export("idLPEneg")
-export("idLPEpos")
-export("idLPGneg")
-export("idLPIneg")
-export("idLPSneg")
-export("idMGpos")
-export("idPCpos")
-export("idPCneg")
-export("idPEneg")
-export("idPEpos")
-export("idPGneg")
-export("idPGpos")
-export("idPIneg")
-export("idPSneg")
-export("idSMpos")
-export("idSphpos")
-export("idSphneg")
-export("idSphPneg")
-export("idSphPpos")
-export("idTGpos")
-export("idCLneg")
-export("idNEG")
-export("idPOS")
-export("searchIsotopes")
-export("LipidMSapp")
-export("plotLipids")
-import("shiny")
+export("dataProcessing", "batchdataProcessing", "setmsbatch", "alignmsbatch", 
+       "groupmsbatch", "fillpeaksmsbatch")
+export("idNEG", "idPOS", "idBAneg", "idCarpos", "idCEpos", "idCerneg", "idCerpos", 
+       "idDGpos", "idFAHFAneg", "idFAneg", "idLPCpos", "idLPCneg", "idLPEneg", 
+       "idLPEpos", "idLPGneg", "idLPIneg", "idLPSneg", "idMGpos", "idPCpos", 
+       "idPCneg", "idPEneg", "idPEpos", "idPGneg", "idPGpos", "idPIneg", 
+       "idPSneg", "idSMpos", "idSphpos", "idSphneg", "idSphPneg", "idSphPpos", 
+       "idTGpos", "idCLneg", "idPConeg", "idPCpneg", "idPEoneg", "idPEpneg", 
+       "idCerPneg", "idPCopos", "idPCppos", "idPEopos", "idPEppos", "idCerPpos", 
+       "idAcylCerneg", "idAcylCerpos", "annotatemsbatch")
+export("LipidMSapp", "plotLipids", "plotticmsbatch", "ploteicmsbatch", 
+       "rtdevplot", "searchIsotopes", "searchIsotopesmsbatch")
+export("assignDB", "chainFrags", "checkClass", "checkIntensityRules", 
+       "coelutingFrags", "ddaFrags", "combineChains", "createLipidDB", 
+       "assignDB", "crossTables", "findCandidates", "getInclusionList", 
+       "organizeResults")
+
+import("shiny", "utils", "parallel", "doParallel", "foreach")
+importFrom("iterators", "iter")
 importFrom("CHNOSZ", "makeup")
-importFrom("stats", "cor", "predict", "smooth.spline")
-import("utils")
+importFrom("stats", "cor", "predict", "smooth.spline", "loess", "median", "smooth")
 importFrom("graphics", "axis", "legend", "lines", "par")
 importFrom("readMzXmlData", "readMzXmlFile")
 importFrom("scales", "alpha")
 importFrom("shinythemes", "shinytheme")
-importFrom("grDevices", "dev.control", "dev.off", "pdf", "recordPlot")
+importFrom("grDevices", "dev.control", "dev.off", "pdf", "recordPlot", 
+           "colorRampPalette", "colors")
+
 useDynLib("LipidMS")

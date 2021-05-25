@@ -2,44 +2,85 @@
 % Please edit documentation in R/additionalFunctions.R
 \name{plotLipids}
 \alias{plotLipids}
-\title{Plot informative peaks for lipids annotation}
+\title{Plot informative peaks for lipid annotation}
 \usage{
-plotLipids(msobject, spar = 0.4)
+plotLipids(msobject, span = 0.4, ppm = 10)
 }
 \arguments{
 \item{msobject}{annotated msobject.}
 
-\item{spar}{smoothing parameter. Numeric value between 0 and 1.}
+\item{span}{smoothing parameter. Numeric value between 0 and 1.}
+
+\item{ppm}{mz tolerance for EIC. If set to 0, the EIC will not be shown.}
 }
 \value{
 msobject with a plots element which contains a list of plots.
-Plots on the left side represent raw values while plots on the left side are
+Plots on the left side represent raw values while plots on the left are
 smoothed or clean scans (MS2 in DDA).
 }
 \description{
-Plot informative peaks for each lipid annotated using idPOS and idNEG (or
+Plot informative peaks for each lipid annotated with idPOS and idNEG (or
 similar functions).
 }
 \details{
 Peak intensities are relative to the maximum intensity of each peak
 to ease visualization.
+
+Grey lines show the the extracted ion chromatograms for the peaks.
 }
 \examples{
 \dontrun{
 devtools::install_github("maialba3/LipidMSdata2")
 
 library(LipidMS)
-msobject <- idPOS(LipidMSdata2::msobjectDIApos)
+
+# for msobjects
+#####################
+msobject <- idPOS(msobject)
 msobject <- plotLipids(msobject)
 
 # display the first plot
-msobject$plots[[1]]
-msobject$plots[["peakID"]]
+msobject$annotation$plots[[1]]
+msobject$annotation$plots[["yourpeakIDofinterest"]]
 
-# save all plot to a pdf file
+# save plots to a pdf file
 pdf("plotresults.pdf")
-msobject$plots
+for (p in 1:length(msobject$annotation$plots)){
+  print(msobject$annotation$plots[[p]])
+}
 dev.off()
+
+
+
+# for msobjects
+#####################
+msbatch <- annotatemsbatch(msbatch)
+
+# lipids plots
+for (m in 1:length(msbatch$msobjects)){
+  if (msbatch$msobjects[[m]]$metaData$generalMetadata$acquisitionmode \%in\% c("DIA", "DDA")){
+    msbatch$msobjects[[m]] <- plotLipids(msbatch$msobjects[[m]])
+  }
+}
+
+# save plots to a pdf file
+for (s in 1:length(msbatch$msobjects)){
+  if (msbatch$msobjects[[s]]$metaData$generalMetadata$acquisitionmode \%in\% c("DIA", "DDA")){
+    print(s)
+    if (msbatch$msobjects[[s]]$metaData$generalMetadata$acquisitionmode == "DIA"){
+      height <- 7
+    } else {
+      height <- 9
+    }
+    pdf(file = gsub(".mzXML", "_plots.pdf", msbatch$msobjects[[s]]$metaData$generalMetadata$file), 
+        width = 8, height = height)
+    for ( pl in 1:length(msbatch$msobjects[[s]]$annotation$plots)){
+      print(msbatch$msobjects[[s]]$annotation$plots[[pl]])
+    }
+    dev.off()
+  }
+}
+
 }
 
 }

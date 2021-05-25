@@ -90,6 +90,29 @@ MassCerP <- function(cerP){
   return(c(formula, mass))
 }
 
+# MassAcylCer
+#' Calculate formula and mass of acylceramides
+#'
+#' Calculate formula and mass of acylceramides
+#'
+#' @param glccer character value indicating total number of carbons and double
+#' bounds
+#'
+#' @return vector containing formula and mass
+#'
+#' @keywords internal
+#'
+#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+MassAcylCer <- function(acylcer){
+  cb <- unlist(strsplit(acylcer, "[: ]"))
+  C <- as.numeric(cb[1])
+  H <- as.numeric(cb[1])*2-as.numeric(cb[2])*2-1
+  formula <- paste(c("C", as.character(C), "H", as.character(H), "NO4"),
+                   collapse="")
+  mass <- C*12+H*1.007825+14.00305+4*15.9949
+  return(c(formula, mass))
+}
+
 # MassGlcCer
 #' Calculate formula and mass of glucoceramides
 #'
@@ -912,11 +935,20 @@ MassCL <- function(CL){
 #' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
 dbSphingolipids <- function(chains, chains2, lipid){
   comb <- vector()
-  for (i in chains2){
-    comb <- append(comb, sapply(chains, paste, i, collapse=" "))
+  if (lipid == "AcylCer"){
+    comb1 <- unique(utils::combn(chains, 2, simplify=F))
+    chains <- unique(unlist(lapply(comb1, paste, collapse=" ")))
+    for (i in chains2){
+      comb <- append(comb, sapply(chains, paste, i, collapse=" "))
+    }
+    total  <- unique(unlist(lapply(comb, sumChains, n = 3)))
+  } else {
+    for (i in chains2){
+      comb <- append(comb, sapply(chains, paste, i, collapse=" "))
+    }
+    comb <- unique(comb)
+    total  <- unique(unlist(lapply(comb, sumChains, n = 2)))
   }
-  comb <- unique(comb)
-  total  <- unique(unlist(lapply(comb, sumChains, n = 2)))
   if (lipid == "Cer"){
     fm <- lapply(total, MassCer)
   } else if (lipid == "GlcCer"){
@@ -925,6 +957,8 @@ dbSphingolipids <- function(chains, chains2, lipid){
     fm <- lapply(total, MassCerP)
   } else if (lipid == "SM"){
     fm <- lapply(total, MassSM)
+  } else if (lipid == "AcylCer"){
+    fm <- lapply(total, MassAcylCer)
   }
   db <- data.frame(formula=unlist(lapply(fm, "[[", 1)), total=total,
                    Mass=as.numeric(unlist(lapply(fm, "[[", 2))), stringsAsFactors = F)
@@ -975,6 +1009,16 @@ dbOneChain <- function(chains, lipid){
     fm <- lapply(fas, MassSph)
   } else if(lipid == "SphP"){
     fm <- lapply(fas, MassSphP)
+  } else if(lipid == "LPCo"){
+    fm <- lapply(fas, MassLysoPCo)
+  } else if(lipid == "LPCp"){
+    fm <- lapply(fas, MassLysoPCp)
+  } else if(lipid == "LPEo"){
+    fm <- lapply(fas, MassLysoPEo)
+  } else if(lipid == "LPEp"){
+    fm <- lapply(fas, MassLysoPEp)
+  } else if(lipid == "LPAo"){
+    fm <- lapply(fas, MassLysoPAo)
   }
   db <- data.frame(formula=unlist(lapply(fm, "[[", 1)), total=fas,
                    Mass=as.numeric(as.vector(unlist(lapply(fm, "[[", 2)))),
@@ -1022,6 +1066,14 @@ dbTwoChains <- function(chains, lipid){
     fm <- lapply(total, MassPS)
   } else if (lipid == "PA"){
     fm <- lapply(total, MassPA)
+  } else if (lipid == "PCo"){
+    fm <- lapply(total, MassPCo)
+  } else if (lipid == "PCp"){
+    fm <- lapply(total, MassPCp)
+  } else if (lipid == "PEo"){
+    fm <- lapply(total, MassPEo)
+  } else if (lipid == "PEp"){
+    fm <- lapply(total, MassPEp)
   }
   db <- data.frame(formula=unlist(lapply(fm, "[[", 1)), total=total,
                    Mass=as.numeric(as.vector(unlist(lapply(fm, "[[", 2)))),
@@ -1089,65 +1141,92 @@ dbFourChains <- function(chains, lipid){
 #' Get formula and neutral mass for annotated compounds.
 #'
 #' @param df data frame with the input results
+#' @param dbs list of data bases required for annotation. By default, dbs
+#' contains the required data frames based on the default fragmentation rules.
+#' If these rules are modified, dbs may need to be supplied. See \link{createLipidDB}
+#' and \link{assignDB}.
 #'
 #' @return Data frame
 #'
 #' @keywords internal
 #'
 #' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
-getFormula <- function(df){
+getFormula <- function(df, dbs){
   lipidClass <- df["Class"]
   cdb <- df["CDB"]
+  if (missing(dbs)){
+    dbs <- assignDB()
+  }
   if (lipidClass == "BA"){
-    db <- LipidMS::badb
+    db <- dbs$badb
   } else if (lipidClass == "Carnitine"){
-    db <- LipidMS::carnitinesdb
+    db <- dbs$carnitinesdb
   } else if (lipidClass == "Cer"){
-    db <- LipidMS::cerdb
+    db <- dbs$cerdb
   } else if (lipidClass == "CL"){
-    db <- LipidMS::cldb
+    db <- dbs$cldb
   } else if (lipidClass == "DG"){
-    db <- LipidMS::dgdb
+    db <- dbs$dgdb
   } else if (lipidClass == "CE"){
-    db <- LipidMS::CEdb
+    db <- dbs$CEdb
   } else if (lipidClass == "FA"){
-    db <- LipidMS::fadb
+    db <- dbs$fadb
   } else if (lipidClass == "FAHFA"){
-    db <- LipidMS::fahfadb
+    db <- dbs$fahfadb
   } else if (lipidClass == "HFA"){
-    db <- LipidMS::hfadb
+    db <- dbs$hfadb
   } else if (lipidClass == "LPC"){
-    db <- LipidMS::lysopcdb
+    db <- dbs$lysopcdb
   } else if (lipidClass == "LPE"){
-    db <- LipidMS::lysopedb
+    db <- dbs$lysopedb
   } else if (lipidClass == "LPG"){
-    db <- LipidMS::lysopgdb
+    db <- dbs$lysopgdb
   } else if (lipidClass == "LPI"){
-    db <- LipidMS::lysopidb
+    db <- dbs$lysopidb
   } else if (lipidClass == "LPS"){
-    db <- LipidMS::lysopsdb
+    db <- dbs$lysopsdb
   } else if (lipidClass == "MG"){
-    db <- LipidMS::mgdb
+    db <- dbs$mgdb
   } else if (lipidClass == "PC"){
-    db <- LipidMS::pcdb
+    db <- dbs$pcdb
   } else if (lipidClass == "PE"){
-    db <- LipidMS::pedb
+    db <- dbs$pedb
   } else if (lipidClass == "PG"){
-    db <- LipidMS::pgdb
+    db <- dbs$pgdb
   } else if (lipidClass == "PI"){
-    db <- LipidMS::pidb
+    db <- dbs$pidb
   } else if (lipidClass == "PS"){
-    db <- LipidMS::psdb
+    db <- dbs$psdb
   } else if (lipidClass == "SM"){
-    db <- LipidMS::smdb
+    db <- dbs$smdb
   } else if (lipidClass == "Sph"){
-    db <- LipidMS::sphdb
+    db <- dbs$sphdb
   } else if (lipidClass == "SphP"){
-    db <- LipidMS::sphPdb
+    db <- dbs$sphPdb
   } else if (lipidClass == "TG"){
-    db <- LipidMS::tgdb
+    db <- dbs$tgdb
   } else if (lipidClass == "TG"){
-    db <- LipidMS::tgdb
+    db <- dbs$tgdb
+  } else if (lipidClass == "PCo"){
+    db <- dbs$pcodb
+  } else if (lipidClass == "PCp"){
+    db <- dbs$pcpdb
+  } else if (lipidClass == "PEo"){
+    db <- dbs$peodb
+  } else if (lipidClass == "PEp"){
+    db <- dbs$pepdb
+  } else if (lipidClass == "LPCo"){
+    db <- dbs$lysopcodb
+  } else if (lipidClass == "LPCp"){
+    db <- dbs$lysopcpdb
+  } else if (lipidClass == "LPEo"){
+    db <- dbs$lysopeodb
+  } else if (lipidClass == "LPEp"){
+    db <- dbs$lysopepdb
+  } else if (lipidClass == "CerP"){
+    db <- dbs$cerPdb
+  } else if (lipidClass == "AcylCer"){
+    db <- dbs$acylcerdb
   }
   index <- which(db$total == as.character(cdb))
   if(length(index) > 0){

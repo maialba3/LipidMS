@@ -4,21 +4,47 @@
 \alias{annotateIsotopes}
 \title{Annotate isotopes}
 \usage{
-annotateIsotopes(peaklist, rawScans, dmzIso, drtIso)
+annotateIsotopes(
+  peaklist,
+  rawScans,
+  dmz,
+  drt,
+  massdiff,
+  charge,
+  isotopeAb,
+  m0mass,
+  corThr,
+  checkInt,
+  checkCor
+)
 }
 \arguments{
-\item{peaklist}{extracted peaks. Data.frame with 4 columns (m.z, RT, int
+\item{peaklist}{extracted peaks. Data.frame with 4 columns (mz, RT, int
 and peakID).}
 
-\item{rawScans}{raw scan data. Data.frame with 5 columns (m.z, RT, int,
+\item{rawScans}{raw scan data. Data.frame with 5 columns (mz, RT, int,
 peakID and Scan).}
 
-\item{dmzIso}{mass tolerance in ppm.}
+\item{dmz}{mass tolerance in ppm.}
 
-\item{drtIso}{rt windows with the same units used in peaklist.}
+\item{drt}{RT windows with the same units used in peaklist.}
+
+\item{massdiff}{mass difference.}
+
+\item{charge}{charge.}
+
+\item{isotopeAb}{isotope natural abundance.}
+
+\item{m0mass}{mass of the most abundant naturally occurring stable isotope.}
+
+\item{corThr}{peak correlation threshold.}
+
+\item{checkInt}{logical. If TRUE, relative intensity is checked.}
+
+\item{checkCor}{logical. If TRUE, peaks correlation is checked.}
 }
 \value{
-peaklist with 6 columns (m.z, RT, int, peakID, isotope and group).
+peaklist with 6 columns (mz, RT, int, peakID, isotope and isoGroup).
 }
 \description{
 Annotate isotopes based on mass differences, retention time and peak

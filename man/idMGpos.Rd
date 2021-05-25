@@ -55,14 +55,13 @@ and \link{assignDB}.}
 }
 \value{
 annotated msobject (list with several elements). The results element
-is a data frame that shows: ID, class of lipid, CDB (total number of carbons
+is a data frame that shows: ID, lipid class, CDB (total number of carbons
 and double bounds), FA composition (specific chains composition if it has
-been confirmed), m.z, RT (in seconds), I (intensity), Adducts, ppm (m.z error),
+been confirmed), mz, RT (in seconds), I (intensity), Adducts, ppm (mz error),
 confidenceLevel (Subclass, FA level, where chains are known but not their
-positions, or FA position level), peakID, and PFCS (parent-fragment coelution
-score mean of all fragments used for the identification); and the
-annotatedPeaklist element shows the original MS1 peaklist with the annotations
-on it.
+positions, or FA position level), peakID, and Score (parent-fragment coelution 
+score mean in DIA data or relative sum intensity in DDA of all fragments used 
+for the identification).
 }
 \description{
 MG identification based on fragmentation patterns for LC-MS/MS DIA and DDA data
@@ -73,26 +72,23 @@ acquired in positive mode.
 identification of candidate MG as M+H-H2O, M+NH4 and M+Na. 2) Search of
 MG class fragments if any is assigned.
 
-Results data frame shows: ID, class of lipid, CDB (total number
+Results data frame shows: ID, lipid class, CDB (total number
 of carbons and double bounds), FA composition (specific chains composition if
 it has been confirmed), mz, RT (in seconds), I (intensity, which comes
-directly from de input), Adducts, ppm (m.z error), confidenceLevel (in this
+directly from de input), Adducts, ppm (mz error), confidenceLevel (in this
 case, just MS-only or Subclass level (if any class fragment is defined) are
-possible) and PFCS (parent-fragment coelution score mean of all fragments used
-for the identification).
+possible) and Score (parent-fragment coelution score mean in DIA data or relative 
+sum intensity in DDA of all fragments used for the identification).
 }
 \note{
-This function has been writen based on fragmentation patterns
+This function has been written based on fragmentation patterns
 observed for three different platforms (QTOF 6550 from Agilent, Sinapt G2-Si
 from Waters and Q-exactive from Thermo), but it may need to be customized for
 other platforms or acquisition settings.
 }
 \examples{
 \dontrun{
-devtools::install_github("maialba3/LipidMSdata2")
-
-library(LipidMS)
-msobject <- idMGpos(LipidMSdata2::msobjectDIApos)
+msobject <- idMGpos(msobject)
 }
 
 }

@@ -76,8 +76,8 @@ library(LipidMS)
 dbs <- assignDB()
 
 MS1 <- LipidMSdata2::msobjectDIAneg$peaklist$MS1
-MS1 <- MS1[MS1$isotope \%in\% c("[M+0]"), !colnames(MS1) \%in\% c("isotope", "group")]
-MS2 <- LipidMSdata2::msobjectDIAneg$peaklist$MS2[,c("m.z", "RT", "int", "peakID")]
+MS1 <- MS1[MS1$isotope \%in\% c("[M+0]"), !colnames(MS1) \%in\% c("isotope", "isoGroup")]
+MS2 <- LipidMSdata2::msobjectDIAneg$peaklist$MS2[,c("mz", "RT", "int", "peakID")]
 rawData <- rbind(LipidMSdata2::msobjectDIAneg$MS1, LipidMSdata2::msobjectDIAneg$MS2)
 
 candidates <- findCandidates(MS1 = MS1, db = dbs$pgdb, ppm = 10,

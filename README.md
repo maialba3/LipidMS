@@ -1,2 +1,2 @@
 # LipidMS
-LipidMS R package (v.2.1)
+LipidMS version 3.0.0: batch processing

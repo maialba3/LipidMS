@@ -11,7 +11,7 @@ partitioning(msobject, dmzagglom, drtagglom, minpeak, mslevel, cE)
 
 \item{dmzagglom}{mz tolerance for partitions}
 
-\item{drtagglom}{rt window for partitions}
+\item{drtagglom}{RT window for partitions}
 
 \item{minpeak}{minimum number of measures to define a peak}
 
@@ -24,6 +24,10 @@ msobject
 }
 \description{
 agglomarative partitioning for LC-HRMS data based on enviPick algorithm
+}
+\references{
+Peak-picking algorithm has been imported from enviPick R-package:
+https://cran.r-project.org/web/packages/enviPick/index.html
 }
 \author{
 M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
