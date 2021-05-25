@@ -10,8 +10,9 @@ idNEG(
   ppm_products = 10,
   rttol = 5,
   coelCutoff = 0.8,
-  lipidClasses = c("FA", "FAHFA", "LPC", "LPE", "LPG", "LPI", "LPS", "PC", "PE", "PG",
-    "PI", "PS", "Sph", "SphP", "Cer", "CL", "BA"),
+  lipidClasses = c("FA", "FAHFA", "LPC", "LPE", "LPG", "LPI", "LPS", "PC", "PCo",
+    "PCp", "PE", "PEo", "PEp", "PG", "PI", "PS", "Sph", "SphP", "Cer", "CerP", "AcylCer",
+    "CL", "BA"),
   dbs
 )
 }
@@ -37,14 +38,14 @@ and \link{assignDB}.}
 }
 \value{
 annotated msobject (list with several elements). The results element
-is a data frame that shows: ID, class of lipid, CDB (total number of carbons
+is a data frame that shows: ID, lipid class, CDB (total number of carbons
 and double bounds), FA composition (specific chains composition if it has
-been confirmed), m.z, RT (in seconds), I (intensity), Adducts, ppm (m.z error),
+been confirmed), mz, RT (in seconds), I (intensity), Adducts, ppm (mz error),
 confidenceLevel (Subclass, FA level, where chains are known but not their
-positions, or FA position level), peakID, and PFCS (parent-fragment coelution
-score mean of all fragments used for the identification); and the
-annotatedPeaklist element shows the original MS1 peaklist with the annotations
-on it.
+positions, or FA position level), peakID, and Score (parent-fragment coelution 
+score mean in DIA data or relative sum intensity in DDA of all fragments used 
+for the identification); and the annotatedPeaklist element shows the original 
+MS1 peaklist with the annotations on it.
 }
 \description{
 Lipids annotation based on fragmentation patterns for LC-MS/MS DIA or DDA data
@@ -53,10 +54,7 @@ ESI- annotations.
 }
 \examples{
 \dontrun{
-devtools::install_github("maialba3/LipidMSdata2")
-
-library(LipidMS)
-msobject <- idNEG(LipidMSdata2::msobjectDIAneg)
+msobject <- idNEG(msobject)
 }
 
 }

@@ -19,9 +19,10 @@ If these rules are modified, dbs may need to be supplied. See \link{createLipidD
 and \link{assignDB}.}
 }
 \value{
-Data frame with 6 columns: m.z, RT, int, LipidMS_id, adduct and
-confidence level for the annotation. When multiple IDs are proposed for the
-same feature, they are sorted based on the annotation level.
+msobject with an annotatedPeaklist, which is a data frame with 6 
+columns: mz, RT, int, LipidMSid, adduct and confidence level for the 
+annotation. When multiple IDs are proposed for the same feature, they are 
+sorted based on the annotation level and score.
 }
 \description{
 Cross the original MS1 peaklist with the annotation results.
@@ -32,7 +33,7 @@ devtools::install_github("maialba3/LipidMSdata2")
 
 library(LipidMS)
 msobject <- idPCneg(LipidMSdata2::msobjectDIAneg)
-crossTables(msobject, ppm = 10, rttol = 10)}
+msobject <- crossTables(msobject, ppm = 10, rttol = 10)}
 
 }
 \author{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/internal.R
 \name{filtermsms}
 \alias{filtermsms}
-\title{Presence or absence of an mz value withing a vector of mz values}
+\title{Presence or absence of an mz value within a vector of mz values}
 \usage{
 filtermsms(fragments, frag, ppm)
 }

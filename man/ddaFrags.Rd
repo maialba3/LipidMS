@@ -20,7 +20,7 @@ List of data frames with the fragments for each candidate.
 }
 \description{
 This function searches for the closest precursor selected for MS2 in DDA
-that matches m.z tolerance and RT window of a list of candidates and extracts
+that matches mz tolerance and RT window of a list of candidates and extracts
 their fragments.
 }
 \details{
@@ -28,6 +28,9 @@ MS2 scans for a given precursor are searched within a rt window from
 minrt-rttol/2 to maxrt+rttol/2. If the same precursor was selected several
 times along the peak, the closest scan to the rt at the peak maximum is
 selected for annotation.
+
+Coelution score for DDA fragments represents their relative intensity within 
+the MS2 scan.
 }
 \examples{
 \dontrun{
@@ -37,12 +40,12 @@ library(LipidMS)
 dbs <- assignDB()
 
 MS1 <- LipidMSdata2::msobjectDDAneg$peaklist$MS1
-MS1 <- MS1[MS1$isotope \%in\% c("[M+0]"), !colnames(MS1) \%in\% c("isotope", "group")]
-MS2 <- LipidMSdata2::msobjectDDAneg$peaklist$MS2[,c("m.z", "RT", "int", "peakID")]
+MS1 <- MS1[MS1$isotope \%in\% c("[M+0]"), !colnames(MS1) \%in\% c("isotope", "isoGroup")]
+MS2 <- LipidMSdata2::msobjectDDAneg$peaklist$MS2[,c("mz", "RT", "int", "peakID")]
 rawData <- rbind(LipidMSdata2::msobjectDDAneg$MS1, LipidMSdata2::msobjectDDAneg$MS2)
 precursors <- LipidMSdata2::msobjectDDAneg$metaData$scansMetadata[
 LipidMSdata2::msobjectDDAneg$metaData$scansMetadata$collisionEnergy > 0 &
-msobjectDDAneg$metaData$scansMetadata$msLevel == 2, c("retentionTime", "precursor", "Scan")]
+msobjectDDAneg$metaData$scansMetadata$msLevel == 2, c("RT", "precursor", "Scan")]
 candidates <- findCandidates(MS1 = MS1, db = dbs$cerdb, ppm = 10,
 rt = c(0, 2000), adducts = c("M-H"),
 rttol = 10, dbs = dbs, rawData = rawData_neg$rawScans, coelCutoff = 0.8)

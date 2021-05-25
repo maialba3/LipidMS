@@ -15,6 +15,10 @@
 #' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
 sumChains <- function(chains, n){
   cb <- unlist(strsplit(chains, "[: ]"))
+  if (n == 1){
+    sum_c <- as.numeric(cb[1])
+    sum_b <- as.numeric(cb[2])
+  }
   if (n == 2){
     sum_c <- as.numeric(cb[1])+as.numeric(cb[3])
     sum_b <- as.numeric(cb[2])+as.numeric(cb[4])
@@ -90,7 +94,7 @@ cbs <- function(mz, ppm, db, charge=0){
 }
 
 # filtermsms
-#' Presence or absence of an mz value withing a vector of mz values
+#' Presence or absence of an mz value within a vector of mz values
 #'
 #' This function indicates the presence or absence of a fragment within a set
 #' of mz values with certain tolerance. It is used by identification functions
@@ -106,7 +110,7 @@ cbs <- function(mz, ppm, db, charge=0){
 #'
 #' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
 filtermsms <- function(fragments, frag, ppm){
-  sel <- fragments[which(abs((fragments$m.z - frag)/frag)*1000000 < ppm),]
+  sel <- fragments[which(abs((fragments$mz - frag)/frag)*1000000 < ppm),]
   sel <- sel[which.max(sel$coelScore),]
   return(sel)
 }
@@ -131,11 +135,11 @@ filtermsms <- function(fragments, frag, ppm){
 frags <- function(df, ppm, db,  mdiff, charge, n){
   if (nrow(df) > 0){
     cb <- data.frame(0, 0, 0, 0, 0, 0)
-    colnames(cb) <- c("cb", "m.z", "RT", "int", "peakID", "coelScore")
+    colnames(cb) <- c("cb", "mz", "RT", "int", "peakID", "coelScore")
     found <- FALSE
     if (nrow(df) > 0){
       for (x in 1:nrow(df)){
-        y <- abs((abs((n*db$Mass+mdiff)/charge)-df[x,"m.z"])*1000000/
+        y <- abs((abs((n*db$Mass+mdiff)/charge)-df[x,"mz"])*1000000/
                    abs((n*db$Mass+mdiff)/charge)) < ppm
         if (sum(y) > 0){
           cb <- rbind(cb, data.frame(c(cb = db[which(y == TRUE), "total"],
@@ -270,7 +274,7 @@ select <- function (chains, parent, n){
 #' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
 findPrecursor <- function(MS1, db, ppm, massdif, rt, n=1, charge=1){
   precursors <- unlist(lapply(abs(n*db$Mass+massdif)/abs(charge), mzMatch,
-                              MS1$m.z, ppm))
+                              MS1$mz, ppm))
   if (length(precursors) > 0){
     matches <- precursors[seq(1, length(precursors), 2)]
     ppms <- precursors[seq(2, length(precursors), 2)]
@@ -282,11 +286,11 @@ findPrecursor <- function(MS1, db, ppm, massdif, rt, n=1, charge=1){
     prec <- prec[prec$RT >= rt[1] & prec$RT <= rt[2],]
     if (nrow(prec) > 0){
       if (n == 1){
-        cb <- sapply(prec$m.z*abs(charge), cbs, ppm, db, massdif)
+        cb <- sapply(prec$mz*abs(charge), cbs, ppm, db, massdif)
       } else if (n == 2){
         cb <- vector()
         for (i in 1:nrow(prec)){
-          cb <- append(cb, cbs((prec$m.z[i]*abs(charge)-massdif)/2, ppm, db))
+          cb <- append(cb, cbs((prec$mz[i]*abs(charge)-massdif)/2, ppm, db))
         }
       }
       # joining info
@@ -394,7 +398,7 @@ filtrateAdducts <- function(df){
   if (nrow(df) > 0){
     toremove <- c()
     for (c in 1:(nrow(df)-1)){
-      same <- which(df[,"m.z"] == df[c, "m.z"] &
+      same <- which(df[,"mz"] == df[c, "mz"] &
                       df[,"RT"] == df[c, "RT"])
       same <- same[same != c]
       if (length(same) > 0){
@@ -422,7 +426,7 @@ filtrateAdducts <- function(df){
 #' @param peak1 character vector specifying the peakID of the first peak.
 #' @param peak2 character vector specifying the peakID of the second peak.
 #' @param rawData data frame with raw data for each scan. it need to have at
-#' least 5 columns: m.z, RT, int, Scan (ordinal number for a given MS function)
+#' least 5 columns: mz, RT, int, Scan (ordinal number for a given MS function)
 #' and peakID (peakID to which it has been assigned).
 #'
 #' #' @keywords internal
@@ -679,8 +683,8 @@ checkIntRules <- function(intrules, rates, intrequired, nchains, combinations,
 #'
 #' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
 findMS2precursor <- function(mz, minrt, maxrt, precursors, ppm){
-  fprec <- precursors[which(precursors$retentionTime >= minrt &
-                              precursors$retentionTime <= maxrt),]
+  fprec <- precursors[which(precursors$RT >= minrt &
+                              precursors$RT <= maxrt),]
   if (nrow(fprec) > 0){
     matches <- mzMatch(mz, fprec$precursor, ppm)
     if (length(matches) > 0){
@@ -694,3 +698,154 @@ findMS2precursor <- function(mz, minrt, maxrt, precursors, ppm){
   return(scans)
 }
 
+# chains
+#' extract chains composition from a lipid name
+#'
+#' extract chains composition from a lipid name
+#'
+#' @param id lipid name
+#' 
+#' @returns vector with lipid class, FA position known (TRUE) or unknown (FALSE) 
+#' and FA chains.
+#'
+#' @keywords internal
+#'
+#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+chains <- function(id){
+  if(grepl("[\\_]", id)){
+    position <- FALSE
+  } else {
+    position <- TRUE
+  }
+  ch <- unlist(strsplit(id, "[\\(\\)\\/\\_-]"))
+  ch <- gsub("d", "", ch)
+  return(c(class = ch[1], position = position, chains = ch[2:length(ch)]))
+}
+
+# joinAnnotationResults
+#' Summarize annotation results from an msbatch into the features table
+#'
+#' Summarize annotation results from an msbatch into the features table
+#'
+#' @param msbatch msbatch
+#' @param simplifyAnnotation logical. If TRUE, only the most frequent id will be 
+#' kept (recommended when only pool samples have been acquired in DIA or DDA). If 
+#' FALSE, all annotations will be shown.
+#'
+#' @return msbatch
+#'
+#' @keywords internal
+#' 
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
+joinAnnotationResults <- function(msbatch, simplifyAnnotations = TRUE){
+  
+  annotated <- which(msbatch$metaData$acquisitionmode %in% c("DIA", "DDA"))
+  confLevels <- LipidMS::confLevels
+  
+  # Extract features from msbatch
+  features <- msbatch$features[,!colnames(msbatch$features) %in% 
+                                 make.names(msbatch$metaData$sample)]
+  fmatrix <- msbatch$features[,colnames(msbatch$features) %in% 
+                                make.names(msbatch$metaData$sample)]
+  peaks <- msbatch$grouping$peaks
+  
+  # Init vectors to save annotations
+  lipids <- rep("", nrow(features))
+  adducts <- rep("", nrow(features))
+  levels <- rep("", nrow(features))
+  scores <- rep("", nrow(features))
+  nsamples <- rep(0, nrow(features))
+  
+  # Search annotations
+  ##############################################################################
+  # for each sample
+  for (s in annotated){
+    # for each feature
+    for(g in features$group){
+      peakid <- peaks$peakID[peaks$sample == s & peaks$groupID == g]
+      id <- msbatch$msobjects[[s]]$annotation$annotatedPeaklist[
+        msbatch$msobjects[[s]]$annotation$annotatedPeaklist$peakID == peakid,, drop = FALSE]
+      
+      lipids[g] <- paste(lipids[g], id$LipidMSid, sep = ";")
+      adducts[g] <- paste(adducts[g], id$Adduct, sep = ";")
+      levels[g] <- paste(levels[g], id$confidenceLevel, sep = ";")
+      scores[g] <- paste(scores[g], id$Score, sep = ";")
+      
+      if (nrow(id) > 0){
+        if (id$LipidMSid != ""){
+          nsamples[g] <- nsamples[g]
+        }
+      }
+    }
+  }
+  
+  # Clean annotations
+  lipids <- gsub("^;", "", lipids)
+  adducts <- gsub("^;", "", adducts)
+  levels <- gsub("^;", "", levels)
+  scores <- gsub("^;", "", scores)
+  
+  n <- length(annotated)-1
+  remove <- which(unlist(sapply(lipids, function(x) 
+    grepl(paste("^", paste(rep(";", n), sep="", collapse=""), 
+                "$", sep="", collapse=""), x))))
+  
+  lipids[remove] <- ""
+  adducts[remove] <- ""
+  levels[remove] <- ""
+  scores[remove] <- ""
+  
+  # If simplifyAnnotations is TRUE, keep only the most frequent id, 
+  # else summarize results
+  for (m in 1:length(lipids)){
+    if (lipids[m] != ""){
+      ids <- unlist(strsplit(lipids[m], "[;\\|]"))
+      ids <- ids[ids != ""]
+      ads <- unlist(strsplit(adducts[m], "[;\\|]"))
+      ads <- ads[ads != ""]
+      levs <- unlist(strsplit(levels[m], "[;\\|]"))
+      levs <- levs[levs != ""]
+      scs <- unlist(strsplit(scores[m], "[;\\|]"))
+      scs <- scs[scs != ""]
+      
+      tableids <- sort(table(ids), decreasing = TRUE)
+      namesids <- names(tableids)
+      ord <- sapply(namesids, function(x) which(ids == x), simplify = FALSE)
+      
+      if (length(ord) > 0){
+        if (length(ord[[1]]) > 0 & simplifyAnnotations){
+          lipids[m] <- unique(ids[ord[[1]]])[1]
+          adducts[m] <- unique(ads[ord[[1]]])[1]
+          maxlevels <- confLevels$level[confLevels$order == 
+                                          max(confLevels$order[match(levs[ord[[1]]], 
+                                                                     confLevels$level)])]
+          levels[m] <- unique(maxlevels[maxlevels %in% levs[ord[[1]]]])
+          scores[m] <- round(max(as.numeric(scs[ord[[1]]])), 3)
+          nsamples[m] <- length(ord[[1]])
+        } else if (!simplifyAnnotations & length(ids) > 0) {
+          lipids[m] <- paste(unlist(sapply(ord, function(x) unique(ids[x]))), 
+                             collapse=";")
+          adducts[m] <- paste(unlist(sapply(ord, function(x) unique(ads[x]))), 
+                              collapse=";")
+          levels[m] <- paste(unlist(sapply(ord, function(x){
+            maxlevels <- confLevels$level[confLevels$order == 
+                                            max(confLevels$order[match(levs[x], 
+                                                                       confLevels$level)])]
+            unique(maxlevels[maxlevels %in% levs[x]])
+            })), collapse=";")
+          scores[m] <- paste(unlist(sapply(ord, function(x) round(max(as.numeric(scs[x])), 3))), 
+                             collapse=";")
+          nsamples[m] <- paste(unlist(sapply(ord, function(x) length(x))), 
+                               collapse=";")
+        }
+      }
+    }
+  }
+  
+  # Join info
+  msbatch$features <- data.frame(features, LipidMSid = lipids, Adduct = adducts, 
+                                 confidenceLevel = levels, Score = scores, 
+                                 nsamples = nsamples, fmatrix)
+  
+  return(msbatch)
+}

@@ -2,18 +2,18 @@
 % Please edit documentation in R/internalProcessing.R
 \name{readMSfile}
 \alias{readMSfile}
-\title{Read .mzXML files and initiate msobject}
+\title{Read mzXML file and initiate msobject}
 \usage{
 readMSfile(file)
 }
 \arguments{
-\item{file}{file path for a .mzXML file}
+\item{file}{file path for a mzXML file}
 }
 \value{
 msobject
 }
 \description{
-Read .mzXML files and initiate msobject
+Read mzXML file and initiate msobject
 }
 \author{
 M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>

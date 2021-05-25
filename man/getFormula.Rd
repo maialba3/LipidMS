@@ -4,10 +4,15 @@
 \alias{getFormula}
 \title{Get formula and neutral mass for annotated compounds}
 \usage{
-getFormula(df)
+getFormula(df, dbs)
 }
 \arguments{
 \item{df}{data frame with the input results}
+
+\item{dbs}{list of data bases required for annotation. By default, dbs
+contains the required data frames based on the default fragmentation rules.
+If these rules are modified, dbs may need to be supplied. See \link{createLipidDB}
+and \link{assignDB}.}
 }
 \value{
 Data frame

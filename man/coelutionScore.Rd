@@ -12,7 +12,7 @@ coelutionScore(peak1, peak2, rawData)
 \item{peak2}{character vector specifying the peakID of the second peak.}
 
 \item{rawData}{data frame with raw data for each scan. it need to have at
-least 5 columns: m.z, RT, int, Scan (ordinal number for a given MS function)
+least 5 columns: mz, RT, int, Scan (ordinal number for a given MS function)
 and peakID (peakID to which it has been assigned).
 
 #' @keywords internal}

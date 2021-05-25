@@ -59,14 +59,13 @@ and \link{assignDB}.}
 }
 \value{
 annotated msobject (list with several elements). The results element
-is a data frame that shows: ID, class of lipid, CDB (total number of carbons
+is a data frame that shows: ID, lipid class, CDB (total number of carbons
 and double bounds), FA composition (specific chains composition if it has
-been confirmed), m.z, RT (in seconds), I (intensity), Adducts, ppm (m.z error),
+been confirmed), mz, RT (in seconds), I (intensity), Adducts, ppm (mz error),
 confidenceLevel (Subclass, FA level, where chains are known but not their
-positions, or FA position level), peakID, and PFCS (parent-fragment coelution
-score mean of all fragments used for the identification); and the
-annotatedPeaklist element shows the original MS1 peaklist with the annotations
-on it.
+positions, or FA position level), peakID, and Score (parent-fragment coelution 
+score mean in DIA data or relative sum intensity in DDA of all fragments used 
+for the identification).
 }
 \description{
 LPC identification based on fragmentation patterns for LC-MS/MS DIA or DDA
@@ -80,13 +79,13 @@ will be ignored. 2) Search of LPC class fragments: 168.0426, 224.0688, lysoPA
 as M-H or lysoPC as M-CH3 coeluting with the precursor ion. 3) Search of
 specific fragments that confirm chain composition (FA as M-H).
 
-Results data frame shows: ID, class of lipid, CDB (total number
+Results data frame shows: ID, lipid class, CDB (total number
 of carbons and double bounds), FA composition (specific chains composition if
 it has been confirmed), mz, RT (in seconds), I (intensity, which comes
-directly from de input), Adducts, ppm (m.z error), confidenceLevel (in this
+directly from de input), Adducts, ppm (mz error), confidenceLevel (in this
 case, as LPC only have one chain, only Subclass and FA level are possible)
-and PFCS (parent-fragment coelution score mean of all fragments used
-for the identification).
+and Score (parent-fragment coelution score mean in DIA data or relative 
+sum intensity in DDA of all fragments used for the identification).
 }
 \note{
 This function has been writen based on fragmentation patterns
@@ -96,10 +95,7 @@ other platforms or acquisition settings.
 }
 \examples{
 \dontrun{
-devtools::install_github("maialba3/LipidMSdata2")
-
-library(LipidMS)
-msobject <- idLPCneg(LipidMSdata2::msobjectDIAneg)
+msobject <- idLPCneg(msobject)
 }
 
 }

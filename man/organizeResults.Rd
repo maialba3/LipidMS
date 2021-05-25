@@ -34,9 +34,16 @@ class.}
 \item{nchains}{number of chains of the targeted lipid class.}
 
 \item{class}{character value. Lipid class (i.e. PC, PE, DG, TG, etc.).}
-\item{acquisitionmode}{character value. DIA or DDA.}}
+
+\item{acquisitionmode}{acquisition mode (DIA or DDA).}
+}
 \description{
 Prepare a readable output for LipidMS identification functions.
+}
+\details{
+Coelution score for DIA data is calculated as the mean coelution 
+score of all fragments used for annotation, while for DDA data, it is 
+calculated as the sum relative intensity of those fragments in theie MS2 scan.
 }
 \examples{
 \dontrun{
@@ -46,8 +53,8 @@ library(LipidMS)
 dbs <- assignDB()
 
 MS1 <- LipidMSdata2::msobjectDIAneg$peaklist$MS1
-MS1 <- MS1[MS1$isotope \%in\% c("[M+0]"), !colnames(MS1) \%in\% c("isotope", "group")]
-MS2 <- LipidMSdata2::msobjectDIAneg$peaklist$MS2[,c("m.z", "RT", "int", "peakID")]
+MS1 <- MS1[MS1$isotope \%in\% c("[M+0]"), !colnames(MS1) \%in\% c("isotope", "isoGroup")]
+MS2 <- LipidMSdata2::msobjectDIAneg$peaklist$MS2[,c("mz", "RT", "int", "peakID")]
 rawData <- rbind(LipidMSdata2::msobjectDIAneg$MS1, LipidMSdata2::msobjectDIAneg$MS2)
 
 candidates <- findCandidates(MS1 = MS1, db = dbs$pgdb, ppm = 10,
@@ -69,9 +76,8 @@ rates = c("2/1"), intrequired = c(TRUE), nchains=2, chainsComb)
 
 res <- organizeResults(candidates, clfrags = c(227.0326, 209.022, 74.0359),
 classConf, chainsComb, intrules = c("lysopg_sn1/lysopg_sn1"), intConf,
-nchains = 2, class="PG", acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
+nchains = 2, class="PG", acquisitionmode = "DIA")
 }
-
 
 }
 \author{

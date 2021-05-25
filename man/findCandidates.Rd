@@ -17,7 +17,7 @@ findCandidates(
 )
 }
 \arguments{
-\item{MS1}{peaklist of the MS function. Data frame with 3 columns: m.z, RT (in seconds) and int (intensity).}
+\item{MS1}{peaklist of the MS function. Data frame with 3 columns: mz, RT (in seconds) and int (intensity).}
 
 \item{db}{database (i.e. pcdb, dgdb, etc.). Data frame with at least 2 columns: Mass (exact mass) and total (total number of carbons and double bound of the FA chains, i.e. "34:1").}
 
@@ -43,7 +43,7 @@ here.}
 Only applied if rawData info is supplied.}
 }
 \value{
-Data frame with the found candidates. It contains 6 columns: m.z,
+Data frame with the found candidates. It contains 6 columns: mz,
 RT, int (from the peaklist data.frame), ppms, cb (total number of carbons and
 double bounds of the FA chains) and adducts.
 }
@@ -67,8 +67,8 @@ library(LipidMS)
 dbs <- assignDB()
 
 MS1 <- LipidMSdata2::msobjectDIAneg$peaklist$MS1
-MS1 <- MS1[MS1$isotope \%in\% c("[M+0]"), !colnames(MS1) \%in\% c("isotope", "group")]
-MS2 <- LipidMSdata2::msobjectDIAneg$peaklist$MS2[,c("m.z", "RT", "int", "peakID")]
+MS1 <- MS1[MS1$isotope \%in\% c("[M+0]"), !colnames(MS1) \%in\% c("isotope", "isoGroup")]
+MS2 <- LipidMSdata2::msobjectDIAneg$peaklist$MS2[,c("mz", "RT", "int", "peakID")]
 rawData <- rbind(LipidMSdata2::msobjectDIAneg$MS1, LipidMSdata2::msobjectDIAneg$MS2)
 
 candidates <- findCandidates(MS1 = MS1, db = dbs$pgdb, ppm = 10,
