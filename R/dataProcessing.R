@@ -25,10 +25,13 @@
 #' @return an msobject that contains metadata of the mzXML file, raw data and
 #' extracted peaks.
 #'
-#' @details This function executes 2 steps: 1) peak-picking based on enviPick
+#' @details It is important that mzXML files are centroided. 
+#' 
+#' This function executes 2 steps: 1) peak-picking based on enviPick
 #' package and 2) isotope annotation.
 #' 
 #' Numeric arguments accept one or two values for MS1 and MS2, respectively.
+#' 
 #' 
 #' @seealso \link{batchdataProcessing} and \link{setmsbatch}
 #'
@@ -103,28 +106,7 @@ dataProcessing <- function(file,
   #============================================================================#
   cat(paste(c("\n", file), collapse=""))
   cat("\n Reading MS file...")
-  msobject <- readMSfile(file)
-  cat("OK")
-  cat("\n Checking polarity...")
-  if (polarity == "positive"){pol <- "+"}else{pol <- "-"}
-  if (length(unique(msobject$metaData$scansMetadata$polarity)) > 1){
-    msobject$rawData$MS1 <- msobject$MS1[msobject$metaData$scansMetadata$polarity ==
-                                   polarity,]
-    if ("MS2" %in% names(msobject)){
-      msobject$rawData$MS2 <- lapply(msobject$MS2, function(x) x[msobject$metaData$scansMetadata$polarity ==
-                                                           pol,])
-    }
-    msobject$metaData$scansMetadata <-
-      msobject$metaData$scansMetadata[msobject$metaData$scansMetadata$polarity ==
-                                        pol,]
-  } else if (length(unique(msobject$metaData$scansMetadata$polarity)) == 1){
-    if (unique(msobject$metaData$scansMetadata$polarity) != pol){
-      stop(paste(c("Data was acquired in ESI",
-                   unique(msobject$metaData$scansMetadata$polarity),
-                   " mode"), collapse = ""))
-    }
-  }
-  msobject$metaData$generalMetadata$polarity <- polarity
+  msobject <- readMSfile(file, polarity)
   msobject$metaData$generalMetadata$acquisitionmode <- acquisitionmode
   cat("OK")
   

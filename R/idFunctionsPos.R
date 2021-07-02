@@ -76,17 +76,17 @@ idPOS <- function(msobject,
   if ("LPC" %in% lipidClasses){
     cat("\n  Searching for LPC...")
     msobject <-  idLPCpos(msobject = msobject, ppm_precursor= ppm_precursor,
-                         ppm_products = ppm_products, rttol = rttol,
-                         coelCutoff = coelCutoff, dbs = dbs)
+                          ppm_products = ppm_products, rttol = rttol,
+                          coelCutoff = coelCutoff, dbs = dbs)
     cat("OK")
   }
   if ("LPE" %in% lipidClasses){
     cat("\n  Searching for LPE...")
     msobject <-  idLPEpos(msobject = msobject, ppm_precursor= ppm_precursor,
-                         ppm_products = ppm_products, rttol = rttol,
-                         coelCutoff = coelCutoff, dbs = dbs)
+                          ppm_products = ppm_products, rttol = rttol,
+                          coelCutoff = coelCutoff, dbs = dbs)
     cat("OK")
-
+    
   }
   if ("PC" %in% lipidClasses){
     cat("\n  Searching for PC...")
@@ -98,15 +98,15 @@ idPOS <- function(msobject,
   if ("PCo" %in% lipidClasses){
     cat("\n  Searching for PCo...")
     msobject <-  idPCopos(msobject = msobject, ppm_precursor= ppm_precursor,
-                         ppm_products = ppm_products, rttol = rttol,
-                         coelCutoff = coelCutoff, dbs = dbs)
+                          ppm_products = ppm_products, rttol = rttol,
+                          coelCutoff = coelCutoff, dbs = dbs)
     cat("OK")
   }
   if ("PCp" %in% lipidClasses){
     cat("\n  Searching for PCp...")
     msobject <-  idPCppos(msobject = msobject, ppm_precursor= ppm_precursor,
-                         ppm_products = ppm_products, rttol = rttol,
-                         coelCutoff = coelCutoff, dbs = dbs)
+                          ppm_products = ppm_products, rttol = rttol,
+                          coelCutoff = coelCutoff, dbs = dbs)
     cat("OK")
   }
   if ("PE" %in% lipidClasses){
@@ -115,21 +115,21 @@ idPOS <- function(msobject,
                          ppm_products = ppm_products, rttol = rttol,
                          coelCutoff = coelCutoff, dbs = dbs)
     cat("OK")
-
+    
   }
   if ("PEo" %in% lipidClasses){
     cat("\n  Searching for PEo...")
     msobject <-  idPEopos(msobject = msobject, ppm_precursor= ppm_precursor,
-                         ppm_products = ppm_products, rttol = rttol,
-                         coelCutoff = coelCutoff, dbs = dbs)
+                          ppm_products = ppm_products, rttol = rttol,
+                          coelCutoff = coelCutoff, dbs = dbs)
     cat("OK")
     
   }
   if ("PEp" %in% lipidClasses){
     cat("\n  Searching for PEp...")
     msobject <-  idPEppos(msobject = msobject, ppm_precursor= ppm_precursor,
-                         ppm_products = ppm_products, rttol = rttol,
-                         coelCutoff = coelCutoff, dbs = dbs)
+                          ppm_products = ppm_products, rttol = rttol,
+                          coelCutoff = coelCutoff, dbs = dbs)
     cat("OK")
     
   }
@@ -139,22 +139,22 @@ idPOS <- function(msobject,
                          ppm_products = ppm_products, rttol = rttol,
                          coelCutoff = coelCutoff, dbs = dbs)
     cat("OK")
-
+    
   }
   if ("Sph" %in% lipidClasses){
     cat("\n  Searching for Sph...")
     msobject <-  idSphpos(msobject = msobject, ppm_precursor= ppm_precursor,
-                         ppm_products = ppm_products, rttol = rttol,
-                         coelCutoff = coelCutoff, dbs = dbs)
+                          ppm_products = ppm_products, rttol = rttol,
+                          coelCutoff = coelCutoff, dbs = dbs)
     cat("OK")
   }
   if ("SphP" %in% lipidClasses){
     cat("\n  Searching for SphP...")
     msobject <-  idSphPpos(msobject = msobject, ppm_precursor= ppm_precursor,
-                          ppm_products = ppm_products, rttol = rttol,
-                          coelCutoff = coelCutoff, dbs = dbs)
+                           ppm_products = ppm_products, rttol = rttol,
+                           coelCutoff = coelCutoff, dbs = dbs)
     cat("OK")
-
+    
   }
   if ("Cer" %in% lipidClasses){
     cat("\n  Searching for Cer...")
@@ -166,24 +166,24 @@ idPOS <- function(msobject,
   if ("CerP" %in% lipidClasses){
     cat("\n  Searching for CerP...")
     msobject <-  idCerPpos(msobject = msobject, ppm_precursor= ppm_precursor,
-                          ppm_products = ppm_products, rttol = rttol,
-                          coelCutoff = coelCutoff, dbs = dbs)
+                           ppm_products = ppm_products, rttol = rttol,
+                           coelCutoff = coelCutoff, dbs = dbs)
     cat("OK")
   }
   if ("AcylCer" %in% lipidClasses){
     cat("\n  Searching for AcylCer...")
     msobject <-  idAcylCerpos(msobject = msobject, ppm_precursor= ppm_precursor,
-                           ppm_products = ppm_products, rttol = rttol,
-                           coelCutoff = coelCutoff, dbs = dbs)
+                              ppm_products = ppm_products, rttol = rttol,
+                              coelCutoff = coelCutoff, dbs = dbs)
     cat("OK")
   }
   if ("SM" %in% lipidClasses){
     cat("\n  Searching for SM...")
     msobject <-  idSMpos(msobject = msobject, ppm_precursor= ppm_precursor,
-                          ppm_products = ppm_products, rttol = rttol,
-                          coelCutoff = coelCutoff, dbs = dbs)
+                         ppm_products = ppm_products, rttol = rttol,
+                         coelCutoff = coelCutoff, dbs = dbs)
     cat("OK")
-
+    
   }
   if ("Carnitines" %in% lipidClasses){
     cat("\n  Searching for Carnitines...")
@@ -195,15 +195,15 @@ idPOS <- function(msobject,
   if ("CE" %in% lipidClasses){
     cat("\n  Searching for CE...")
     msobject <-  idCEpos(msobject = msobject, ppm_precursor= ppm_precursor,
-                          ppm_products = ppm_products, rttol = rttol,
-                          coelCutoff = coelCutoff, dbs = dbs)
+                         ppm_products = ppm_products, rttol = rttol,
+                         coelCutoff = coelCutoff, dbs = dbs)
     cat("OK")
   }
   if ("DG" %in% lipidClasses){
     cat("\n  Searching for DG...")
     msobject <-  idDGpos(msobject = msobject, ppm_precursor= ppm_precursor,
-                          ppm_products = ppm_products, rttol = rttol,
-                          coelCutoff = coelCutoff, dbs = dbs)
+                         ppm_products = ppm_products, rttol = rttol,
+                         coelCutoff = coelCutoff, dbs = dbs)
     cat("OK")
   }
   if ("TG" %in% lipidClasses){
@@ -374,28 +374,28 @@ idMGpos <- function(msobject,
   }
   ##############################################################################
   # Start identification steps
-
+  
   # candidates search
   candidates <- findCandidates(MS1, dbs$mgdb, ppm = ppm_precursor,
                                rt = rt, adducts = adducts, rttol = rttol,
                                dbs = dbs, rawData = rawData,
                                coelCutoff = coelCutoff)
-
+  
   if (nrow(candidates) > 0){
     # isolation of coeluting fragments
     coelfrags <- coelutingFrags(candidates, MS2, rttol, rawData,
                                 coelCutoff = coelCutoff)
-
+    
     # check class fragments
     classConf <- checkClass(candidates, coelfrags, clfrags, ftype, clrequired,
                             ppm_products, dbs)
-
+    
     # prepare output
     res <- organizeResults(candidates, clfrags, classConf, chainsComb = list(),
                            intrules  = c(), intConf = list(), nchains = 0,
                            class="MG",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
-
+    
     # update msobject
     if ("results" %in% names(msobject$annotation)){
       msobject$annotation$results <- rbind(msobject$annotation$results, res)
@@ -577,13 +577,13 @@ idLPCpos <- function(msobject,
   }
   ##############################################################################
   # Start identification steps
-
+  
   # candidates search
   candidates <- findCandidates(MS1, dbs$lysopcdb, ppm = ppm_precursor,
                                rt = rt, adducts = adducts, rttol = rttol,
                                dbs = dbs, rawData = rawData,
                                coelCutoff = coelCutoff)
-
+  
   if (nrow(candidates) > 0){
     if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
       if (nrow(rawData) == 0){
@@ -596,28 +596,28 @@ idLPCpos <- function(msobject,
       coelCutoff <- 0
       coelfrags <- ddaFrags(candidates, precursors, rawData, ppm = ppm_products)
     }
-
+    
     # check class fragments
     classConf <- checkClass(candidates, coelfrags, clfrags, ftype, clrequired,
                             ppm_products, dbs)
-
+    
     # search chains fragments
     sn1 <- chainFrags(coelfrags, chainfrags_sn1, ppm_products, dbs = dbs,
                       candidates = candidates)
-
+    
     # combine chain fragments
     chainsComb <- combineChains(candidates, nchains=1, sn1)
-
+    
     # check chains position based on intensity ratios
     intConf <- checkIntensityRules(intrules = c(), rates = c(),
                                    intrequired = c(), nchains=1,
                                    chainsComb)
-
+    
     # prepare output
     res <- organizeResults(candidates, clfrags, classConf, chainsComb,
                            intrules  = c(), intConf, nchains = 1, class="LPC",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
-
+    
     # update msobject
     if ("results" %in% names(msobject$annotation)){
       msobject$annotation$results <- rbind(msobject$annotation$results, res)
@@ -800,13 +800,13 @@ idLPEpos <- function(msobject,
   }
   ##############################################################################
   # Start identification steps
-
+  
   # candidates search
   candidates <- findCandidates(MS1, dbs$lysopedb, ppm = ppm_precursor,
                                rt = rt, adducts = adducts, rttol = rttol,
                                dbs = dbs, rawData = rawData,
                                coelCutoff = coelCutoff)
-
+  
   if (nrow(candidates) > 0){
     if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
       if (nrow(rawData) == 0){
@@ -819,28 +819,28 @@ idLPEpos <- function(msobject,
       coelCutoff <- 0
       coelfrags <- ddaFrags(candidates, precursors, rawData, ppm = ppm_products)
     }
-
+    
     # check class fragments
     classConf <- checkClass(candidates, coelfrags, clfrags, ftype, clrequired,
                             ppm_products, dbs)
-
+    
     # search chains fragments
     sn1 <- chainFrags(coelfrags, chainfrags_sn1, ppm_products, dbs = dbs,
                       candidates = candidates)
-
+    
     # combine chain fragments
     chainsComb <- combineChains(candidates, nchains=1, sn1)
-
+    
     # check chains position based on intensity ratios
     intConf <- checkIntensityRules(intrules = c(), rates = c(),
                                    intrequired = c(), nchains=1,
                                    chainsComb)
-
+    
     # prepare output
     res <- organizeResults(candidates, clfrags, classConf, chainsComb,
                            intrules  = c(), intConf, nchains = 1, class="LPE",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
-
+    
     # update msobject
     if ("results" %in% names(msobject$annotation)){
       msobject$annotation$results <- rbind(msobject$annotation$results, res)
@@ -1042,12 +1042,12 @@ idPCpos <- function(msobject,
   }
   ##############################################################################
   # Start identification steps
-
+  
   # candidates search
   candidates <- findCandidates(MS1, dbs$pcdb, ppm = ppm_precursor, rt = rt,
                                adducts = adducts, rttol = rttol, dbs = dbs,
                                rawData = rawData, coelCutoff = coelCutoff)
-
+  
   if (nrow(candidates) > 0){
     if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
       if (nrow(rawData) == 0){
@@ -1060,29 +1060,29 @@ idPCpos <- function(msobject,
       coelCutoff <- 0
       coelfrags <- ddaFrags(candidates, precursors, rawData, ppm = ppm_products)
     }
-
+    
     # check class fragments
     classConf <- checkClass(candidates, coelfrags, clfrags, ftype, clrequired,
                             ppm_products, dbs)
-
+    
     # search chains fragments
     sn1 <- chainFrags(coelfrags, chainfrags_sn1, ppm_products, dbs = dbs,
                       candidates = candidates)
     sn2 <- chainFrags(coelfrags, chainfrags_sn2, ppm_products, candidates, sn1,
                       dbs)
-
+    
     # combine chain fragments
     chainsComb <- combineChains(candidates, nchains=2, sn1, sn2)
-
+    
     # check chains position based on intensity ratios
     intConf <- checkIntensityRules(intrules, rates, intrequired, nchains=2,
                                    chainsComb)
-
+    
     # prepare output
     res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="PC",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
-
+    
     # update msobject
     if ("results" %in% names(msobject$annotation)){
       msobject$annotation$results <- rbind(msobject$annotation$results, res)
@@ -1190,21 +1190,21 @@ idPCpos <- function(msobject,
 #'
 #' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idPCopos <- function(msobject,
-                    ppm_precursor = 5,
-                    ppm_products = 10,
-                    rttol = 3,
-                    rt,
-                    adducts = c("M+H", "M+Na"),
-                    clfrags = c(104.1075, 184.0739, 183.06604),
-                    clrequired = c(F, F, F),
-                    ftype = c("F", "F", "NL"),
-                    chainfrags_sn1 = c("lysopco_M+H", "lysopco_M+H-H2O"),
-                    chainfrags_sn2 = c("lysopc_M+H", "lysopc_M+H-H2O", ""),
-                    intrules = c("lysopco_sn1/lysopc_sn2"),
-                    rates = c("2/1"),
-                    intrequired = c(T),
-                    coelCutoff = 0.8,
-                    dbs){
+                     ppm_precursor = 5,
+                     ppm_products = 10,
+                     rttol = 3,
+                     rt,
+                     adducts = c("M+H", "M+Na"),
+                     clfrags = c(104.1075, 184.0739, 183.06604),
+                     clrequired = c(F, F, F),
+                     ftype = c("F", "F", "NL"),
+                     chainfrags_sn1 = c("lysopco_M+H", "lysopco_M+H-H2O"),
+                     chainfrags_sn2 = c("lysopc_M+H", "lysopc_M+H-H2O", ""),
+                     intrules = c("lysopco_sn1/lysopc_sn2"),
+                     rates = c("2/1"),
+                     intrequired = c(T),
+                     coelCutoff = 0.8,
+                     dbs){
   ##############################################################################
   # check arguments
   if (msobject$metaData$generalMetadata$polarity != "positive"){
@@ -1432,21 +1432,21 @@ idPCopos <- function(msobject,
 #'
 #' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idPCppos <- function(msobject,
-                    ppm_precursor = 5,
-                    ppm_products = 10,
-                    rttol = 3,
-                    rt,
-                    adducts = c("M+H", "M+Na"),
-                    clfrags = c(104.1075, 184.0739, 183.06604),
-                    clrequired = c(F, F, F),
-                    ftype = c("F", "F", "NL"),
-                    chainfrags_sn1 = c("lysopcp_M+H", "lysopcp_M+H-H2O"),
-                    chainfrags_sn2 = c("lysopc_M+H-H2O", ""),
-                    intrules = c("lysopcp_sn1/lysopc_sn2"),
-                    rates = c("1/2"),
-                    intrequired = c(T),
-                    coelCutoff = 0.8,
-                    dbs){
+                     ppm_precursor = 5,
+                     ppm_products = 10,
+                     rttol = 3,
+                     rt,
+                     adducts = c("M+H", "M+Na"),
+                     clfrags = c(104.1075, 184.0739, 183.06604),
+                     clrequired = c(F, F, F),
+                     ftype = c("F", "F", "NL"),
+                     chainfrags_sn1 = c("lysopcp_M+H", "lysopcp_M+H-H2O"),
+                     chainfrags_sn2 = c("lysopc_M+H-H2O", ""),
+                     intrules = c("lysopcp_sn1/lysopc_sn2"),
+                     rates = c("1/2"),
+                     intrequired = c(T),
+                     coelCutoff = 0.8,
+                     dbs){
   ##############################################################################
   # check arguments
   if (msobject$metaData$generalMetadata$polarity != "positive"){
@@ -1768,12 +1768,12 @@ idPEpos <- function(msobject,
   }
   ##############################################################################
   # Start identification steps
-
+  
   # candidates search
   candidates <- findCandidates(MS1, dbs$pedb, ppm = ppm_precursor, rt = rt,
                                adducts = adducts, rttol = rttol, dbs = dbs,
                                rawData = rawData, coelCutoff = coelCutoff)
-
+  
   if (nrow(candidates) > 0){
     if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
       if (nrow(rawData) == 0){
@@ -1786,29 +1786,29 @@ idPEpos <- function(msobject,
       coelCutoff <- 0
       coelfrags <- ddaFrags(candidates, precursors, rawData, ppm = ppm_products)
     }
-
+    
     # check class fragments
     classConf <- checkClass(candidates, coelfrags, clfrags, ftype, clrequired,
                             ppm_products, dbs)
-
+    
     # search chains fragments
     sn1 <- chainFrags(coelfrags, chainfrags_sn1, ppm_products, dbs = dbs,
                       candidates = candidates)
     sn2 <- chainFrags(coelfrags, chainfrags_sn2, ppm_products, candidates, sn1,
                       dbs)
-
+    
     # combine chain fragments
     chainsComb <- combineChains(candidates, nchains=2, sn1, sn2)
-
+    
     # check chains position based on intensity ratios
     intConf <- checkIntensityRules(intrules, rates, intrequired, nchains=2,
                                    chainsComb)
-
+    
     # prepare output
     res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="PE",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
-
+    
     # update msobject
     if ("results" %in% names(msobject$annotation)){
       msobject$annotation$results <- rbind(msobject$annotation$results, res)
@@ -1915,21 +1915,21 @@ idPEpos <- function(msobject,
 #'
 #' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idPEopos <- function(msobject,
-                    ppm_precursor = 5,
-                    ppm_products = 10,
-                    rttol = 3,
-                    rt,
-                    adducts = c("M+H", "M+Na"),
-                    clfrags = c(141.0193),
-                    clrequired = c(F),
-                    ftype = c("NL"),
-                    chainfrags_sn1 = c("lysopeo_M+H", "lysopeo_M+H-H2O"),
-                    chainfrags_sn2 = c("mg_M+H-H2O"),
-                    intrules = c("lysopeo_sn1/mg_sn2"),
-                    rates = c("2/1"),
-                    intrequired = c(T),
-                    coelCutoff = 0.8,
-                    dbs){
+                     ppm_precursor = 5,
+                     ppm_products = 10,
+                     rttol = 3,
+                     rt,
+                     adducts = c("M+H", "M+Na"),
+                     clfrags = c(141.0193),
+                     clrequired = c(F),
+                     ftype = c("NL"),
+                     chainfrags_sn1 = c("lysopeo_M+H", "lysopeo_M+H-H2O"),
+                     chainfrags_sn2 = c("mg_M+H-H2O"),
+                     intrules = c("lysopeo_sn1/mg_sn2"),
+                     rates = c("2/1"),
+                     intrequired = c(T),
+                     coelCutoff = 0.8,
+                     dbs){
   ##############################################################################
   # check arguments
   if (msobject$metaData$generalMetadata$polarity != "positive"){
@@ -2156,21 +2156,21 @@ idPEopos <- function(msobject,
 #'
 #' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idPEppos <- function(msobject,
-                    ppm_precursor = 5,
-                    ppm_products = 10,
-                    rttol = 3,
-                    rt,
-                    adducts = c("M+H", "M+Na"),
-                    clfrags = c(141.0193),
-                    clrequired = c(F),
-                    ftype = c("NL"),
-                    chainfrags_sn1 = c("lysopep_M+H", "lysopep_M+H-H2O"),
-                    chainfrags_sn2 = c("mg_M+H-H2O"),
-                    intrules = c("lysopep_sn1/mg_sn2"),
-                    rates = c("1/3"),
-                    intrequired = c(T),
-                    coelCutoff = 0.8,
-                    dbs){
+                     ppm_precursor = 5,
+                     ppm_products = 10,
+                     rttol = 3,
+                     rt,
+                     adducts = c("M+H", "M+Na"),
+                     clfrags = c(141.0193),
+                     clrequired = c(F),
+                     ftype = c("NL"),
+                     chainfrags_sn1 = c("lysopep_M+H", "lysopep_M+H-H2O"),
+                     chainfrags_sn2 = c("mg_M+H-H2O"),
+                     intrules = c("lysopep_sn1/mg_sn2"),
+                     rates = c("1/3"),
+                     intrequired = c(T),
+                     coelCutoff = 0.8,
+                     dbs){
   ##############################################################################
   # check arguments
   if (msobject$metaData$generalMetadata$polarity != "positive"){
@@ -2491,12 +2491,12 @@ idPGpos <- function(msobject,
   }
   ##############################################################################
   # Start identification steps
-
+  
   # candidates search
   candidates <- findCandidates(MS1, dbs$pgdb, ppm = ppm_precursor, rt = rt,
                                adducts = adducts, rttol = rttol, dbs = dbs,
                                rawData = rawData, coelCutoff = coelCutoff)
-
+  
   if (nrow(candidates) > 0){
     if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
       if (nrow(rawData) == 0){
@@ -2509,29 +2509,29 @@ idPGpos <- function(msobject,
       coelCutoff <- 0
       coelfrags <- ddaFrags(candidates, precursors, rawData, ppm = ppm_products)
     }
-
+    
     # check class fragments
     classConf <- checkClass(candidates, coelfrags, clfrags, ftype, clrequired,
                             ppm_products, dbs)
-
+    
     # search chains fragments
     sn1 <- chainFrags(coelfrags, chainfrags_sn1, ppm_products, dbs = dbs,
                       candidates = candidates)
     sn2 <- chainFrags(coelfrags, chainfrags_sn2, ppm_products, candidates, sn1,
                       dbs)
-
+    
     # combine chain fragments
     chainsComb <- combineChains(candidates, nchains=2, sn1, sn2)
-
+    
     # check chains position based on intensity ratios
     intConf <- checkIntensityRules(intrules, rates, intrequired, nchains=2,
                                    chainsComb)
-
+    
     # prepare output
     res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="PG",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
-
+    
     # update msobject
     if ("results" %in% names(msobject$annotation)){
       msobject$annotation$results <- rbind(msobject$annotation$results, res)
@@ -2709,13 +2709,13 @@ idSphpos <- function(msobject,
   }
   ##############################################################################
   # Start identification steps
-
+  
   # candidates search
   candidates <- findCandidates(MS1, dbs$sphdb, ppm = ppm_precursor,
                                rt = rt, adducts = adducts, rttol = rttol,
                                dbs = dbs, rawData = rawData,
                                coelCutoff = coelCutoff)
-
+  
   if (nrow(candidates) > 0){
     if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
       if (nrow(rawData) == 0){
@@ -2728,17 +2728,17 @@ idSphpos <- function(msobject,
       coelCutoff <- 0
       coelfrags <- ddaFrags(candidates, precursors, rawData, ppm = ppm_products)
     }
-
+    
     # check class fragments
     classConf <- checkClass(candidates, coelfrags, clfrags, ftype, clrequired,
                             ppm_products, dbs)
-
+    
     # prepare output
     res <- organizeResults(candidates, clfrags, classConf, chainsComb = list(),
                            intrules  = c(), intConf = list(), nchains = 0,
                            class="Sph",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
-
+    
     # update msobject
     if ("results" %in% names(msobject$annotation)){
       msobject$annotation$results <- rbind(msobject$annotation$results, res)
@@ -2915,13 +2915,13 @@ idSphPpos <- function(msobject,
   }
   ##############################################################################
   # Start identification steps
-
+  
   # candidates search
   candidates <- findCandidates(MS1, dbs$sphPdb, ppm = ppm_precursor,
                                rt = rt, adducts = adducts, rttol = rttol,
                                dbs = dbs, rawData = rawData,
                                coelCutoff = coelCutoff)
-
+  
   if (nrow(candidates) > 0){
     if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
       if (nrow(rawData) == 0){
@@ -2934,18 +2934,18 @@ idSphPpos <- function(msobject,
       coelCutoff <- 0
       coelfrags <- ddaFrags(candidates, precursors, rawData, ppm = ppm_products)
     }
-
+    
     # check class fragments
     classConf <- checkClass(candidates, coelfrags, clfrags, ftype, clrequired,
                             ppm_products, dbs)
-
+    
     # prepare output
     # prepare output
     res <- organizeResults(candidates, clfrags, classConf, chainsComb = list(),
                            intrules  = c(), intConf = list(), nchains = 0,
                            class="SphP",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
-
+    
     # update msobject
     if ("results" %in% names(msobject$annotation)){
       msobject$annotation$results <- rbind(msobject$annotation$results, res)
@@ -3145,13 +3145,13 @@ idCerpos <- function(msobject,
   }
   ##############################################################################
   # Start identification steps
-
+  
   # candidates search
   candidates <- findCandidates(MS1, db = dbs$cerdb,
                                ppm = ppm_precursor, rt = rt, adducts = adducts,
                                rttol = rttol, dbs = dbs,
                                rawData = rawData, coelCutoff = coelCutoff)
-
+  
   if (nrow(candidates) > 0){
     if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
       if (nrow(rawData) == 0){
@@ -3164,29 +3164,29 @@ idCerpos <- function(msobject,
       coelCutoff <- 0
       coelfrags <- ddaFrags(candidates, precursors, rawData, ppm = ppm_products)
     }
-
+    
     # check class fragments
     classConf <- checkClass(candidates, coelfrags, clfrags, ftype, clrequired,
                             ppm_products, dbs)
-
+    
     # search chains fragments
     sn1 <- chainFrags(coelfrags, chainfrags_sn1, ppm_products, dbs = dbs,
                       candidates = candidates)
     sn2 <- chainFrags(coelfrags, chainfrags_sn2, ppm_products, candidates, sn1,
                       dbs)
-
+    
     # combine chain fragments
     chainsComb <- combineChains(candidates, nchains=2, sn1, sn2)
-
+    
     # check chains position based on intensity ratios
     intConf <- checkIntensityRules(intrules, rates, intrequired, nchains=2,
                                    chainsComb)
-
+    
     # prepare output
     res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="Cer",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
-
+    
     # update msobject
     if ("results" %in% names(msobject$annotation)){
       msobject$annotation$results <- rbind(msobject$annotation$results, res)
@@ -3294,21 +3294,21 @@ idCerpos <- function(msobject,
 #'
 #' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idCerPpos <- function(msobject,
-                     ppm_precursor = 5,
-                     ppm_products = 10,
-                     rttol = 3,
-                     rt,
-                     adducts = c("M+H"),
-                     clfrags = c("cer_M+H-H2O", "cer_M+H-2H2O"),
-                     clrequired = c(F, F),
-                     ftype = c("BB", "BB"),
-                     chainfrags_sn1 = c("sph_M+H-2H2O"),
-                     chainfrags_sn2 = c(""),
-                     intrules = c(),
-                     rates = c(),
-                     intrequired = c(),
-                     coelCutoff = 0.8,
-                     dbs){
+                      ppm_precursor = 5,
+                      ppm_products = 10,
+                      rttol = 3,
+                      rt,
+                      adducts = c("M+H"),
+                      clfrags = c("cer_M+H-H2O", "cer_M+H-2H2O"),
+                      clrequired = c(F, F),
+                      ftype = c("BB", "BB"),
+                      chainfrags_sn1 = c("sph_M+H-2H2O"),
+                      chainfrags_sn2 = c(""),
+                      intrules = c(),
+                      rates = c(),
+                      intrequired = c(),
+                      coelCutoff = 0.8,
+                      dbs){
   ##############################################################################
   # check arguments
   if (msobject$metaData$generalMetadata$polarity != "positive"){
@@ -3631,12 +3631,12 @@ idSMpos <- function(msobject,
   }
   ##############################################################################
   # Start identification steps
-
+  
   # candidates search
   candidates <- findCandidates(MS1, dbs$smdb, ppm = ppm_precursor, rt = rt,
                                adducts = adducts, rttol = rttol, dbs = dbs,
                                rawData = rawData, coelCutoff = coelCutoff)
-
+  
   if (nrow(candidates) > 0){
     if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
       if (nrow(rawData) == 0){
@@ -3649,29 +3649,29 @@ idSMpos <- function(msobject,
       coelCutoff <- 0
       coelfrags <- ddaFrags(candidates, precursors, rawData, ppm = ppm_products)
     }
-
+    
     # check class fragments
     classConf <- checkClass(candidates, coelfrags, clfrags, ftype, clrequired,
                             ppm_products, dbs)
-
+    
     # search chains fragments
     sn1 <- chainFrags(coelfrags, chainfrags_sn1, ppm_products, dbs = dbs,
                       candidates = candidates)
     sn2 <- chainFrags(coelfrags, chainfrags_sn2, ppm_products, candidates, sn1,
                       dbs)
-
+    
     # combine chain fragments
     chainsComb <- combineChains(candidates, nchains=2, sn1, sn2)
-
+    
     # check chains position based on intensity ratios
     intConf <- checkIntensityRules(intrules, rates, intrequired, nchains=2,
                                    chainsComb)
-
+    
     # prepare output
     res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="SM",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
-
+    
     # update msobject
     if ("results" %in% names(msobject$annotation)){
       msobject$annotation$results <- rbind(msobject$annotation$results, res)
@@ -3854,13 +3854,13 @@ idCarpos <- function(msobject,
   }
   ##############################################################################
   # Start identification steps
-
+  
   # candidates search
   candidates <- findCandidates(MS1, dbs$carnitinedb, ppm = ppm_precursor,
                                rt = rt, adducts = adducts, rttol = rttol,
                                dbs = dbs, rawData = rawData,
                                coelCutoff = coelCutoff)
-
+  
   if (nrow(candidates) > 0){
     if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
       if (nrow(rawData) == 0){
@@ -3873,28 +3873,28 @@ idCarpos <- function(msobject,
       coelCutoff <- 0
       coelfrags <- ddaFrags(candidates, precursors, rawData, ppm = ppm_products)
     }
-
+    
     # check class fragments
     classConf <- checkClass(candidates, coelfrags, clfrags, ftype, clrequired,
                             ppm_products, dbs)
-
+    
     # search chains fragments
     sn1 <- chainFrags(coelfrags, chainfrags_sn1, ppm_products, dbs = dbs,
                       candidates = candidates)
-
+    
     # combine chain fragments
     chainsComb <- combineChains(candidates, nchains=1, sn1)
-
+    
     # check chains position based on intensity ratios
     intConf <- checkIntensityRules(intrules = c(), rates = c(), intrequired = c(),
                                    nchains=1, chainsComb)
-
+    
     # prepare output
     res <- organizeResults(candidates, clfrags, classConf, chainsComb,
                            intrules  = c(), intConf, nchains = 1,
                            class="Carnitine",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
-
+    
     # update msobject
     if ("results" %in% names(msobject$annotation)){
       msobject$annotation$results <- rbind(msobject$annotation$results, res)
@@ -4077,13 +4077,13 @@ idCEpos <- function(msobject,
   }
   ##############################################################################
   # Start identification steps
-
+  
   # candidates search
   candidates <- findCandidates(MS1, dbs$CEdb, ppm = ppm_precursor,
                                rt = rt, adducts = adducts, rttol = rttol,
                                dbs = dbs, rawData = rawData,
                                coelCutoff = coelCutoff)
-
+  
   if (nrow(candidates) > 0){
     if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
       if (nrow(rawData) == 0){
@@ -4096,29 +4096,29 @@ idCEpos <- function(msobject,
       coelCutoff <- 0
       coelfrags <- ddaFrags(candidates, precursors, rawData, ppm = ppm_products)
     }
-
+    
     # check class fragments
     classConf <- checkClass(candidates, coelfrags, clfrags, ftype, clrequired,
                             ppm_products, dbs)
-
+    
     # search chains fragments
     sn1 <- chainFrags(coelfrags, chainfrags_sn1, ppm_products, dbs = dbs,
                       candidates = candidates)
-
+    
     # combine chain fragments
     chainsComb <- combineChains(candidates, nchains=1, sn1)
-
+    
     # check chains position based on intensity ratios
     intConf <- checkIntensityRules(intrules = c(), rates = c(),
                                    intrequired = c(), nchains=1,
                                    chainsComb)
-
+    
     # prepare output
     res <- organizeResults(candidates, clfrags, classConf, chainsComb,
                            intrules = c(),
                            intConf, nchains = 1, class="CE",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
-
+    
     # update msobject
     if ("results" %in% names(msobject$annotation)){
       msobject$annotation$results <- rbind(msobject$annotation$results, res)
@@ -4318,12 +4318,12 @@ idDGpos <- function(msobject,
   }
   ##############################################################################
   # Start identification steps
-
+  
   # candidates search
   candidates <- findCandidates(MS1, dbs$dgdb, ppm = ppm_precursor, rt = rt,
                                adducts = adducts, rttol = rttol, dbs = dbs,
                                rawData = rawData, coelCutoff = coelCutoff)
-
+  
   if (nrow(candidates) > 0){
     if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
       if (nrow(rawData) == 0){
@@ -4336,29 +4336,29 @@ idDGpos <- function(msobject,
       coelCutoff <- 0
       coelfrags <- ddaFrags(candidates, precursors, rawData, ppm = ppm_products)
     }
-
+    
     # check class fragments
     classConf <- checkClass(candidates, coelfrags, clfrags, ftype, clrequired,
                             ppm_products, dbs)
-
+    
     # search chains fragments
     sn1 <- chainFrags(coelfrags, chainfrags_sn1, ppm_products, dbs = dbs,
                       candidates = candidates)
     sn2 <- chainFrags(coelfrags, chainfrags_sn2, ppm_products, candidates, sn1,
                       dbs)
-
+    
     # combine chain fragments
     chainsComb <- combineChains(candidates, nchains=2, sn1, sn2)
-
+    
     # check chains position based on intensity ratios
     intConf <- checkIntensityRules(intrules, rates, intrequired, nchains=2,
                                    chainsComb)
-
+    
     # prepare output
     res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="DG",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
-
+    
     # update msobject
     if ("results" %in% names(msobject$annotation)){
       msobject$annotation$results <- rbind(msobject$annotation$results, res)
@@ -4568,12 +4568,12 @@ idTGpos <- function(msobject,
   }
   ##############################################################################
   # Start identification steps
-
+  
   # candidates search
   candidates <- findCandidates(MS1, dbs$tgdb, ppm = ppm_precursor, rt = rt,
                                adducts = adducts, rttol = rttol, dbs = dbs,
                                rawData = rawData, coelCutoff = coelCutoff)
-
+  
   if (nrow(candidates) > 0){
     if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
       if (nrow(rawData) == 0){
@@ -4586,12 +4586,12 @@ idTGpos <- function(msobject,
       coelCutoff <- 0
       coelfrags <- ddaFrags(candidates, precursors, rawData, ppm = ppm_products)
     }
-
+    
     # check class fragments
     classConf <- checkClass(candidates, coelfrags, clfrags, ftype, clrequired,
                             ppm_products, dbs)
-
-
+    
+    
     # search chains fragments
     sn1 <- chainFrags(coelfrags, chainfrags_sn1, ppm_products, dbs = dbs,
                       candidates = candidates)
@@ -4599,19 +4599,19 @@ idTGpos <- function(msobject,
                       candidates = candidates, sn1, dbs)
     sn3 <- chainFrags(coelfrags, chainfrags_sn3, ppm_products, candidates, sn1,
                       dbs)
-
+    
     # combine chain fragments
     chainsComb <- combineChains(candidates, nchains=3, sn1, sn2, sn3)
-
+    
     # check chains position based on intensity ratios
     intConf <- checkIntensityRules(intrules, rates, intrequired, nchains=3,
                                    chainsComb)
-
+    
     # prepare output
     res <- organizeResults(candidates, clfrags, classConf, chainsComb,
                            intrules, intConf, nchains = 3, class="TG",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
-
+    
     # update msobject
     if ("results" %in% names(msobject$annotation)){
       msobject$annotation$results <- rbind(msobject$annotation$results, res)

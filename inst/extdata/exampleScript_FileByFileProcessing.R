@@ -18,9 +18,9 @@ files <- dir()[grepl("mzXML", dir())]
 # Processing parameters
 #==============================================================================#
 
-acquisitionmode <- rep("DIA", length(files)) # it assumes you add MS, DDA or DIA to the file names
+acquisitionmode <- rep("MS", length(files)) # it assumes you add MS, DDA or DIA to the file names
 acquisitionmode[grep("DDA", files)] <- "DDA" 
-acquisitionmode[grep("MS", files)] <- "MS" 
+acquisitionmode[grep("DIA|AIF", files)] <- "DIA" 
 # otherwise, create a vector such as: acquisitionmode <- c("DIA", "MS", "MS", "MS", "DDA",...)
 polarity <- "positive" # change to positive if required
 dmzagglom <- 15

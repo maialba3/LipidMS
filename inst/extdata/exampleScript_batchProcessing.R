@@ -23,7 +23,7 @@ metadata <- read.csv("Metadata.csv", sep=",", dec = ".")
 
 ###################
 # Peak-picking
-polarity <- "positive" # 6550 abrir hasta 50 ppm, con el orbi dejar en 15-20 ppm
+polarity <- "positive"
 dmzagglom <- 15
 drtagglom <- 500
 drtclust <- 100

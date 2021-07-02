@@ -4,13 +4,14 @@
 #' Read mzXML file and initiate msobject
 #'
 #' @param file file path for a mzXML file
+#' @param polarity character value: negative or positive.
 #'
 #' @return msobject
 #'
 #' @keywords internal
 #'
 #' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
-readMSfile <- function(file){
+readMSfile <- function(file, polarity){
   # 1. read data with readMzXmlFile
   ms <- readMzXmlData::readMzXmlFile(file.path(file))
 
@@ -22,6 +23,7 @@ readMSfile <- function(file){
     startTime <- ms[[1]]$metaData$startTime
     endTime <- ms[[1]]$metaData$endTime
   }
+  
   collisionEnergies <- sort(unique(unlist(lapply(ms, function(x) if(!is.null(x$metaData$collisionEnergy)){x$metaData$collisionEnergy} else {0}))))
   
   generalMetadata <- list(file = file, scans = length(ms),
@@ -52,14 +54,7 @@ readMSfile <- function(file){
   }
   scansMetadata$Scan <- scanOrder
 
-  # 3. Generate msobject
-  msobject <- list()
-  msobject$metaData <- list(generalMetadata = generalMetadata,
-                            scansMetadata = scansMetadata)
-  msobject$processing <- list()
-
-
-  # 4. Extract scans
+  # 3. Extract scans
   mz <- unlist(lapply(ms, function(x) x$spectrum$mass))
   int <- unlist(lapply(ms, function(x) x$spectrum$intensity))
   RT <- unlist(mapply(rep, scansMetadata$RT, scansMetadata$peaksCount))
@@ -69,7 +64,23 @@ readMSfile <- function(file){
   scans <- data.frame(mz = mz, int = int, RT = RT, mslevel = mslevel,
                       collisionEnergy = collisionEnergy,
                       part = 0, clust = 0, peak = 0, Scan = scannum)
-
+  
+  if (polarity == "positive"){pol <- "+"}else{pol <- "-"}
+  keepPolarity <- scansMetadata$Scan[which(scansMetadata$polarity == pol)]
+  scansMetadata <- scansMetadata[scansMetadata$Scan %in% keepPolarity,]
+  scans <- scans[scans$Scan %in% keepPolarity,]
+  generalMetadata$polarity <- polarity
+  
+  if (nrow(scans) == 0){
+    stop(paste(c("No scans were found for ESI", pol), collapse = ""))
+  }
+  
+  # 4. Generate msobject
+  msobject <- list()
+  msobject$metaData <- list(generalMetadata = generalMetadata,
+                            scansMetadata = scansMetadata)
+  msobject$processing <- list()
+  
   if (all(c(1, 2) %in% unique(scansMetadata$msLevel))){
     MS1 <-  scans[scans$mslevel == 1,]
     MS1 <- split(MS1, MS1$collisionEnergy)
@@ -333,7 +344,7 @@ peakdetection <- function(msobject,
       colnames(out1)<-c("mz","intens","RT","index","intens_filt","1pick","pickcrit","baseline","intens_corr","2pick")
       # Filter step: yet to be implemented
       out1[, 5] <- out1[, 2]
-      # Peak detection, baseline substraction and 2nd peak detection
+      # Peak detection, baseline calculation and 2nd peak detection
       out2 <- .Call("pickpeak",
                     as.numeric(out1),
                     as.numeric(drtminpeak),
@@ -722,7 +733,6 @@ clust <- function(values, mins, maxs, samples, unique.samples, maxdist, ppm){
         cond2 <- abs(values[n2] - values[n1])  <= maxdist 
       }
       
-      cond1 & cond2
       if(cond1 & cond2){ # si se cumplen las dos condiciones, uno los clusters y elimino el segundo
         mins[n1] <- min(mins[n1], mins[n2])
         maxs[n1] <- max(maxs[n1], maxs[n2])
