@@ -415,7 +415,9 @@ peakdetection <- function(msobject,
       # mz <- weighted.mean(msobject$rawData[[mslevel]][[cE]]$mz[start:end],
       #                     msobject$rawData[[mslevel]][[cE]]$int[start:end])
       maxint <- max(msobject$rawData[[mslevel]][[cE]]$int[start:end])
-      sumint <- sum(msobject$rawData[[mslevel]][[cE]]$int[start:end])
+      ints <- msobject$rawData[[mslevel]][[cE]]$int[start:end]
+      ints <- ints - min(ints)
+      sumint <- sum(ints)
       area <- areas[p]
       RT <- mean(msobject$rawData[[mslevel]][[cE]]$RT[start:end][msobject$rawData[[mslevel]][[cE]]$int[start:end] == maxint])
       minRT <- min(msobject$rawData[[mslevel]][[cE]]$RT[start:end])

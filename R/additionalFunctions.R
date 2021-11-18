@@ -1452,6 +1452,7 @@ searchIsotopes <- function(msobject,
         subsetMS1 <- MS1[ord[subset],]
         if (nrow(subsetMS1) > 0){
           subsetMS1 <- subsetMS1[order(subsetMS1$RT),]
+          subsetMS1$int <- subsetMS1$int - min(subsetMS1$int)
           if (nrow(subsetPrev) > 0){
             merged <- merge(subsetPrev, subsetMS1, by = "Scan")
             if (nrow(merged) > 2){
