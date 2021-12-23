@@ -712,8 +712,8 @@ clust <- function(values, mins, maxs, samples, unique.samples, maxdist, ppm){
           distmatrix[mindist] <- NA
           if (any(!is.na(distmatrix))){
             mindist <- which.min(distmatrix)
-            n1 <- ceiling(mindist/length(mins))
-            n2 <- mindist-(length(mins)*(n1-1))
+            n1 <- ceiling(mindist/length(mins)) # index cluster1
+            n2 <- mindist-(length(mins)*(n1-1)) # index cluster2
           } else {
             do <- TRUE
           }
