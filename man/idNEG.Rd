@@ -13,7 +13,8 @@ idNEG(
   lipidClasses = c("FA", "FAHFA", "LPC", "LPE", "LPG", "LPI", "LPS", "PC", "PCo",
     "PCp", "PE", "PEo", "PEp", "PG", "PI", "PS", "Sph", "SphP", "Cer", "CerP", "AcylCer",
     "CL", "BA"),
-  dbs
+  dbs,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ Only applied if rawData info is supplied. By default, 0.8.}
 contains the required data frames based on the default fragmentation rules.
 If these rules are modified, dbs may need to be supplied. See \link{createLipidDB}
 and \link{assignDB}.}
+
+\item{verbose}{print information messages.}
 }
 \value{
 annotated msobject (list with several elements). The results element

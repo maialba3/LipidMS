@@ -11,7 +11,7 @@ idPEppos(
   rttol = 3,
   rt,
   adducts = c("M+H", "M+Na"),
-  clfrags = c(141.0193),
+  clfrags = c(140.012),
   clrequired = c(F),
   ftype = c("NL"),
   chainfrags_sn1 = c("lysopep_M+H", "lysopep_M+H-H2O"),
@@ -20,7 +20,8 @@ idPEppos(
   rates = c("1/3"),
   intrequired = c(T),
   coelCutoff = 0.8,
-  dbs
+  dbs,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -74,6 +75,8 @@ Only applied if rawData info is supplied. By default, 0.8.}
 contains the required data frames based on the default fragmentation rules.
 If these rules are modified, dbs may need to be supplied. See
 \link{createLipidDB} and \link{assignDB}.}
+
+\item{verbose}{print information messages.}
 }
 \value{
 annotated msobject (list with several elements). The results element
@@ -92,7 +95,7 @@ data acquired in positive mode.
 \details{
 \code{idPEppos} function involves 5 steps. 1) FullMS-based
 identification of candidate PE as M+H and M+Na. 2) Search of PE class
-fragments: loss of head group (NL of 141.0193) coeluting with the precursor
+fragments: loss of head group (NL of 140.012) coeluting with the precursor
 ion. 3) Search of specific fragments that inform about chain composition at
 sn1 (LPEp as M+H or M+H-H2O resulting from the loss of the FA chain at sn2)
 and sn2 (MG as M+H-H2O from sn2 resulting from the loss of the FA chain at sn1). 
@@ -110,7 +113,7 @@ sum intensity in DDA of all fragments used for the identification).
 }
 \note{
 This function has been written based on fragmentation patterns
-observed for three different platforms (QTOF 6550 from Agilent, Sinapt G2-Si
+observed for three different platforms (QTOF 6550 from Agilent, Synapt G2-Si
 from Waters and Q-exactive from Thermo), but it may need to be customized for
 other platforms or acquisition settings.
 }

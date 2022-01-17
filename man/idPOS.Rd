@@ -12,7 +12,8 @@ idPOS(
   coelCutoff = 0.8,
   lipidClasses = c("MG", "LPC", "LPE", "PC", "PCo", "PCp", "PE", "PEo", "PEp", "PG",
     "Sph", "SphP", "Cer", "AcylCer", "CerP", "SM", "Carnitines", "CE", "DG", "TG"),
-  dbs
+  dbs,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ Only applied if rawData info is supplied. By default, 0.8.}
 contains the required data frames based on the default fragmentation rules.
 If these rules are modified, dbs may need to be supplied. See \link{createLipidDB}
 and \link{assignDB}.}
+
+\item{verbose}{print information messages.}
 }
 \value{
 annotated msobject (list with several elements). The results element

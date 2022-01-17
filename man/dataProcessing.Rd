@@ -21,7 +21,8 @@ dataProcessing(
   minint = c(1000, 100),
   weight = c(2, 3),
   dmzIso = 5,
-  drtIso = 5
+  drtIso = 5,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -59,6 +60,8 @@ within the drtminpeak window are required to define a peak.}
 \item{dmzIso}{mass tolerance for isotope matching.}
 
 \item{drtIso}{time window for isotope matching.}
+
+\item{verbose}{print information messages.}
 }
 \value{
 an msobject that contains metadata of the mzXML file, raw data and
@@ -68,6 +71,8 @@ extracted peaks.
 Process mzXML files individually: peakpicking and isotope anotation
 }
 \details{
+It is important that mzXML files are centroided. 
+
 This function executes 2 steps: 1) peak-picking based on enviPick
 package and 2) isotope annotation.
 

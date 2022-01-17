@@ -21,6 +21,7 @@
 #' @param weight weight for assigning measurements to a peak.
 #' @param dmzIso mass tolerance for isotope matching.
 #' @param drtIso time window for isotope matching.
+#' @param verbose print information messages.
 #'
 #' @return an msobject that contains metadata of the mzXML file, raw data and
 #' extracted peaks.
@@ -63,7 +64,8 @@ dataProcessing <- function(file,
                            minint = c(1000, 100),
                            weight = c(2, 3),
                            dmzIso = 5,
-                           drtIso = 5){
+                           drtIso = 5,
+                           verbose = TRUE){
   #============================================================================#
   # check arguments
   #============================================================================#
@@ -104,36 +106,36 @@ dataProcessing <- function(file,
   #============================================================================#
   # read file and filter scans by polarity if required
   #============================================================================#
-  cat(paste(c("\n", file), collapse=""))
-  cat("\n Reading MS file...")
+  if(verbose){cat(paste(c("\n", file), collapse=""))}
+  if(verbose){cat("\n Reading MS file...")}
   msobject <- readMSfile(file, polarity)
   msobject$metaData$generalMetadata$acquisitionmode <- acquisitionmode
-  cat("OK")
+  if(verbose){cat("OK")}
   
   #============================================================================#
   # Peak-picking: based on enviPick algorithm
   #============================================================================#
-  cat("\n Searching for features...")
+  if(verbose){cat("\n Searching for features...")}
   ##############################################################################
   # msLevel 1
   if("MS1" %in% names(msobject$rawData)){
-    cat("\n   Processing MS1...")
+    if(verbose){cat("\n   Processing MS1...")}
     for (cE in names(msobject$rawData$MS1)){
-      cat("\n     partitioning...")
+      if(verbose){cat("\n     partitioning...")}
       msobject <- partitioning(msobject, dmzagglom = dmzagglom1, drtagglom = drtagglom1,
                                minpeak = minpeak1, mslevel = "MS1", cE = cE)
-      cat("OK")
-      cat("\n     clustering...")
+      if(verbose){cat("OK")}
+        if(verbose){cat("\n     clustering...")}
       msobject <- clustering(msobject, dmzagglom = dmzagglom1, drtclust = drtclust1,
                              minpeak = minpeak1, mslevel = "MS1", cE = cE)
-      cat("OK")
-      cat("\n     detecting peaks...")
+      if(verbose){cat("OK")}
+      if(verbose){cat("\n     detecting peaks...")}
       msobject <- peakdetection(msobject, minpeak = minpeak1, drtminpeak = drtminpeak1,
                                 drtmaxpeak = drtmaxpeak1, drtgap = drtgap1,
                                 recurs = recurs1, weight = weight1,
                                 sb = sb1, sn = sn1, minint = minint1,
                                 ended = 2, mslevel = "MS1", cE = cE)
-      cat("OK")
+      if(verbose){cat("OK")}
       msobject$peaklist$MS1 <- do.call(rbind, msobject$peaklist[["MS1"]])
       rownames(msobject$peaklist$MS1) <- msobject$peaklist$MS1$peakID
       msobject$rawData$MS1 <- do.call(rbind, msobject$rawData$MS1)
@@ -147,23 +149,23 @@ dataProcessing <- function(file,
   # if acquired in DIA, MS2 is processed as msLevel 1
   if (acquisitionmode == "DIA"){
     if("MS2" %in% names(msobject$rawData)){
-      cat("\n   Processing MS2...")
+      if(verbose){cat("\n   Processing MS2...")}
       for (cE in names(msobject$rawData$MS2)){
-        cat("\n     partitioning...")
+        if(verbose){cat("\n     partitioning...")}
         msobject <- partitioning(msobject, dmzagglom = dmzagglom2, drtagglom = drtagglom2,
                                  minpeak = minpeak2, mslevel = "MS2", cE = cE)
-        cat("OK")
-        cat("\n     clustering...")
+        if(verbose){cat("OK")}
+        if(verbose){cat("\n     clustering...")}
         msobject <- clustering(msobject, dmzagglom = dmzagglom2, drtclust = drtclust2,
                                minpeak = minpeak2, mslevel = "MS2", cE = cE)
-        cat("OK")
-        cat("\n     detecting peaks...")
+        if(verbose){cat("OK")}
+        if(verbose){cat("\n     detecting peaks...")}
         msobject <- peakdetection(msobject, minpeak = minpeak2, drtminpeak = drtminpeak2,
                                   drtmaxpeak = drtmaxpeak2, drtgap = drtgap2,
                                   recurs = recurs2, weight = weight2,
                                   sb = sb2, sn = sn2, minint = minint2,
                                   ended = 2, mslevel = "MS2", cE = cE)
-        cat("OK")
+        if(verbose){cat("OK")}
       }
       msobject$peaklist$MS2 <- do.call(rbind, msobject$peaklist[["MS2"]])
       rownames(msobject$peaklist$MS2) <- msobject$peaklist$MS2$peakID
@@ -176,12 +178,12 @@ dataProcessing <- function(file,
     ############################################################################
     # if acquired in DDA, scans from MS2 are extracted directly
     if ("MS2" %in% names(msobject$rawData)){
-      cat("\n   Processing MS2...")
+      if(verbose){cat("\n   Processing MS2...")}
       for (cE in names(msobject$rawData$MS2)){
         msobject$rawData$MS2[[cE]]$peakID <- paste(paste("MS2_", cE, sep=""), 
                                                    msobject$rawData$MS2[[cE]]$Scan, sep="_")
         
-        cat("OK")
+        if(verbose){cat("OK")}
       }
       msobject$rawData$MS2 <- do.call(rbind, msobject$rawData$MS2)
       msobject$rawData$MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID", "Scan")]
@@ -192,11 +194,11 @@ dataProcessing <- function(file,
   #============================================================================#
   # Search for isotopes
   #============================================================================#
-  cat("\n Searching for isotopes...")
+  if(verbose){cat("\n Searching for isotopes...")}
   ##############################################################################
   # msLevel 1
   if("MS1" %in% names(msobject$rawData)){
-    cat("\n   MS1...")
+    if(verbose){cat("\n   MS1...")}
     peaklistIso <- annotateIsotopes(peaklist = msobject$peaklist$MS1,
                                     rawScans = msobject$rawData$MS1,
                                     dmz = dmzIso1, 
@@ -209,13 +211,13 @@ dataProcessing <- function(file,
                                     checkInt = TRUE,
                                     checkCor = TRUE)
     msobject$peaklist$MS1 <- peaklistIso
-    cat("OK")
+    if(verbose){cat("OK")}
   }
   ##############################################################################
   # msLevel 2
   if("MS2" %in% names(msobject$rawData)){
     if (acquisitionmode == "DIA"){
-      cat("\n   MS2...")
+      if(verbose){cat("\n   MS2...")}
       peaklistIso <- annotateIsotopes(peaklist = msobject$peaklist$MS2,
                                       rawScans = msobject$rawData$MS2,
                                       dmz = dmzIso2, 
@@ -228,10 +230,10 @@ dataProcessing <- function(file,
                                       checkInt = TRUE,
                                       checkCor = TRUE)
       msobject$peaklist$MS2 <- peaklistIso
-      cat("OK")
+      if(verbose){cat("OK")}
     }
   }
-  cat("\n")
+  if(verbose){cat("\n")}
   
   if("MS1" %in% names(msobject$rawData)){
     msobject$processing$MS1$partIndex <- NULL
@@ -332,10 +334,10 @@ setmsbatch <- function(msobjectlist,
 }
 
 # batchdataProcessing
-#' Process several mzXML files (peakpicking and isotope annotation) and create a 
+#' Process several mzXML files (peakpicking and isotope annotation) and create an 
 #' msbatch for batch processing.
 #'
-#' Process several mzXML files (peakpicking and isotope annotation) and create a 
+#' Process several mzXML files (peakpicking and isotope annotation) and create an 
 #' msbatch for batch processing.
 #'
 #' @param files  file paths of the mzXML files. Optional.
@@ -361,6 +363,7 @@ setmsbatch <- function(msobjectlist,
 #' @param drtIso time windows for isotope matching. 
 #' @param parallel logical.
 #' @param ncores number of cores to be used in case parallel is TRUE.
+#' @param verbose print information messages.
 #'
 #' @return msbatch
 #'
@@ -409,7 +412,8 @@ batchdataProcessing <- function(files,
                                 dmzIso = 10,
                                 drtIso = 5, 
                                 parallel = FALSE,
-                                ncores){
+                                ncores,
+                                verbose = TRUE){
   #============================================================================#
   # check arguments
   #============================================================================#
@@ -507,7 +511,8 @@ batchdataProcessing <- function(files,
                    minint = minint,
                    weight = weight,
                    dmzIso = dmzIso,
-                   drtIso = drtIso)
+                   drtIso = drtIso,
+                   verbose = verbose)
   }
   if (parallel){
     parallel::stopCluster(cl)
@@ -520,7 +525,7 @@ batchdataProcessing <- function(files,
 # alignmsbatch
 #' Align samples from an msbatch
 #'
-#' Align samples from an msbatch
+#' Align samples from an msbatch to correct time drifts during acquisition queues.
 #'
 #' @param msbatch msbatch obtained from the \link{setmsbatch} function.
 #' @param dmz mass tolerance between peak groups in ppm.
@@ -532,12 +537,46 @@ batchdataProcessing <- function(files,
 #' @param span span parameter for loess rt deviation smoothing.
 #' @param parallel logical. If TRUE, parallel processing will be performed.
 #' @param ncores number of cores to be used in case parallel is TRUE.
+#' @param verbose print information messages.
 #' 
 #' @return aligned msbatch
+#' 
+#' @details First, peak partitions are created based on the enviPick algorithm 
+#' to speed up the following clustering algorithm. Briefly, peaks are ordered 
+#' increasingly by mz and RT and grouped based on user-defined tolerances (dmz 
+#' and drt). Each peak is initialized as a partition and then, they are 
+#' evaluated to decide whether or not they can be joined to the previous 
+#' partition. If mz and RT of a peak matches tolerance of any of the peaks in 
+#' the previous partition, it is reassigned. Then, clustering algorithm is 
+#' executed to group peaks based on their RT following the next steps for each 
+#' partition:
+#' 
+#' 1.	Each peak in the partition is initialized as a new cluster. For each 
+#' cluster we will keep the minimum, maximum and mean value of the RT, which at 
+#' this point have the same values.
+#' 2.	Calculate a distance matrix between all clusters. This distance will be 
+#' the greatest difference between minimum and maximum values of each cluster. 
+#' Distances between clusters which share peaks from the same samples will be 
+#' set to NA.
+#' 3.	While any distance is different to NA, search the minimum distance between 
+#' two clusters.
+#' 4.	If distance is below the maximum distance allowed, join clusters and 
+#' update minimum, maximum and mean values, else, set distance to NA and go back 
+#' to point 3.
+#' 
+#' Then, clusters with a sample representation over minsamples or minsamplesfrac, 
+#' will be used for alignment. To this end, an RT matrix is built containing the 
+#' RT of the peaks for each sample from the selected clusters. Then, median RT 
+#' is calculated for each cluster and an RT deviation matrix is obtained. Finally, 
+#' time drifts for each sample are corrected using loess regression by 
+#' constructing a function based on RT deviation and median.
+#' 
+#' @references Partitioning algorithm has been imported from enviPick R-package:
+#' https://cran.r-project.org/web/packages/enviPick/index.html
 #'
 #' @examples
 #' \dontrun{
-#' msbatch <- setmsbatch(msbatch)
+#' msbatch <- alignmsbatch(msbatch)
 #' }
 #'
 #' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
@@ -548,7 +587,8 @@ alignmsbatch <- function(msbatch,
                          minsamplesfrac = 0.75, 
                          span = 0.4, 
                          parallel = FALSE, 
-                         ncores){
+                         ncores,
+                         verbose = TRUE){
   #============================================================================#
   # Check arguments
   #============================================================================#
@@ -594,7 +634,7 @@ alignmsbatch <- function(msbatch,
   #============================================================================#
   # Create mz partitions based on dmz and drt
   #============================================================================#
-  cat("\nCreating m.z partitions...")
+  if(verbose){cat("\nCreating m.z partitions...")}
   part <- .Call("agglom", as.numeric(peaks$mz),
                 as.numeric(peaks$RT), as.integer(1),
                 as.numeric(dmz), as.numeric(drt),
@@ -607,13 +647,13 @@ alignmsbatch <- function(msbatch,
   partIndex <- indexrtpart(peaks, part, minsamples)
   peaks$partID <- partIndex$idvector
   msbatch$alignment$partIndex <- partIndex$index
-  cat("OK")
+  if(verbose){cat("OK")}
   
   #============================================================================#
   # Create RT clusters for each mz partition. Duplicate samples are not allowed 
   # in the same cluster
   #============================================================================#
-  cat("\nClustering peaks by RT...")
+  if(verbose){cat("\nClustering peaks by RT...")}
   ##############################################################################
   # Clusterize (in parallel if required)
   if (parallel) {
@@ -661,12 +701,12 @@ alignmsbatch <- function(msbatch,
   clustIndex <- indexrtpart(peaks, clusts, minsamples)
   peaks$clustID <- clustIndex$idvector
   msbatch$alignment$clustIndex <- clustIndex$index
-  cat("OK")
+  if(verbose){cat("OK")}
   
   #============================================================================#
   # Create a RT matrix for each group (rows) and sample (columns)
   #============================================================================#
-  cat("\nEstimating RT deviation...")
+  if(verbose){cat("\nEstimating RT deviation...")}
   ##############################################################################
   # rtgroupsMatrix
   rtgroupsMatrix <- matrix(nrow = nrow(msbatch$alignment$clustIndex), 
@@ -689,12 +729,12 @@ alignmsbatch <- function(msbatch,
   ##############################################################################
   # rtdevMatrix: differences between median RT and individual samples RT
   rtdevMatrix <- rtgroupsMatrix - rtmedian
-  cat("OK")
+  if(verbose){cat("OK")}
   
   #============================================================================#
   # RT correction
   #============================================================================#
-  cat("\nAligning samples...")
+  if(verbose){cat("\nAligning samples...")}
   rtdevcorrected <- list()
   rtmodels <- list()
   for (i in 1:length(msbatch$msobjects)){
@@ -727,7 +767,7 @@ alignmsbatch <- function(msbatch,
       msbatch$msobjects[[i]]$peaklist[[mslevel]]$RT <- rtcorrection(rt, rtlo)
     }
   }
-  cat("OK\n")
+  if(verbose){cat("OK\n")}
   
   #============================================================================#
   # Save results in msbatch
@@ -765,8 +805,40 @@ alignmsbatch <- function(msbatch,
 #' used for grouping. Used to calculate minsamples in case it is missing.
 #' @param parallel logical. If TRUE, parallel processing is performed.
 #' @param ncores number of cores to be used in case parallel is TRUE.
+#' @param verbose print information messages.
 #' 
 #' @return grouped msbatch
+#' 
+#' @details First, peak partitions are created based on the enviPick algorithm 
+#' to speed up the following clustering algorithm. Briefly, peaks are ordered 
+#' increasingly by mz and RT and grouped based on user-defined tolerances (dmz 
+#' and drt). Each peak is initialized as a partition and then, they are 
+#' evaluated to decide whether or not they can be joined to the previous 
+#' partition. If mz and RT of a peak matches tolerance of any of the peaks in 
+#' the previous partition, it is reassigned. Then, clustering algorithm is 
+#' executed to improve these partitions based on their mz following the next 
+#' steps for each partition:
+#' 
+#' 1.	Each peak in the partition is initialized as a new cluster. For each 
+#' cluster we will keep the minimum, maximum and mean value of the mz, which at 
+#' this point have the same values.
+#' 2.	Calculate a distance matrix between all clusters. This distance will be 
+#' the greatest difference between minimum and maximum values of each cluster.
+#' 3.	While any distance is different to NA, search the minimum distance between 
+#' two clusters.
+#' 4.	If distance is below the maximum distance allowed, join clusters and 
+#' update minimum, maximum and mean values, else, set distance to NA and go back 
+#' to point 3.
+#' 
+#' Then this same clustring algorithm is executed again to group peaks based on 
+#' their RT. In this case, distances between clusters which share peaks from the 
+#' same samples will be set to NA.
+#' 
+#' After groups have been defined, those clusters with a sample representation 
+#' over minsamples or minsamplesfrac will be used for building the feature table.
+#' 
+#' @references Partitioning algorithm has been imported from enviPick R-package:
+#' https://cran.r-project.org/web/packages/enviPick/index.html
 #'
 #' @examples
 #' \dontrun{
@@ -781,7 +853,8 @@ groupmsbatch <- function(msbatch,
                          minsamples, 
                          minsamplesfrac = 0.25,
                          parallel = FALSE,
-                         ncores){
+                         ncores,
+                         verbose = TRUE){
   
   #============================================================================#
   # Check arguments
@@ -828,7 +901,7 @@ groupmsbatch <- function(msbatch,
   #============================================================================#
   # Create mz partitions based on dmz and drt
   #============================================================================#
-  cat("\nCreating m.z partitions...")
+  if(verbose){cat("\nCreating m.z partitions...")}
   part <- .Call("agglom", as.numeric(peaks$mz),
                 as.numeric(peaks$RT), as.integer(1),
                 as.numeric(dmz), as.numeric(drtagglom),
@@ -841,12 +914,12 @@ groupmsbatch <- function(msbatch,
   partIndex <- indexrtpart(peaks, part, minsamples)
   peaks$partID <- partIndex$idvector
   msbatch$grouping$partIndex <- partIndex$index
-  cat("OK")
+  if(verbose){cat("OK")}
   
   #============================================================================#
   # Create mz clusters for each partition.
   #============================================================================#
-  cat("\nClustering peaks by m.z...")
+  if(verbose){cat("\nClustering peaks by m.z...")}
   ##############################################################################
   # Clusterize (in parallel if required)
   if (parallel) {
@@ -894,12 +967,12 @@ groupmsbatch <- function(msbatch,
   clustIndex <- indexrtpart(peaks, clusts, minsamples)
   peaks$clustID <- clustIndex$idvector
   msbatch$grouping$clustIndex <- clustIndex$index
-  cat("OK")
+  if(verbose){cat("OK")}
   
   #============================================================================#
   # Create RT clusters for each mz cluster
   #============================================================================#
-  cat("\nGrouping peaks by RT...")
+  if(verbose){cat("\nGrouping peaks by RT...")}
   ##############################################################################
   # Clusterize (in parallel if required)
   if (parallel) {
@@ -947,7 +1020,7 @@ groupmsbatch <- function(msbatch,
   groupIndex <- indexrtpart(peaks, group, minsamples)
   peaks$groupID <- groupIndex$idvector
   msbatch$grouping$groupIndex <- groupIndex$index
-  cat("OK")
+  if(verbose){cat("OK")}
   
   #============================================================================#
   # Save grouping results in msbatch
@@ -963,9 +1036,9 @@ groupmsbatch <- function(msbatch,
   #============================================================================#
   # Create feature table
   #============================================================================#
-  cat("\nBuilding data matrix...")
+  if(verbose){cat("\nBuilding data matrix...")}
   msbatch <- getfeaturestable(msbatch)
-  cat("OK\n")
+  if(verbose){cat("OK\n")}
   
   #============================================================================#
   # Remove unnecessary data
@@ -986,6 +1059,10 @@ groupmsbatch <- function(msbatch,
 #' @param msbatch msbatch obtained from the \link{groupmsbatch} function.
 #' 
 #' @return msbatch
+#' 
+#' @details Once grouping has been performed, areas are extracted again for each 
+#' peak and sample based on the peak parameters defined for each feature (mz and 
+#' tolerance and initial and end RT).
 #'
 #' @examples
 #' \dontrun{
@@ -1070,7 +1147,7 @@ fillpeaksmsbatch <- function(msbatch){
                                 rt[start:end] >= minRT & rt[start:end] <= maxRT]
         if (length(subset) > 0){
           ints <- int[subset]
-          ints <- ints - min(ints)
+          ints <- ints - min(ints) # baseline substraction
           fmatrix[m,s] <- sum(ints, na.rm = TRUE)
         } else {
           fmatrix[m,s] <- 0

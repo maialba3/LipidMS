@@ -40,13 +40,6 @@ List with the isotopes for each compound in the results data frame.
 This function uses annotation results of deisotoped data to search
 for isotopes in raw data.
 }
-\examples{
-\dontrun{
-msobject <- idPOS(LipidMSdata2::msobjectDIApos)
-searchIsotopes(msobject, label = "13C")
-}
-
-}
 \author{
 M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }

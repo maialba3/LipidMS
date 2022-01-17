@@ -16,6 +16,11 @@ msbatch
 Use grouping results to target all peaks from the msbatch in each sample and 
 refill intensities at the features table.
 }
+\details{
+Once grouping has been performed, areas are extracted again for each 
+peak and sample based on the peak parameters defined for each feature (mz and 
+tolerance and initial and end RT).
+}
 \examples{
 \dontrun{
 msbatch <- fillpeaksmsbatch(msbatch)

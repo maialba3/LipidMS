@@ -4,7 +4,7 @@
 \alias{ploteicmsbatch}
 \title{EIC for all samples in a msbatch}
 \usage{
-ploteicmsbatch(msbatch, mz, ppm, rt, colorbygroup = TRUE)
+ploteicmsbatch(msbatch, mz, ppm, rt, colorbygroup = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{msbatch}{msbatch}
@@ -17,6 +17,8 @@ ploteicmsbatch(msbatch, mz, ppm, rt, colorbygroup = TRUE)
 
 \item{colorbygroup}{logical. If TRUE, samples will be coloured based on their
 sample group (from metadata).}
+
+\item{verbose}{print information messages.}
 }
 \value{
 plot

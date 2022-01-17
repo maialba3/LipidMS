@@ -16,7 +16,8 @@ idLPCpos(
   ftype = c("F", "F"),
   chainfrags_sn1 = c("mg_M+H-H2O"),
   coelCutoff = 0.8,
-  dbs
+  dbs,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -56,6 +57,8 @@ Only applied if rawData info is supplied. By default, 0.8.}
 contains the required data frames based on the default fragmentation rules.
 If these rules are modified, dbs may need to be supplied. See \link{createLipidDB}
 and \link{assignDB}.}
+
+\item{verbose}{print information messages.}
 }
 \value{
 annotated msobject (list with several elements). The results element
@@ -88,7 +91,7 @@ sum intensity in DDA of all fragments used for the identification).
 }
 \note{
 This function has been written based on fragmentation patterns
-observed for three different platforms (QTOF 6550 from Agilent, Sinapt G2-Si
+observed for three different platforms (QTOF 6550 from Agilent, Synapt G2-Si
 from Waters and Q-exactive from Thermo), but it may need to be customized for
 other platforms or acquisition settings.
 }

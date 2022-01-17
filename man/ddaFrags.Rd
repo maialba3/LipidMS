@@ -32,28 +32,6 @@ selected for annotation.
 Coelution score for DDA fragments represents their relative intensity within 
 the MS2 scan.
 }
-\examples{
-\dontrun{
-devtools::install_github("maialba3/LipidMSdata2")
-
-library(LipidMS)
-dbs <- assignDB()
-
-MS1 <- LipidMSdata2::msobjectDDAneg$peaklist$MS1
-MS1 <- MS1[MS1$isotope \%in\% c("[M+0]"), !colnames(MS1) \%in\% c("isotope", "isoGroup")]
-MS2 <- LipidMSdata2::msobjectDDAneg$peaklist$MS2[,c("mz", "RT", "int", "peakID")]
-rawData <- rbind(LipidMSdata2::msobjectDDAneg$MS1, LipidMSdata2::msobjectDDAneg$MS2)
-precursors <- LipidMSdata2::msobjectDDAneg$metaData$scansMetadata[
-LipidMSdata2::msobjectDDAneg$metaData$scansMetadata$collisionEnergy > 0 &
-msobjectDDAneg$metaData$scansMetadata$msLevel == 2, c("RT", "precursor", "Scan")]
-candidates <- findCandidates(MS1 = MS1, db = dbs$cerdb, ppm = 10,
-rt = c(0, 2000), adducts = c("M-H"),
-rttol = 10, dbs = dbs, rawData = rawData_neg$rawScans, coelCutoff = 0.8)
-
-coelfrags <- ddaFrags(candidates, precursors, rawData, ppm = 10)
-}
-
-}
 \author{
 M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }

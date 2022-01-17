@@ -32,27 +32,6 @@ Given a RT and a list of peaks, this function subsets all coeluting fragments
 within a rt windows. It is used by identification functions to extract
 coeluting fragments from high energy functions for candidate precursor ions.
 }
-\examples{
-\dontrun{
-devtools::install_github("maialba3/LipidMSdata2")
-
-library(LipidMS)
-dbs <- assignDB()
-
-MS1 <- LipidMSdata2::msobjectDIAneg$peaklist$MS1
-MS1 <- MS1[MS1$isotope \%in\% c("[M+0]"), !colnames(MS1) \%in\% c("isotope", "isoGroup")]
-MS2 <- LipidMSdata2::msobjectDIAneg$peaklist$MS2[,c("mz", "RT", "int", "peakID")]
-rawData <- rbind(LipidMSdata2::msobjectDIAneg$MS1, LipidMSdata2::msobjectDIAneg$MS2)
-
-candidates <- findCandidates(MS1 = MS1, db = dbs$pgdb, ppm = 10,
-rt = c(0, 2000), adducts = c("M-H"), rttol = 10, dbs = dbs,
-rawData = rawData, coelCutoff = 0.8)
-
-coelfrags <- coelutingFrags(candidates, MSMS, rttol = 10, rawData = rawData,
-coelCutoff = 0.8)
-}
-
-}
 \author{
 M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }

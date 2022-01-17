@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataProcessing.R
 \name{batchdataProcessing}
 \alias{batchdataProcessing}
-\title{Process several mzXML files (peakpicking and isotope annotation) and create a 
+\title{Process several mzXML files (peakpicking and isotope annotation) and create an 
 msbatch for batch processing.}
 \usage{
 batchdataProcessing(
@@ -24,7 +24,8 @@ batchdataProcessing(
   dmzIso = 10,
   drtIso = 5,
   parallel = FALSE,
-  ncores
+  ncores,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -69,12 +70,14 @@ within the drtminpeak window are required to define a peak.}
 \item{parallel}{logical.}
 
 \item{ncores}{number of cores to be used in case parallel is TRUE.}
+
+\item{verbose}{print information messages.}
 }
 \value{
 msbatch
 }
 \description{
-Process several mzXML files (peakpicking and isotope annotation) and create a 
+Process several mzXML files (peakpicking and isotope annotation) and create an 
 msbatch for batch processing.
 }
 \details{

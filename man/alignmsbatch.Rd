@@ -12,7 +12,8 @@ alignmsbatch(
   minsamplesfrac = 0.75,
   span = 0.4,
   parallel = FALSE,
-  ncores
+  ncores,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -33,18 +34,55 @@ used for the alignment. Used to calculate minsamples in case it is missing.}
 \item{parallel}{logical. If TRUE, parallel processing will be performed.}
 
 \item{ncores}{number of cores to be used in case parallel is TRUE.}
+
+\item{verbose}{print information messages.}
 }
 \value{
 aligned msbatch
 }
 \description{
-Align samples from an msbatch
+Align samples from an msbatch to correct time drifts during acquisition queues.
+}
+\details{
+First, peak partitions are created based on the enviPick algorithm 
+to speed up the following clustering algorithm. Briefly, peaks are ordered 
+increasingly by mz and RT and grouped based on user-defined tolerances (dmz 
+and drt). Each peak is initialized as a partition and then, they are 
+evaluated to decide whether or not they can be joined to the previous 
+partition. If mz and RT of a peak matches tolerance of any of the peaks in 
+the previous partition, it is reassigned. Then, clustering algorithm is 
+executed to group peaks based on their RT following the next steps for each 
+partition:
+
+1.	Each peak in the partition is initialized as a new cluster. For each 
+cluster we will keep the minimum, maximum and mean value of the RT, which at 
+this point have the same values.
+2.	Calculate a distance matrix between all clusters. This distance will be 
+the greatest difference between minimum and maximum values of each cluster. 
+Distances between clusters which share peaks from the same samples will be 
+set to NA.
+3.	While any distance is different to NA, search the minimum distance between 
+two clusters.
+4.	If distance is below the maximum distance allowed, join clusters and 
+update minimum, maximum and mean values, else, set distance to NA and go back 
+to point 3.
+
+Then, clusters with a sample representation over minsamples or minsamplesfrac, 
+will be used for alignment. To this end, an RT matrix is built containing the 
+RT of the peaks for each sample from the selected clusters. Then, median RT 
+is calculated for each cluster and an RT deviation matrix is obtained. Finally, 
+time drifts for each sample are corrected using loess regression by 
+constructing a function based on RT deviation and median.
 }
 \examples{
 \dontrun{
-msbatch <- setmsbatch(msbatch)
+msbatch <- alignmsbatch(msbatch)
 }
 
+}
+\references{
+Partitioning algorithm has been imported from enviPick R-package:
+https://cran.r-project.org/web/packages/enviPick/index.html
 }
 \author{
 M Isabel Alcoriza-Balaguer <maialba@iislafe.es>

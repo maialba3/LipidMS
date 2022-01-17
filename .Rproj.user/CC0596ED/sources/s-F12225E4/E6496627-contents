@@ -1,0 +1,223 @@
+
+
+setwd("H:/Maribel/omicas/RNAseq/Ester/ResultadosCluster")
+
+samples <- read.csv("samples.csv", sep=";")
+counts <- read.table("read_counts_bueno.count", sep=" ")
+counts <- counts[grepl("ENSG", counts$V1), ]
+head(counts)
+
+rownames(counts) <- counts$V1
+counts <- counts[,2:19]
+colnames(counts) <- samples$sample
+head(counts)
+
+data <- t(counts)
+data[1:10,1:10]
+
+
+
+library(pcaMethods)
+library(RColorBrewer)
+
+colors <- brewer.pal(length(unique(samples$group1)), name="Dark2")
+
+pdf("PCA_Raw.pdf", height = 7, width = 7)
+par(mar=c(5,4,2,6))
+pca.raw <- pca(as.matrix(data), nPcs = 2, scale = "uv")
+plot(pca.raw@scores, 
+     col = colors[as.factor(samples$group1)], lwd=1,
+     main = "Raw data", pch = 19)
+legend("topleft",inset = c(1,0),  
+       legend = levels(as.factor(samples$group1)),
+       col = colors, pch=19, lwd=1, cex=0.6, xpd=TRUE, bty="n")
+dev.off()
+
+
+#==============================================================================#
+
+library(edgeR)
+datos <- DGEList(counts = counts, group = samples$group2)
+head(datos$counts)
+head(datos$samples)
+
+
+keep <- filterByExpr(datos, group = samples$group) # keep only genes that are expressed for all samples of a group
+datos <- datos[keep, , keep.lib.sizes = FALSE]
+
+
+datos <- calcNormFactors(datos)
+datos$samples
+
+datos <- estimateDisp(datos)
+datos <- estimateCommonDisp(datos)
+datos <- estimateTagwiseDisp(datos)
+
+datos$samples
+
+et <- exactTest(datos)
+tp <- topTags(et, n = nrow(datos$counts))
+
+
+pdf("Boxplots_top10_DE.pdf", height = 7, width = 7)
+logcpm <- cpm(datos, log=TRUE)
+for (i in 1:10){
+  boxplot(logcpm[rownames(tp)[i],] ~ samples$group1, main = rownames(tp)[i], 
+          las = 2, cex.axis = 0.6, ylab = "logCPM", xlab = "")
+}
+dev.off()
+
+
+pdf("PCA_logCPM.pdf", height = 7, width = 7)
+par(mar=c(5,4,2,6))
+pca <- pcaMethods::pca(as.matrix(t(logcpm)), nPcs = 2, center = TRUE)
+plot(pca@scores, 
+     col = colors[as.factor(samples$group1)], lwd=1,
+     main = "LogCPM", pch = 19)
+legend("topleft",inset = c(1,0),  
+       legend = levels(as.factor(samples$group1)),
+       col = colors, pch=19, lwd=1, cex=0.6, xpd=TRUE, bty="n")
+dev.off()
+
+
+#==============================================================================#
+pacman::p_load("EnsDb.Hsapiens.v86")
+
+library(EnsDb.Hsapiens.v86)
+
+# 1. Convert from ensembl.gene to gene.symbol
+ensembl.genes <- gsub("\\..*", "", rownames(logcpm))
+geneIDs1 <- ensembldb::select(EnsDb.Hsapiens.v86, keys= ensembl.genes, 
+                              keytype = "GENEID", 
+                              columns = c("SYMBOL","GENEID"))
+geneIDs1 <- merge(geneIDs1, 
+                  data.frame(GENEID = ensembl.genes), all.y = TRUE, 
+                  no.dups = FALSE, sort = FALSE)
+
+
+ensembl.genes_tp <- gsub("\\..*", "", rownames(tp$table))
+geneIDs2 <- ensembldb::select(EnsDb.Hsapiens.v86, keys= ensembl.genes_tp, 
+                              keytype = "GENEID", 
+                              columns = c("SYMBOL","GENEID"))
+geneIDs2 <- merge(geneIDs2, 
+                  data.frame(GENEID = ensembl.genes_tp), all.y = TRUE, 
+                  no.dups = FALSE, sort = FALSE)
+
+
+ensembl.genes_raw <- gsub("\\..*", "", rownames(counts))
+geneIDs3 <- ensembldb::select(EnsDb.Hsapiens.v86, keys= ensembl.genes_raw, 
+                              keytype = "GENEID", 
+                              columns = c("SYMBOL","GENEID"))
+geneIDs3 <- merge(geneIDs3, 
+                  data.frame(GENEID = ensembl.genes_raw), all.y = TRUE, 
+                  no.dups = FALSE, sort = FALSE)
+
+
+ensembl.genes_counts <- gsub("\\..*", "", rownames(datos$counts))
+geneIDs4 <- ensembldb::select(EnsDb.Hsapiens.v86, keys= ensembl.genes_counts, 
+                              keytype = "GENEID", 
+                              columns = c("SYMBOL","GENEID"))
+geneIDs4 <- merge(geneIDs4, 
+                  data.frame(GENEID = ensembl.genes_counts), all.y = TRUE, 
+                  no.dups = FALSE, sort = FALSE)
+
+head(geneIDs1, 20)
+
+#==============================================================================#
+
+write.table(rbind(c("", "", samples$group1),
+                  c("gene", "transcript", samples$sample),
+                  cbind(geneIDs1$SYMBOL, rownames(logcpm), logcpm)), 
+            row.names = FALSE, col.names = FALSE,
+            file = "logCPM.csv", sep=",")
+
+write.table(rbind(c("", "", samples$group1),
+                  c("gene", "transcript", samples$sample),
+                  cbind(geneIDs4$SYMBOL, rownames(datos$counts), datos$counts)), 
+            row.names = FALSE, col.names = FALSE,
+            file = "counts_filtered.csv", sep=",")
+
+write.table(rbind(c("", "", samples$group1),
+                  c("gene", "transcript", samples$sample),
+                  cbind(geneIDs3$SYMBOL, rownames(counts), counts)), 
+            row.names = FALSE, col.names = FALSE,
+            file = "counts_raw.csv", sep=",")
+
+write.table(rbind(c("gene", "transcript", colnames(tp$table)),
+                  cbind(geneIDs2$SYMBOL, rownames(tp$table), tp$table)), 
+            row.names = FALSE, col.names = FALSE,
+            file = "DE_sens_res.csv", sep=",")
+
+
+
+#==============================================================================#
+pacman::p_load("mixOmics")
+library(mixOmics)
+
+plsda1 <- mixOmics::plsda(as.matrix(t(logcpm)),
+                          as.integer(factor(samples$group1)),
+                          ncomp = 5,
+                          scale = TRUE,
+                          tol = 1e-06,
+                          max.iter = 100,
+                          near.zero.var = FALSE,
+                          logratio="none",  # one of "none", "CLR"
+                          multilevel=NULL,
+                          all.outputs = TRUE)
+
+perf.plsda <- mixOmics::perf(plsda1, validation = "Mfold", folds = 5,
+                             progressBar = FALSE, auc = TRUE, nrepeat = 10)
+plot(perf.plsda)
+plsda1 <- mixOmics::plsda(as.matrix(t(logcpm)),
+                          as.integer(factor(samples$group1)),
+                          ncomp = 2,
+                          scale = FALSE,
+                          tol = 1e-06,
+                          max.iter = 100,
+                          near.zero.var = FALSE,
+                          logratio="none",  # one of "none", "CLR"
+                          multilevel=NULL,
+                          all.outputs = TRUE)
+
+
+pdf("PLSDA_logCPM_cellLines.pdf", height = 8, width=10)
+mixOmics::plotIndiv(plsda1, group = factor(samples$group1),
+                    ind.names = FALSE, ellipse = TRUE, ellipse.level = 0.95, 
+                    legend = TRUE, title = "PLS-DA")
+dev.off()
+
+
+#==============================================================================#
+
+plsda2 <- mixOmics::plsda(as.matrix(t(logcpm)),
+                          as.integer(factor(samples$group2)),
+                          ncomp = 2,
+                          scale = FALSE,
+                          tol = 1e-06,
+                          max.iter = 100,
+                          near.zero.var = FALSE,
+                          logratio="none",  # one of "none", "CLR"
+                          multilevel=NULL,
+                          all.outputs = TRUE)
+
+
+pdf("PLSDA_logCPM_sensRes.pdf", height = 8, width=10)
+mixOmics::plotIndiv(plsda2, group = factor(samples$group2),
+                    ind.names = FALSE, ellipse = TRUE, ellipse.level = 0.95, 
+                    legend = TRUE, title = "PLS-DA")
+mixOmics::plotIndiv(plsda2, group = factor(samples$group1),
+                    ind.names = FALSE, ellipse = TRUE, ellipse.level = 0.95, 
+                    legend = TRUE, title = "PLS-DA")
+dev.off()
+
+
+
+vip <- as.data.frame(vip(plsda2))
+vip$vip <- apply(abs(vip[,1:2]), 1, sum)
+vip$gene <- geneIDs1$SYMBOL
+vip <- vip[order(vip$vip, decreasing = TRUE),]
+vip[vip$vip > 5,] 
+
+write.table(vip[,c(1,2,4)], file = "vip_plsda_sensRes.csv", sep = ",")
+
+

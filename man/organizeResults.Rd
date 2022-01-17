@@ -45,41 +45,6 @@ Coelution score for DIA data is calculated as the mean coelution
 score of all fragments used for annotation, while for DDA data, it is 
 calculated as the sum relative intensity of those fragments in theie MS2 scan.
 }
-\examples{
-\dontrun{
-devtools::install_github("maialba3/LipidMSdata2")
-
-library(LipidMS)
-dbs <- assignDB()
-
-MS1 <- LipidMSdata2::msobjectDIAneg$peaklist$MS1
-MS1 <- MS1[MS1$isotope \%in\% c("[M+0]"), !colnames(MS1) \%in\% c("isotope", "isoGroup")]
-MS2 <- LipidMSdata2::msobjectDIAneg$peaklist$MS2[,c("mz", "RT", "int", "peakID")]
-rawData <- rbind(LipidMSdata2::msobjectDIAneg$MS1, LipidMSdata2::msobjectDIAneg$MS2)
-
-candidates <- findCandidates(MS1 = MS1, db = dbs$pgdb, ppm = 10,
-rt = c(0, 2000), adducts = c("M-H"), rttol = 10, dbs = dbs,
-rawData = rawData, coelCutoff = 0.8)
-coelfrags <- coelutingFrags(candidates, MSMS, rttol = 10, rawData = rawData,
-coelCutoff = 0.8)
-classConf <- checkClass(candidates, coelfrags,
-clfrags = c(227.0326, 209.022, 74.0359),
-clrequisites = c(FALSE, FALSE, FALSE, FALSE),
-ftype = c("F", "F", "NL"), ppm = 10, dbs = dbs)
-sn1 <- chainFrags(coelfrags, chainfrags = c("lysopg_M-H"),
-candidates = candidates, ppm = 10, dbs = dbs)
-sn2 <- chainFrags(coelfrags, chainfrags = c("fa_M-H"), ppm = 10,
-candidates = candidates, dbs = dbs)
-chainsComb <- combineChains(candidates, nchains=2, sn1, sn2)
-intConf <- checkIntensityRules(intrules = c("lysopg_sn1/lysopg_sn1"),
-rates = c("2/1"), intrequired = c(TRUE), nchains=2, chainsComb)
-
-res <- organizeResults(candidates, clfrags = c(227.0326, 209.022, 74.0359),
-classConf, chainsComb, intrules = c("lysopg_sn1/lysopg_sn1"), intConf,
-nchains = 2, class="PG", acquisitionmode = "DIA")
-}
-
-}
 \author{
 M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }

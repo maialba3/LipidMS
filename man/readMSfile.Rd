@@ -4,10 +4,12 @@
 \alias{readMSfile}
 \title{Read mzXML file and initiate msobject}
 \usage{
-readMSfile(file)
+readMSfile(file, polarity)
 }
 \arguments{
 \item{file}{file path for a mzXML file}
+
+\item{polarity}{character value: negative or positive.}
 }
 \value{
 msobject

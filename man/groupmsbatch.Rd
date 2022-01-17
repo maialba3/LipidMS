@@ -12,7 +12,8 @@ groupmsbatch(
   minsamples,
   minsamplesfrac = 0.25,
   parallel = FALSE,
-  ncores
+  ncores,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ used for grouping. Used to calculate minsamples in case it is missing.}
 \item{parallel}{logical. If TRUE, parallel processing is performed.}
 
 \item{ncores}{number of cores to be used in case parallel is TRUE.}
+
+\item{verbose}{print information messages.}
 }
 \value{
 grouped msbatch
@@ -41,11 +44,44 @@ grouped msbatch
 \description{
 Group features from an msbatch
 }
+\details{
+First, peak partitions are created based on the enviPick algorithm 
+to speed up the following clustering algorithm. Briefly, peaks are ordered 
+increasingly by mz and RT and grouped based on user-defined tolerances (dmz 
+and drt). Each peak is initialized as a partition and then, they are 
+evaluated to decide whether or not they can be joined to the previous 
+partition. If mz and RT of a peak matches tolerance of any of the peaks in 
+the previous partition, it is reassigned. Then, clustering algorithm is 
+executed to improve these partitions based on their mz following the next 
+steps for each partition:
+
+1.	Each peak in the partition is initialized as a new cluster. For each 
+cluster we will keep the minimum, maximum and mean value of the mz, which at 
+this point have the same values.
+2.	Calculate a distance matrix between all clusters. This distance will be 
+the greatest difference between minimum and maximum values of each cluster.
+3.	While any distance is different to NA, search the minimum distance between 
+two clusters.
+4.	If distance is below the maximum distance allowed, join clusters and 
+update minimum, maximum and mean values, else, set distance to NA and go back 
+to point 3.
+
+Then this same clustring algorithm is executed again to group peaks based on 
+their RT. In this case, distances between clusters which share peaks from the 
+same samples will be set to NA.
+
+After groups have been defined, those clusters with a sample representation 
+over minsamples or minsamplesfrac will be used for building the feature table.
+}
 \examples{
 \dontrun{
 msbatch <- groupmsbatch(msbatch)
 }
 
+}
+\references{
+Partitioning algorithm has been imported from enviPick R-package:
+https://cran.r-project.org/web/packages/enviPick/index.html
 }
 \author{
 M Isabel Alcoriza-Balaguer <maialba@iislafe.es>

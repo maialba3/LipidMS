@@ -22,16 +22,6 @@ and the LipidMSid.
 \description{
 Obtain an inclusion list for the identified lipids.
 }
-\examples{
-\dontrun{
-devtools::install_github("maialba3/LipidMSdata2")
-
-library(LipidMS)
-msobject <- idPOS(LipidMSdata2::msobjectDIApos)
-getInclusionList(msobject)
-}
-
-}
 \author{
 M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }

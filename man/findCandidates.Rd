@@ -59,36 +59,6 @@ adduct. If several adducts are expected, results are combined.
 Adducts allowed are contained in adductsTable data frame, which can be
 modified if required (see \link{adductsTable}).
 }
-\examples{
-\dontrun{
-devtools::install_github("maialba3/LipidMSdata2")
-
-library(LipidMS)
-dbs <- assignDB()
-
-MS1 <- LipidMSdata2::msobjectDIAneg$peaklist$MS1
-MS1 <- MS1[MS1$isotope \%in\% c("[M+0]"), !colnames(MS1) \%in\% c("isotope", "isoGroup")]
-MS2 <- LipidMSdata2::msobjectDIAneg$peaklist$MS2[,c("mz", "RT", "int", "peakID")]
-rawData <- rbind(LipidMSdata2::msobjectDIAneg$MS1, LipidMSdata2::msobjectDIAneg$MS2)
-
-candidates <- findCandidates(MS1 = MS1, db = dbs$pgdb, ppm = 10,
-rt = c(0, 2000), adducts = c("M-H"), rttol = 10, dbs = dbs,
-rawData = rawData, coelCutoff = 0.8)
-
-# If any adduct is not in the adductsTable, it can be added:
-
-adductsTable2 <- rbind(dbs$adductsTable,
-data.frame(adduct = "M+X", mdiff = 44.9982, n = 1, charge = -1,
-stringsAsFactors = FALSE))
-dbs <- assignDB()
-dbs$adductsTable <- adductsTable2
-
-candidates <- findCandidates(MS1 = MS1, db = dbs$pgdb, ppm = 10,
-rt = c(0, 2000), adducts = c("M-H", "M+X"), rttol = 10, dbs = dbs,
-rawData = rawData, coelCutoff = 0.8)
-}
-
-}
 \author{
 M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }

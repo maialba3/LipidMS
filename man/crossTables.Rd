@@ -27,15 +27,6 @@ sorted based on the annotation level and score.
 \description{
 Cross the original MS1 peaklist with the annotation results.
 }
-\examples{
-\dontrun{
-devtools::install_github("maialba3/LipidMSdata2")
-
-library(LipidMS)
-msobject <- idPCneg(LipidMSdata2::msobjectDIAneg)
-msobject <- crossTables(msobject, ppm = 10, rttol = 10)}
-
-}
 \author{
 M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
