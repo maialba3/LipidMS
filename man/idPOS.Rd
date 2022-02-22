@@ -11,7 +11,8 @@ idPOS(
   rttol = 5,
   coelCutoff = 0.8,
   lipidClasses = c("MG", "LPC", "LPE", "PC", "PCo", "PCp", "PE", "PEo", "PEp", "PG",
-    "Sph", "SphP", "Cer", "AcylCer", "CerP", "SM", "Carnitines", "CE", "DG", "TG"),
+    "PI", "Sph", "SphP", "Cer", "\\n                                   AcylCer", "CerP",
+    "SM", "Carnitines", "CE", "DG", "TG"),
   dbs,
   verbose = TRUE
 )

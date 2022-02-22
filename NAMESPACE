@@ -4,10 +4,10 @@ export("idNEG", "idPOS", "idBAneg", "idCarpos", "idCEpos", "idCerneg", "idCerpos
        "idDGpos", "idFAHFAneg", "idFAneg", "idLPCpos", "idLPCneg", "idLPEneg", 
        "idLPEpos", "idLPGneg", "idLPIneg", "idLPSneg", "idMGpos", "idPCpos", 
        "idPCneg", "idPEneg", "idPEpos", "idPGneg", "idPGpos", "idPIneg", 
-       "idPSneg", "idSMpos", "idSphpos", "idSphneg", "idSphPneg", "idSphPpos", 
-       "idTGpos", "idCLneg", "idPConeg", "idPCpneg", "idPEoneg", "idPEpneg", 
-       "idCerPneg", "idPCopos", "idPCppos", "idPEopos", "idPEppos", "idCerPpos", 
-       "idAcylCerneg", "idAcylCerpos", "annotatemsbatch")
+       "idPSneg", "idSMpos", "idSMneg", "idSphpos", "idSphneg", "idSphPneg", 
+       "idSphPpos", "idTGpos", "idCLneg", "idPConeg", "idPCpneg", "idPEoneg", 
+       "idPEpneg", "idCerPneg", "idPCopos", "idPCppos", "idPEopos", "idPEppos", 
+       "idCerPpos", "idAcylCerneg", "idAcylCerpos", "annotatemsbatch")
 export("LipidMSapp", "plotLipids", "plotticmsbatch", "ploteicmsbatch", 
        "rtdevplot", "searchIsotopes", "searchIsotopesmsbatch")
 export("assignDB", "chainFrags", "checkClass", "checkIntensityRules", 

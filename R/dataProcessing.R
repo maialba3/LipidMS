@@ -740,31 +740,36 @@ alignmsbatch <- function(msbatch,
   for (i in 1:length(msbatch$msobjects)){
     ############################################################################
     # Adjust rt dev with loess
-    rtlo <- loess(rtdevMatrix[,i] ~ rtmedian, span = span, degree = 1, 
-                  family = "gaussian")
+    rtlo <- tryCatch({loess(rtdevMatrix[,i] ~ rtmedian, span = span, degree = 1, 
+                            family = "gaussian")}, error = function(e){NA})
     rtmodels[[i]] <- rtlo
     
-    ############################################################################
-    # correct raw scans RT (in metaData)
-    rt <- msbatch$msobjects[[i]]$metaData$scansMetadata$RT
-    msbatch$msobjects[[i]]$metaData$scansMetadata$RT <- rtcorrection(rt, rtlo)
-    rtdevcorrected[[i]] <- list(RT = rt, 
-                                RTdev = rt - msbatch$msobjects[[i]]$metaData$scansMetadata$RT) 
-    
-    ############################################################################
-    # correct raw scans RT (in MS1 and MS2)
-    mslevels <- c("MS1", "MS2")[which(c("MS1", "MS2") %in% names(msbatch$msobjects[[i]]$rawData))]
-    for (mslevel in mslevels){
-      rt <- msbatch$msobjects[[i]]$rawData[[mslevel]]$RT
-      msbatch$msobjects[[i]]$rawData[[mslevel]]$RT <- rtcorrection(rt, rtlo)
-    }
-    
-    ############################################################################
-    # correct peaklist RT (in MS1 and MS2)
-    mslevels <- c("MS1", "MS2")[which(c("MS1", "MS2") %in% names(msbatch$msobjects[[i]]$peaklist))]
-    for (mslevel in mslevels){
-      rt <- msbatch$msobjects[[i]]$peaklist[[mslevel]]$RT
-      msbatch$msobjects[[i]]$peaklist[[mslevel]]$RT <- rtcorrection(rt, rtlo)
+    if (length(rtlo) > 1){
+      ##########################################################################
+      # correct raw scans RT (in metaData)
+      rt <- msbatch$msobjects[[i]]$metaData$scansMetadata$RT
+      msbatch$msobjects[[i]]$metaData$scansMetadata$RT <- rtcorrection(rt, rtlo)
+      rtdevcorrected[[i]] <- list(RT = rt, 
+                                  RTdev = rt - msbatch$msobjects[[i]]$metaData$scansMetadata$RT) 
+      
+      ##########################################################################
+      # correct raw scans RT (in MS1 and MS2)
+      mslevels <- c("MS1", "MS2")[which(c("MS1", "MS2") %in% names(msbatch$msobjects[[i]]$rawData))]
+      for (mslevel in mslevels){
+        rt <- msbatch$msobjects[[i]]$rawData[[mslevel]]$RT
+        msbatch$msobjects[[i]]$rawData[[mslevel]]$RT <- rtcorrection(rt, rtlo)
+      }
+      
+      ##########################################################################
+      # correct peaklist RT (in MS1 and MS2)
+      mslevels <- c("MS1", "MS2")[which(c("MS1", "MS2") %in% names(msbatch$msobjects[[i]]$peaklist))]
+      for (mslevel in mslevels){
+        rt <- msbatch$msobjects[[i]]$peaklist[[mslevel]]$RT
+        msbatch$msobjects[[i]]$peaklist[[mslevel]]$RT <- rtcorrection(rt, rtlo)
+      }
+    } else {
+      rtdevcorrected[[i]] <- list(RT = rt, 
+                                  RTdev = rep(0, length(rt))) 
     }
   }
   if(verbose){cat("OK\n")}

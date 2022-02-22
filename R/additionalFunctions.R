@@ -196,10 +196,17 @@ plotLipids <- function(msobject, span = 0.4, ppm = 10, verbose = TRUE){
     oldpar <- graphics::par(no.readonly = TRUE)
     on.exit(graphics::par(oldpar, new = FALSE))
     
-    colorsMS1 <- c("#42858C", "#FE9300", "#870E75", "#3E71A8", "#FE6900")
+    colorsMS1 <- c("#42858C", "#FE9300", "#870E75", "#3E71A8", "#FE6900", 
+                   grDevices::colors()[!grepl("white|gr[e|a]y", 
+                                              grDevices::colors())])
     colorsMS2 <- c("#7F8E39", "#5F3659", "#E5C616", "#16A08CFF", "#628395",
-                   "#C5D86D", "#969696FF", "#358359FF", "#9F4D23FF", "#D86C4FFF",
-                   "#170C2EFF", "#473B75FF", "#F19C1FFF")
+                   "#C5D86D", "#969696FF", "#358359FF", "#9F4D23FF", 
+                   "#D86C4FFF", "#170C2EFF", "#473B75FF", "#F19C1FFF",
+                   "#117733", "#DDCC77", "#CC6677", "#88CCEE",
+                   "#44AA99", "#332288", "#AA4499", "#999933",
+                   "#882255", "#661100", "#6699CC", "#888888", 
+                   grDevices::colors()[!grepl("white|gr[e|a]y", 
+                                              grDevices::colors())])
 
     if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
       nplots <- 1 + length(unique(scansMS2))
@@ -991,6 +998,9 @@ createLipidDB <- function(lipid, chains, chains2){
     sph <- data.frame(formula=sph$formula, total=sph$total,
                       Mass=as.numeric(sph$Mass), ID = paste("Sph(", sph$total,
                                                             ")", sep=""), stringsAsFactors = F)
+    nlsph <- sph[,1:3]
+    nlsph$Mass <- nlsph$Mass - 44.05
+    
     sphP <- dbOneChain(chains = chains2, lipid = "SphP")
     sphP <- data.frame(formula=sphP$formula, total=sphP$total,
                        Mass=as.numeric(sphP$Mass), ID = paste("SphP(", sphP$total,
@@ -1079,12 +1089,12 @@ createLipidDB <- function(lipid, chains, chains2){
     lysopeo <- dbOneChain(chains = chains, lipid = "LPEo")
     lysopeo <- data.frame(formula=lysopeo$formula, total=lysopeo$total,
                           Mass=as.numeric(lysopeo$Mass),
-                          ID = paste("LPEo(", pe$total, ")", sep=""),
+                          ID = paste("LPEo(", lysopeo$total, ")", sep=""),
                           stringsAsFactors = F)
     lysopao <- dbOneChain(chains = chains, lipid = "LPAo")
     lysopao <- data.frame(formula=lysopao$formula, total=lysopao$total,
                           Mass=as.numeric(lysopao$Mass),
-                          ID = paste("LPAo(", pe$total, ")", sep=""),
+                          ID = paste("LPAo(", lysopao$total, ")", sep=""),
                           stringsAsFactors = F)
     pcp <- dbTwoChains(chains = chains, lipid = "PCp")
     pcp <- data.frame(formula=pcp$formula, total=pcp$total,
@@ -1116,6 +1126,8 @@ createLipidDB <- function(lipid, chains, chains2){
                           Mass=as.numeric(lysopep$Mass),
                           ID = paste("LPEp(", lysopep$total, ")", sep=""),
                           stringsAsFactors = F)
+    
+    
     customizedDataSets[["cerdb"]] <- ceramides
     customizedDataSets[["cerPdb"]] <- ceramidesP
     customizedDataSets[["acylcerdb"]] <- acylcer
@@ -1156,6 +1168,10 @@ createLipidDB <- function(lipid, chains, chains2){
     customizedDataSets[["lysopcodb"]] <- lysopco
     customizedDataSets[["pepdb"]] <- pep
     customizedDataSets[["lysopepdb"]] <- lysopep
+    customizedDataSets[["nlsphdb"]] <- nlsph
+    customizedDataSets[["badb"]] <- LipidMS::badb
+    customizedDataSets[["baconjdb"]] <- LipidMS::baconjdb
+    customizedDataSets[["adductsTable"]] <- LipidMS::adductsTable
   }
   return(customizedDataSets)
 }

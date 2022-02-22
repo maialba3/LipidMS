@@ -41,8 +41,8 @@ idPOS <- function(msobject,
                   rttol = 5,
                   coelCutoff = 0.8,
                   lipidClasses = c("MG", "LPC", "LPE", "PC", "PCo", "PCp", "PE", 
-                                   "PEo", "PEp", "PG", "Sph", "SphP", "Cer", "AcylCer",
-                                   "CerP", "SM", "Carnitines", "CE", "DG", "TG"),
+                                   "PEo", "PEp", "PG", "PI", "Sph", "SphP", "Cer", "
+                                   AcylCer", "CerP", "SM", "Carnitines", "CE", "DG", "TG"),
                   dbs,
                   verbose = TRUE){
 
@@ -57,11 +57,12 @@ idPOS <- function(msobject,
     if(verbose){cat("OK")}
   }
   if (!all(lipidClasses %in% c("MG", "LPC", "LPE", "PC", "PCo", "PCp", "PE", 
-                               "PEo", "PEp", "PG", "Sph", "SphP", "Cer", "AcylCer",
-                               "CerP", "SM", "Carnitines", "CE", "DG", "TG"))){
+                               "PEo", "PEp", "PG", "PI", "Sph", "SphP", "Cer", 
+                               "AcylCer", "CerP", "SM", "Carnitines", "CE", "DG", 
+                               "TG"))){
     stop("Lipid classes allowed for positive annotation are: MG, LPC, LPE, PC,
-          PCo, PCp, PE, PEo, PEp, PG, Sph, SphP, Cer, CerP, AcylCer, SM, Carnitines, 
-          CE, DG and TG")
+          PCo, PCp, PE, PEo, PEp, PG, PI, Sph, SphP, Cer, CerP, AcylCer, SM, 
+          Carnitines, CE, DG and TG")
   }
   if (missing(dbs)){
     dbs <- assignDB()
@@ -136,6 +137,13 @@ idPOS <- function(msobject,
   if ("PG" %in% lipidClasses){
     if(verbose){cat("\n  Searching for PG...")}
     msobject <-  idPGpos(msobject = msobject, ppm_precursor = ppm_precursor,
+                         ppm_products = ppm_products, rttol = rttol,
+                         coelCutoff = coelCutoff, dbs = dbs, verbose = verbose)
+    if(verbose){cat("OK")}
+  }
+  if ("PI" %in% lipidClasses){
+    if(verbose){cat("\n  Searching for PI...")}
+    msobject <-  idPIpos(msobject = msobject, ppm_precursor = ppm_precursor,
                          ppm_products = ppm_products, rttol = rttol,
                          coelCutoff = coelCutoff, dbs = dbs, verbose = verbose)
     if(verbose){cat("OK")}
@@ -312,7 +320,7 @@ idMGpos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -340,7 +348,7 @@ idMGpos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -517,7 +525,7 @@ idLPCpos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -545,7 +553,7 @@ idLPCpos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -742,7 +750,7 @@ idLPEpos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -770,7 +778,7 @@ idLPEpos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -986,7 +994,7 @@ idPCpos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -1014,7 +1022,7 @@ idPCpos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -1230,7 +1238,7 @@ idPCopos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -1258,7 +1266,7 @@ idPCopos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -1474,7 +1482,7 @@ idPCppos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -1502,7 +1510,7 @@ idPCppos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -1718,7 +1726,7 @@ idPEpos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -1746,7 +1754,7 @@ idPEpos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -1961,7 +1969,7 @@ idPEopos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -1989,7 +1997,7 @@ idPEopos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -2204,7 +2212,7 @@ idPEppos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -2232,7 +2240,7 @@ idPEppos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -2390,8 +2398,8 @@ idPEppos <- function(msobject,
 #' sn1 (MG as M+H-H2O resulting from the loss of the FA chain at sn2)
 #' and sn2 (MG as M+H-H2O resulting from the loss of the FA chain at sn1).
 #' 4) Look for possible chains structure based on the combination of chain
-#' fragments. 5) Check intensity rules to confirm chains position. MG from sn1
-#' is at least 2 times more intense than the ones from sn2.
+#' fragments. 5) Check intensity rules to confirm chains position. MG from sn2
+#' is at least twice more intense than the one from sn1.
 #'
 #' Results data frame shows: ID, lipid class, CDB (total number
 #' of carbons and double bounds), FA composition (specific chains composition if
@@ -2425,7 +2433,7 @@ idPGpos <- function(msobject,
                     chainfrags_sn2 = c("mg_M+H-H2O"),
                     intrules = c("mg_sn1/mg_sn2"),
                     rates = c("1/2"),
-                    intrequired = c(F, F),
+                    intrequired = c(F),
                     coelCutoff = 0.8,
                     dbs, 
                     verbose = TRUE){
@@ -2447,7 +2455,7 @@ idPGpos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -2475,7 +2483,7 @@ idPGpos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -2574,6 +2582,250 @@ idPGpos <- function(msobject,
   return(msobject)
 }
 
+# idPIpos
+#' Phosphoinositols (PI) annotation for ESI+
+#'
+#' PI identification based on fragmentation patterns for LC-MS/MS DIA or DDA
+#' data acquired in positive mode.
+#'
+#' @param msobject an msobject returned by \link{dataProcessing}.
+#' @param ppm_precursor mass tolerance for precursor ions. By default, 5 ppm.
+#' @param ppm_products mass tolerance for product ions. By default, 10 ppm.
+#' @param rttol total rt window for coelution between precursor and product
+#' ions. By default, 3 seconds.
+#' @param rt rt range where the function will look for candidates. By default,
+#' it will search within all RT range in MS1.
+#' @param adducts expected adducts for PE in ESI+. Adducts allowed can
+#' be modified in adductsTable (dbs argument).
+#' @param clfrags vector containing the expected fragments for a given lipid
+#' class. See \link{checkClass} for details.
+#' @param ftype character vector indicating the type of fragments in clfrags.
+#' It can be: "F" (fragment), "NL" (neutral loss) or "BB" (building block).
+#' See \link{checkClass} for details.
+#' @param clrequired logical vector indicating if each class fragment is
+#' required or not. If any of them is required, at least one of them must be
+#' present within the coeluting fragments. See \link{checkClass} for details.
+#' @param chainfrags_sn1 character vector containing the fragmentation rules for
+#' the chain fragments in sn1 position. See \link{chainFrags} for details.
+#' @param chainfrags_sn2 character vector containing the fragmentation rules for
+#' the chain fragments in sn2 position. See \link{chainFrags} for details. If
+#' empty, it will be estimated based on the difference between precursors and
+#' sn1 chains.
+#' @param intrules character vector specifying the fragments to compare. See
+#' \link{checkIntensityRules}.
+#' @param rates character vector with the expected rates between fragments given
+#' as a string (e.g. "3/1"). See \link{checkIntensityRules}.
+#' @param intrequired logical vector indicating if any of the rules is required.
+#' If not, at least one must be verified to confirm the structure.
+#' @param coelCutoff coelution score threshold between parent and fragment ions.
+#' Only applied if rawData info is supplied. By default, 0.8.
+#' @param dbs list of data bases required for annotation. By default, dbs
+#' contains the required data frames based on the default fragmentation rules.
+#' If these rules are modified, dbs may need to be supplied. See
+#' \link{createLipidDB} and \link{assignDB}.
+#' @param verbose print information messages.
+#'
+#' @return annotated msobject (list with several elements). The results element
+#' is a data frame that shows: ID, lipid class, CDB (total number of carbons
+#' and double bounds), FA composition (specific chains composition if it has
+#' been confirmed), mz, RT (in seconds), I (intensity), Adducts, ppm (mz error),
+#' confidenceLevel (Subclass, FA level, where chains are known but not their
+#' positions, or FA position level), peakID, and Score (parent-fragment coelution 
+#' score mean in DIA data or relative sum intensity in DDA of all fragments used 
+#' for the identification).
+#'
+#' @details \code{idPIpos} function involves 5 steps. 1) FullMS-based
+#' identification of candidate PI as M+H, M+NH4 and M+Na. 2) Search of PI class
+#' fragments: loss of head group (DG as M+H-H2O) coeluting with the precursor
+#' ion. 3) Search of specific fragments that inform about chain composition at
+#' sn1 (MG as M+H-H2O or LPI as M+H-H2O resulting from the loss of the FA chain 
+#' at sn2) and sn2 (MG as M+H-H2O or LPI as M+H-H2O resulting from the loss of 
+#' the FA chain at sn1). 4) Look for possible chains structure based on the 
+#' combination of chain fragments. 5) Check intensity rules to confirm chains 
+#' position. MG or LPI from sn1 are at least twice more intense than the ones 
+#' from sn2.
+#'
+#' Results data frame shows: ID, lipid class, CDB (total number
+#' of carbons and double bounds), FA composition (specific chains composition if
+#' it has been confirmed), mz, RT (in seconds), I (intensity, which comes
+#' directly from de input), Adducts, ppm (mz error), confidenceLevel (Subclass,
+#' FA level, where chains are known but not their positions, or FA position
+#' level) and Score (parent-fragment coelution score mean in DIA data or relative 
+#' sum intensity in DDA of all fragments used for the identification).
+#'
+#' @note This function has been written based on fragmentation patterns
+#' observed for three different platforms (QTOF 6550 from Agilent, Synapt G2-Si
+#' from Waters and Q-exactive from Thermo), but it may need to be customized for
+#' other platforms or acquisition settings.
+#'
+#' @examples
+#' \dontrun{
+#' msobject <- idPIpos(msobject)
+#' }
+#'
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
+idPIpos <- function(msobject,
+                    ppm_precursor = 5,
+                    ppm_products = 10,
+                    rttol = 3,
+                    rt,
+                    adducts = c("M+H", "M+NH4", "M+Na"),
+                    clfrags = c("dg_M+H-H2O"),
+                    clrequired = c(F),
+                    ftype = c("BB"),
+                    chainfrags_sn1 = c("mg_M+H-H2O", "lysopi_M+H-H2O"),
+                    chainfrags_sn2 = c("mg_M+H-H2O", "lysopi_M+H-H2O"),
+                    intrules = c("mg_sn1/mg_sn2", "lysopi_sn1/lysopi_sn2"),
+                    rates = c("2/1", "2/1"),
+                    intrequired = c(F, F),
+                    coelCutoff = 0.8,
+                    dbs, 
+                    verbose = TRUE){
+  ##############################################################################
+  # check arguments
+  if (msobject$metaData$generalMetadata$polarity != "positive"){
+    stop("Data wasn't acquired in positive mode")
+  }
+  if (missing(dbs)){
+    dbs <- assignDB()
+  }
+  if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
+    stop("Wrong msobject format")
+  }
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+    stop("Wrong msobject format")
+  }
+  if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
+    stop("Acquisition mode must be DIA or DDA")
+  }
+  if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
+    stop("Some adducts can't be found at the adductsTable. Add them.")
+  }
+  if (length(clfrags) > 0){
+    if (length(clfrags) != length(clrequired) | length(clfrags) !=
+        length(ftype)){
+      stop("clfrags, clrequired and ftype should have the same length")
+    }
+    if (!all(ftype %in% c("F", "NL", "BB"))){
+      stop("ftype values allowed are: \"F\", \"NL\" or\"BB\"")
+    }
+    strfrag <- which(grepl("_", clfrags))
+    if (length(strfrag) > 0){
+      d <- unlist(lapply(strsplit(clfrags[strfrag], "_"), "[[", 1))
+      a <- unlist(lapply(strsplit(clfrags[strfrag], "_"), "[[", 2))
+      if (!all(a %in% dbs[["adductsTable"]]$adduct)){
+        stop("Adducts employed in clfrags also need to be at adductsTable.")
+      }
+      if (!all(paste(d, "db", sep="") %in% names(dbs))){
+        stop("All required dbs must be supplied through dbs argument.")
+      }
+    }
+  }
+  ##############################################################################
+  # extract data from msobject
+  # Peaklist MS1: remove isotopes
+  MS1 <- msobject$peaklist$MS1
+  MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
+             !colnames(MS1) %in% c("isotope", "isoGroup")]
+  # Peaklist MS2: 
+  if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
+    MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
+  } else {
+    MS2 <- msobject$peaklist$MS2[,c("mz", "RT", "int", "peakID")]
+  }
+  rawData <- rbind(msobject$rawData$MS1, msobject$rawData$MS2)
+  # if acquisition mode is DDA, extract precursors
+  if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
+    precursors <- msobject$metaData$scansMetadata[msobject$metaData$scansMetadata$collisionEnergy > 0 &
+                                                    msobject$metaData$scansMetadata$msLevel == 2,
+                                                  c("RT", "precursor", "Scan")]
+  }
+  ##############################################################################
+  # Remove previous ceramide annotations
+  if ("results" %in% names(msobject$annotation)){
+    if (nrow(msobject$annotation$results) > 0){
+      msobject$annotation$results <- msobject$annotation$results[msobject$annotation$results$Class != "PI",]
+    }
+  }
+  if ("detailsAnnotation" %in% names(msobject$annotation)){
+    if("PI" %in% names(msobject$annotation$detailsAnnotation)){
+      if(verbose){cat("\nPrevious PI annotations removed")}
+      msobject$annotation$detailsAnnotation$PI <- list()
+    }
+  }
+  ##############################################################################
+  # set rt limits
+  if (missing(rt)){
+    rt <- c(min(MS1$RT), max(MS1$RT))
+  }
+  ##############################################################################
+  # Start identification steps
+  
+  # candidates search
+  candidates <- findCandidates(MS1, dbs$pidb, ppm = ppm_precursor, rt = rt,
+                               adducts = adducts, rttol = rttol, dbs = dbs,
+                               rawData = rawData, coelCutoff = coelCutoff)
+  
+  if (nrow(candidates) > 0){
+    if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
+      if (nrow(rawData) == 0){
+        coelCutoff <- 0 # if no rawData is supplied, coelution score between precursors and fragments will be ignored
+      }
+      # isolation of coeluting fragments
+      coelfrags <- coelutingFrags(candidates, MS2, rttol, rawData,
+                                  coelCutoff = coelCutoff)
+    } else if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
+      coelCutoff <- 0
+      coelfrags <- ddaFrags(candidates, precursors, rawData, ppm = ppm_products)
+    }
+    
+    # check class fragments
+    classConf <- checkClass(candidates, coelfrags, clfrags, ftype, clrequired,
+                            ppm_products, dbs)
+    
+    # search chains fragments
+    sn1 <- chainFrags(coelfrags, chainfrags_sn1, ppm_products, dbs = dbs,
+                      candidates = candidates)
+    sn2 <- chainFrags(coelfrags, chainfrags_sn2, ppm_products, candidates, sn1,
+                      dbs)
+    
+    # combine chain fragments
+    chainsComb <- combineChains(candidates, nchains=2, sn1, sn2)
+    
+    # check chains position based on intensity ratios
+    intConf <- checkIntensityRules(intrules, rates, intrequired, nchains=2,
+                                   chainsComb)
+    
+    # prepare output
+    res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
+                           intConf, nchains = 2, class="PI",
+                           acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
+    
+    # update msobject
+    if ("results" %in% names(msobject$annotation)){
+      msobject$annotation$results <- rbind(msobject$annotation$results, res)
+    } else {
+      msobject$annotation$results <- res
+    }
+    msobject$annotation$detailsAnnotation$PI <- list()
+    msobject$annotation$detailsAnnotation$PI$candidates <- candidates
+    msobject$annotation$detailsAnnotation$PI$classfragments <- classConf$fragments
+    msobject$annotation$detailsAnnotation$PI$chainfragments <- chainsComb$fragments
+    if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
+      msobject$annotation$detailsAnnotation$PI$coelfrags <- coelfrags
+    }
+  } else {
+    res <- data.frame()
+    if ("results" %in% names(msobject$annotation)){
+      msobject$annotation$results <- rbind(msobject$annotation$results, res)
+    } else {
+      msobject$annotation$results <- res
+    }
+    msobject$annotation$detailsAnnotation$PI <- list()
+  }
+  return(msobject)
+}
+
 # idSphpos
 #' Sphingoid bases (Sph) annotation for ESI-
 #'
@@ -2667,7 +2919,7 @@ idSphpos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -2695,7 +2947,7 @@ idSphpos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -2875,7 +3127,7 @@ idSphPpos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -2903,7 +3155,7 @@ idSphPpos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -3107,7 +3359,7 @@ idCerpos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -3135,7 +3387,7 @@ idCerpos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -3352,7 +3604,7 @@ idCerPpos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -3380,7 +3632,7 @@ idCerPpos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -3597,7 +3849,7 @@ idSMpos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -3625,7 +3877,7 @@ idSMpos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -3822,7 +4074,7 @@ idCarpos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -3850,7 +4102,7 @@ idCarpos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -4047,7 +4299,7 @@ idCEpos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -4075,7 +4327,7 @@ idCEpos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -4290,7 +4542,7 @@ idDGpos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -4318,7 +4570,7 @@ idDGpos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -4542,7 +4794,7 @@ idTGpos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -4570,7 +4822,7 @@ idTGpos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {
@@ -4793,7 +5045,7 @@ idAcylCerpos <- function(msobject,
     stop("Acquisition mode must be DIA or DDA")
   }
   if (!all(adducts %in% dbs[["adductsTable"]]$adduct)){
-    stop("Some adducts can't be found at the aductsTable. Add them.")
+    stop("Some adducts can't be found at the adductsTable. Add them.")
   }
   if (length(clfrags) > 0){
     if (length(clfrags) != length(clrequired) | length(clfrags) !=
@@ -4821,7 +5073,7 @@ idAcylCerpos <- function(msobject,
   MS1 <- msobject$peaklist$MS1
   MS1 <- MS1[MS1$isotope %in% c("[M+0]"),
              !colnames(MS1) %in% c("isotope", "isoGroup")]
-  # Peaklist MS2: remove isotopes
+  # Peaklist MS2: 
   if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peakID")]
   } else {

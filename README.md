@@ -12,7 +12,7 @@ Citation:
 If you use this software in your research, please cite:
 
   - Alcoriza-Balaguer MI., et al. (2019) LipidMS: An R Package for Lipid Annotation in Untargeted Liquid Chromatography-Data Independent Acquisition-Mass Spectrometry Lipidomics. Anal Chem, 2019, 91(1), 836-845. doi:10.1021/acs.analchem.8b03409.
-  - LipidMS v3: https://CRAN.R-project.org/package=LipidMS
+  - LipidMS v3.0: https://CRAN.R-project.org/package=LipidMS
 
 
 References:

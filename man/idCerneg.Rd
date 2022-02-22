@@ -15,7 +15,7 @@ idCerneg(
   clrequired = c(),
   ftype = c(),
   chainfrags_sn1 = c("NL-nlsph_M-H", "sph_M-H-2H2O", "sph_M-H-H2O"),
-  chainfrags_sn2 = c("fa_Mn-1.9918"),
+  chainfrags_sn2 = c("fa_Mn-1.9918", "fa_M-H-H2O"),
   intrules = c(),
   rates = c(),
   intrequired = c(),
@@ -99,10 +99,10 @@ fragments: there are no class fragment by default. 3) Search of specific
 fragments that inform about the sphingoid base (Sph as M-H-2H2O resulting
 from the loss of the FA chain or loss of part of the sphingoid base) and the
 FA chain (FA as M-H but with a N instead of an O, what means a mass difference
-of 1.9918 from the exact mass of the FA). 4) Look for possible chains
-structure based on the combination of chain fragments. 5) Check intensity
-rules to confirm chains position. In this case, there are no intensity rules
-by default.
+of 1.9918 from the exact mass of the FA or FA as M-H-H2O). 4) Look for 
+possible chains structure based on the combination of chain fragments. 
+5) Check intensity rules to confirm chains position. In this case, there are 
+no intensity rules by default.
 
 Results data frame shows: ID, lipid class, CDB (total number
 of carbons and double bounds), FA composition (specific chains composition if

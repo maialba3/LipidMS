@@ -38,14 +38,16 @@ annotatemsbatch <- function(msbatch,
                             rttol = 5,
                             coelCutoff = 0.8,
                             lipidClassesPos = c("MG", "LPC", "LPE", "PC", "PCo",
-                                                "PCp", "PE", "PEo", "PEp", "PG", 
-                                                "Sph", "SphP", "Cer", "CerP", "AcylCer",
-                                                "SM", "Carnitines", "CE", "DG", "TG"),
+                                                "PCp", "PE", "PEo", "PEp", "PG",
+                                                "PI", "Sph", "SphP", "Cer", 
+                                                "CerP", "AcylCer", "SM", 
+                                                "Carnitines", "CE", "DG", "TG"),
                             lipidClassesNeg = c("FA", "FAHFA", "LPC", "LPE", 
                                                 "LPG", "LPI", "LPS", "PC", "PCo", 
                                                 "PCp", "PE", "PEo", "PEp", "PG", 
                                                 "PI", "PS", "Sph", "SphP", 
-                                                "Cer", "CerP", "AcylCer", "CL", "BA"),
+                                                "Cer", "CerP", "AcylCer", "SM", 
+                                                "CL", "BA"),
                             dbs,
                             simplifyAnnotations = FALSE,
                             parallel = FALSE,
@@ -102,7 +104,11 @@ annotatemsbatch <- function(msbatch,
     parallel::stopCluster(cl)
   }
   
-  # write results on the features table
+  # remove previous annotations and write results on the features table
+  msbatch$features <- msbatch$features[, !colnames(msbatch$features) %in% 
+                                         c("LipidMSid", "Adduct", 
+                                           "confidenceLevel", "Score", 
+                                           "nsamples")]
   msbatch <- joinAnnotationResults(msbatch, 
                                    simplifyAnnotations = simplifyAnnotations)
   
