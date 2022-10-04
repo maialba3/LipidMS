@@ -29,7 +29,7 @@
 #' @details It is important that mzXML files are centroided. 
 #' 
 #' This function executes 2 steps: 1) peak-picking based on enviPick
-#' package and 2) isotope annotation.
+#' package and 2) isotope annotation based on CAMERA algorithm.
 #' 
 #' Numeric arguments accept one or two values for MS1 and MS2, respectively.
 #' 
@@ -46,6 +46,12 @@
 #'
 #' @references Peak-picking algorithm has been imported from enviPick R-package:
 #' https://cran.r-project.org/web/packages/enviPick/index.html
+#' 
+#' Isotope annotation has been adapted from CAMERA algorithm: 
+#' Kuhl C, Tautenhahn R, Boettcher C, Larson TR, Neumann S (2012). “CAMERA: an 
+#' integrated strategy for compound spectra extraction and annotation of liquid 
+#' chromatography/mass spectrometry data sets.” Analytical Chemistry, 84, 283–289. 
+#' http://pubs.acs.org/doi/abs/10.1021/ac202450g.
 #'
 #' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
 dataProcessing <- function(file, 
