@@ -41,8 +41,9 @@ idPOS <- function(msobject,
                   rttol = 5,
                   coelCutoff = 0.8,
                   lipidClasses = c("MG", "LPC", "LPE", "PC", "PCo", "PCp", "PE", 
-                                   "PEo", "PEp", "PG", "PI", "Sph", "SphP", "Cer", "
-                                   AcylCer", "CerP", "SM", "Carnitines", "CE", "DG", "TG"),
+                                   "PEo", "PEp", "PG", "PI", "Sph", "SphP", "Cer", 
+                                   "AcylCer", "CerP", "SM", "Carnitines", "CE", 
+                                   "DG", "TG"),
                   dbs,
                   verbose = TRUE){
 
@@ -390,8 +391,17 @@ idMGpos <- function(msobject,
   
   if (nrow(candidates) > 0){
     # isolation of coeluting fragments
-    coelfrags <- coelutingFrags(candidates, MS2, rttol, rawData,
-                                coelCutoff = coelCutoff)
+    if (msobject$metaData$generalMetadata$acquisitionmode == "DIA"){
+      if (nrow(rawData) == 0){
+        coelCutoff <- 0 # if no rawData is supplied, coelution score between precursors and fragments will be ignored
+      }
+      # isolation of coeluting fragments
+      coelfrags <- coelutingFrags(candidates, MS2, rttol, rawData,
+                                  coelCutoff = coelCutoff)
+    } else if (msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
+      coelCutoff <- 0
+      coelfrags <- ddaFrags(candidates, precursors, rawData, ppm = ppm_products)
+    }
     
     # check class fragments
     classConf <- checkClass(candidates, coelfrags, clfrags, ftype, clrequired,

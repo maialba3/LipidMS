@@ -35,7 +35,7 @@ plotLipids <- function(msobject, span = 0.4, ppm = 10, verbose = TRUE){
     msobject$annotation$plots <- NULL
     if(verbose){cat("OK")}
   }
-  results <- msobject$annotation$results
+  results <- msobject$annotation$results[order(msobject$annotation$results$mz),]
   msobject$annotation$plots <- list()
   ##############################################################################
   # For each lipid in the results data frame, extract peaks
@@ -219,6 +219,7 @@ plotLipids <- function(msobject, span = 0.4, ppm = 10, verbose = TRUE){
     # plot MS1 info
     if (length(peaksMS1) > 0){
       ssms1 <- msobject$rawData$MS1[msobject$rawData$MS1$peakID %in% peaksMS1,]
+      ssms1 <- ssms1[order(ssms1$RT),]
       minrt1 <- min(ssms1$RT)
       maxrt1 <- max(ssms1$RT)
       ints <- c()
@@ -229,20 +230,34 @@ plotLipids <- function(msobject, span = 0.4, ppm = 10, verbose = TRUE){
         ints <- append(ints, maxint)
         toplot$int <- toplot$int*100/maxint
         if (p == 1){
-          plot(toplot$RT, toplot$int, type = "l", col = scales::alpha(colorsMS1[p], 0.8),
-               xlim = c(minrt1-5, maxrt1+10), ylim = c(0, 110),
-               lwd = 2.5, ylab = "Rel. Intensity", xlab = "RT (sec)",
-               main = paste("MS1: ", paste(parent$ID, as.character(round(parent$mz, 2)),
-                                           as.character(round(parent$RT, 1)), sep="_"), sep = ""),
-               las = 1, cex.axis = 0.7, cex.lab = 1, cex.main = 1)
-          eic[[1]] <- eic[[1]][eic[[1]]$RT <= maxrt1+10 & eic[[1]]$RT >= minrt1-5,]
-          graphics::lines(x=eic[[1]]$RT, y=eic[[1]]$int*100/maxint, 
-                          col = scales::alpha("grey", 0.4), lwd = 2.5)
+          if (nrow(toplot) > 1){
+            plot(toplot$RT, toplot$int, type = "l", col = scales::alpha(colorsMS1[p], 0.8),
+                 xlim = c(minrt1-5, maxrt1+10), ylim = c(0, 110),
+                 lwd = 2.5, ylab = "Rel. Intensity", xlab = "RT (sec)",
+                 main = paste0("MS1: ", paste(parent$ID, as.character(round(parent$mz, 2)),
+                                             as.character(round(parent$RT, 1)), sep="_"),
+                               "\n(", paste(ms1$peakID, collapse="; "), ")"),
+                 las = 1, cex.axis = 0.7, cex.lab = 1, cex.main = 1)
+            eic[[1]] <- eic[[1]][eic[[1]]$RT <= maxrt1+10 & eic[[1]]$RT >= minrt1-5,]
+            graphics::lines(x=eic[[1]]$RT, y=eic[[1]]$int*100/maxint, 
+                            col = scales::alpha("grey", 0.4), lwd = 2.5)
+          } else {
+            plot(0, 0, type = "n", col = scales::alpha(colorsMS1[p], 0.8),
+                 xlim = c(minrt1-5, maxrt1+10), ylim = c(0, 110),
+                 lwd = 2.5, ylab = "Rel. Intensity", xlab = "RT (sec)",
+                 main = paste0("MS1: ", paste(parent$ID, as.character(round(parent$mz, 2)),
+                                              as.character(round(parent$RT, 1)), sep="_"),
+                               "\n(", paste(ms1$peakID, collapse="; "), ")"),
+                 las = 1, cex.axis = 0.7, cex.lab = 1, cex.main = 1)
+          }
+          
         } else {
-          graphics::lines(toplot$RT, toplot$int, col = scales::alpha(colorsMS1[p], 0.8), lwd = 2.5)
-          eic[[p]] <- eic[[p]][eic[[p]]$RT <= maxrt1+10 & eic[[p]]$RT >= minrt1-5,]
-          graphics::lines(eic[[p]]$RT, eic[[p]]$int*100/maxint, 
+          if (nrow(toplot) > 1){
+            graphics::lines(toplot$RT, toplot$int, col = scales::alpha(colorsMS1[p], 0.8), lwd = 2.5)
+            eic[[p]] <- eic[[p]][eic[[p]]$RT <= maxrt1+10 & eic[[p]]$RT >= minrt1-5,]
+            graphics::lines(eic[[p]]$RT, eic[[p]]$int*100/maxint, 
                           col = scales::alpha("grey", 0.4), lwd = 2.5)
+          }
         }
       }
       graphics::legend("topright", legend=namesMS1,
@@ -264,31 +279,46 @@ plotLipids <- function(msobject, span = 0.4, ppm = 10, verbose = TRUE){
         maxint <- max(toplot$int, na.rm=TRUE)
         toplot$int <- toplot$int*100/maxint
         if (p == 1){
-          plot(toplot$RT, toplot$int, type = "l", col = scales::alpha(colorsMS1[p], 0.8),
-               xlim = c(minrt1-5, maxrt1+10), ylim = c(0, 110),
-               lwd = 2.5, ylab = "Rel. Intensity", xlab = "RT (sec)",
-               main = paste("MS1: ", paste(parent$ID, as.character(round(parent$mz, 2)),
-                                           as.character(round(parent$RT, 1)), sep="_"), sep = ""),
-               las = 1, cex.axis = 0.7, cex.lab = 1, cex.main = 1, lty = 5)
-          smt <- tryCatch({stats::predict(stats::smooth.spline(eic[[1]]$RT, 
-                                                               eic[[1]]$int, 
-                                                               spar = span),
-                                          x = eic[[1]]$RT)},
-                          error = function(e) {return(list(x = eic[[1]]$RT,
-                                                           y = eic[[1]]$int))})
-          graphics::lines(x=smt$x, y=smt$y*100/maxint, 
-                          col = scales::alpha("grey", 0.4), lwd = 2.5, lty = 5)
+          if (nrow(toplot) > 1){
+            plot(toplot$RT, toplot$int, type = "l", col = scales::alpha(colorsMS1[p], 0.8),
+                 xlim = c(minrt1-5, maxrt1+10), ylim = c(0, 110),
+                 lwd = 2.5, ylab = "Rel. Intensity", xlab = "RT (sec)",
+                 main = paste0("MS1: ", paste(parent$ID, as.character(round(parent$mz, 2)),
+                                              as.character(round(parent$RT, 1)), sep="_"),
+                               "\n(", paste(ms1$peakID, collapse="; "), ")"),
+                 las = 1, cex.axis = 0.7, cex.lab = 1, cex.main = 1, lty = 5)
+            smt <- tryCatch({stats::predict(stats::smooth.spline(eic[[1]]$RT, 
+                                                                 eic[[1]]$int, 
+                                                                 spar = span),
+                                            x = eic[[1]]$RT)},
+                            error = function(e) {return(list(x = eic[[1]]$RT,
+                                                             y = eic[[1]]$int))})
+            graphics::lines(x=smt$x, y=smt$y*100/maxint, 
+                            col = scales::alpha("grey", 0.4), lwd = 2.5, lty = 5)
+            
+          } else {
+            plot(0, 0, type = "n", col = scales::alpha(colorsMS1[p], 0.8),
+                 xlim = c(minrt1-5, maxrt1+10), ylim = c(0, 110),
+                 lwd = 2.5, ylab = "Rel. Intensity", xlab = "RT (sec)",
+                 main = paste0("MS1: ", paste(parent$ID, as.character(round(parent$mz, 2)),
+                                              as.character(round(parent$RT, 1)), sep="_"),
+                               "\n(", paste(ms1$peakID, collapse="; "), ")"),
+                 las = 1, cex.axis = 0.7, cex.lab = 1, cex.main = 1, lty = 5)
+          }
+          
         } else {
-          graphics::lines(toplot$RT, toplot$int, col = scales::alpha(colorsMS1[p], 0.8), lwd = 2.5,
-                lty = 5)
-          smt <- tryCatch({stats::predict(stats::smooth.spline(eic[[p]]$RT, 
-                                                               eic[[p]]$int, 
-                                                               spar = span),
-                                          x = eic[[p]]$RT)},
-                          error = function(e) {return(list(x = eic[[p]]$RT,
-                                                           y = eic[[p]]$int))})
-          graphics::lines(x=smt$x, y=smt$y*100/maxint, 
-                          col = scales::alpha("grey", 0.4), lwd = 2.5, lty = 5)
+          if (nrow(toplot) > 1){
+            graphics::lines(toplot$RT, toplot$int, col = scales::alpha(colorsMS1[p], 0.8), lwd = 2.5,
+                            lty = 5)
+            smt <- tryCatch({stats::predict(stats::smooth.spline(eic[[p]]$RT, 
+                                                                 eic[[p]]$int, 
+                                                                 spar = span),
+                                            x = eic[[p]]$RT)},
+                            error = function(e) {return(list(x = eic[[p]]$RT,
+                                                             y = eic[[p]]$int))})
+            graphics::lines(x=smt$x, y=smt$y*100/maxint, 
+                            col = scales::alpha("grey", 0.4), lwd = 2.5, lty = 5)
+          }
         }
       }
       graphics::legend("topright", legend=namesMS1,
@@ -314,20 +344,32 @@ plotLipids <- function(msobject, span = 0.4, ppm = 10, verbose = TRUE){
           ints2 <- append(ints2, maxint)
           toplot$int <- toplot$int*100/maxint
           if (p == 1){
-            plot(toplot$RT, toplot$int, type = "l", col = scales::alpha(colorsMS2[p], 0.8),
-                 xlim = c(minrt1-5, maxrt1+10), ylim = c(0, 110),
-                 lwd = 2.5, ylab = "Rel. Intensity", xlab = "RT (sec)",
-                 main = paste("MS2: ", paste(parent$ID, as.character(round(parent$mz, 2)),
-                                             as.character(round(parent$RT, 1)), sep="_"), sep = ""),
-                 las = 1, cex.axis = 0.7, cex.lab = 1, cex.main = 1)
-            eic2[[1]] <- eic2[[1]][eic2[[1]]$RT <= maxrt1+10 & eic2[[1]]$RT >= minrt1-5,]
-            graphics::lines(x=eic2[[1]]$RT, y=eic2[[1]]$int*100/maxint, 
-                            col = scales::alpha("grey", 0.4), lwd = 2.5)
+            if (nrow(toplot) > 1){
+              plot(toplot$RT, toplot$int, type = "l", col = scales::alpha(colorsMS2[p], 0.8),
+                   xlim = c(minrt1-5, maxrt1+10), ylim = c(0, 110),
+                   lwd = 2.5, ylab = "Rel. Intensity", xlab = "RT (sec)",
+                   main = paste("MS2: ", paste(parent$ID, as.character(round(parent$mz, 2)),
+                                               as.character(round(parent$RT, 1)), sep="_"), sep = ""),
+                   las = 1, cex.axis = 0.7, cex.lab = 1, cex.main = 1)
+              eic2[[1]] <- eic2[[1]][eic2[[1]]$RT <= maxrt1+10 & eic2[[1]]$RT >= minrt1-5,]
+              graphics::lines(x=eic2[[1]]$RT, y=eic2[[1]]$int*100/maxint, 
+                              col = scales::alpha("grey", 0.4), lwd = 2.5)
+            } else {
+              plot(0, 0, type = "n", col = scales::alpha(colorsMS2[p], 0.8),
+                   xlim = c(minrt1-5, maxrt1+10), ylim = c(0, 110),
+                   lwd = 2.5, ylab = "Rel. Intensity", xlab = "RT (sec)",
+                   main = paste("MS2: ", paste(parent$ID, as.character(round(parent$mz, 2)),
+                                               as.character(round(parent$RT, 1)), sep="_"), sep = ""),
+                   las = 1, cex.axis = 0.7, cex.lab = 1, cex.main = 1)
+            }
+            
           } else {
-            graphics::lines(toplot$RT, toplot$int, col = scales::alpha(colorsMS2[p], 0.8), lwd = 2.5)
-            eic2[[p]] <- eic2[[p]][eic2[[p]]$RT <= maxrt1+10 & eic2[[p]]$RT >= minrt1-5,]
-            graphics::lines(x=eic2[[p]]$RT, y=eic2[[p]]$int*100/maxint, 
-                            col = scales::alpha("grey", 0.4), lwd = 2.5)
+            if (nrow(toplot) > 1){
+              graphics::lines(toplot$RT, toplot$int, col = scales::alpha(colorsMS2[p], 0.8), lwd = 2.5)
+              eic2[[p]] <- eic2[[p]][eic2[[p]]$RT <= maxrt1+10 & eic2[[p]]$RT >= minrt1-5,]
+              graphics::lines(x=eic2[[p]]$RT, y=eic2[[p]]$int*100/maxint, 
+                              col = scales::alpha("grey", 0.4), lwd = 2.5)
+            }
           }
         }
         graphics::legend("topright", legend=namesMS2,
@@ -349,31 +391,43 @@ plotLipids <- function(msobject, span = 0.4, ppm = 10, verbose = TRUE){
           toplot$int <- pred$y
           toplot$int <- toplot$int*100/maxint
           if (p == 1){
-            plot(toplot$RT, toplot$int, type = "l", col = scales::alpha(colorsMS2[p], 0.8),
+            if (nrow(toplot) > 1){
+              plot(toplot$RT, toplot$int, type = "l", col = scales::alpha(colorsMS2[p], 0.8),
                  xlim = c(minrt1-5, maxrt1+10), ylim = c(0, 110),
                  lwd = 2.5, ylab = "Rel. Intensity", xlab = "RT (sec)",
                  main = paste("MS2: ", paste(parent$ID, as.character(round(parent$mz, 2)),
                                              as.character(round(parent$RT, 1)), sep="_"), sep = ""),
                  las = 1, cex.axis = 0.7, cex.lab = 1, cex.main = 1, lty = 5)
-            smt <- tryCatch({stats::predict(stats::smooth.spline(eic2[[1]]$RT, 
+              smt <- tryCatch({stats::predict(stats::smooth.spline(eic2[[1]]$RT, 
                                                                  eic2[[1]]$int, 
                                                                  spar = span),
                                             x = eic2[[1]]$RT)},
                             error = function(e) {return(list(x = eic2[[1]]$RT,
                                                              y = eic2[[1]]$int))})
-            graphics::lines(x=smt$x, y=smt$y*100/maxint, 
+              graphics::lines(x=smt$x, y=smt$y*100/maxint, 
                             col = scales::alpha("grey", 0.4), lwd = 2.5, lty = 5)
+            } else {
+              plot(0, 0, type = "n", col = scales::alpha(colorsMS2[p], 0.8),
+                   xlim = c(minrt1-5, maxrt1+10), ylim = c(0, 110),
+                   lwd = 2.5, ylab = "Rel. Intensity", xlab = "RT (sec)",
+                   main = paste("MS2: ", paste(parent$ID, as.character(round(parent$mz, 2)),
+                                               as.character(round(parent$RT, 1)), sep="_"), sep = ""),
+                   las = 1, cex.axis = 0.7, cex.lab = 1, cex.main = 1, lty = 5)
+            }
+            
           } else {
-            graphics::lines(toplot$RT, toplot$int, col = scales::alpha(colorsMS2[p], 0.8), lwd = 2.5,
-                  lty = 5)
-            smt <- tryCatch({stats::predict(stats::smooth.spline(eic2[[p]]$RT, 
-                                                                 eic2[[p]]$int, 
-                                                                 spar = span),
-                                            x = eic2[[p]]$RT)},
-                            error = function(e) {return(list(x = eic2[[p]]$RT,
-                                                             y = eic2[[p]]$int))})
-            graphics::lines(x=smt$x, y=smt$y*100/maxint,  
-                            col = scales::alpha("grey", 0.4), lwd = 2.5, lty = 5)
+            if (nrow(toplot) > 1){
+              graphics::lines(toplot$RT, toplot$int, col = scales::alpha(colorsMS2[p], 0.8), lwd = 2.5,
+                              lty = 5)
+              smt <- tryCatch({stats::predict(stats::smooth.spline(eic2[[p]]$RT, 
+                                                                   eic2[[p]]$int, 
+                                                                   spar = span),
+                                              x = eic2[[p]]$RT)},
+                              error = function(e) {return(list(x = eic2[[p]]$RT,
+                                                               y = eic2[[p]]$int))})
+              graphics::lines(x=smt$x, y=smt$y*100/maxint,  
+                              col = scales::alpha("grey", 0.4), lwd = 2.5, lty = 5)
+            }
           }
         }
         graphics::legend("topright", legend=namesMS2,

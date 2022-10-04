@@ -720,7 +720,7 @@ checkIntensityRules <- function(intrules,
 #' 
 #' @details Coelution score for DIA data is calculated as the mean coelution 
 #' score of all fragments used for annotation, while for DDA data, it is 
-#' calculated as the sum relative intensity of those fragments in theie MS2 scan.
+#' calculated as the sum relative intensity of those fragments in their MS2 scan.
 #'
 #' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 organizeResults <- function(candidates,
@@ -1133,7 +1133,7 @@ crossTables <- function(msobject,
               } else if (lipidMSid[rows[matches[i]]] != "" &&
                          !grepl(results$ID[r],
                                 lipidMSid[rows[matches[i]]], fixed = T)){
-                
+                stop()
                 newid <- chains(results$ID[r])
                 oldids <- sapply(unlist(strsplit(lipidMSid[rows[matches[i]]], "\\|")), 
                                  chains, simplify = FALSE)
