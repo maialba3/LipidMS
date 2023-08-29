@@ -43,7 +43,7 @@ Prepare a readable output for LipidMS identification functions.
 \details{
 Coelution score for DIA data is calculated as the mean coelution 
 score of all fragments used for annotation, while for DDA data, it is 
-calculated as the sum relative intensity of those fragments in theie MS2 scan.
+calculated as the sum relative intensity of those fragments in their MS2 scan.
 }
 \author{
 M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>

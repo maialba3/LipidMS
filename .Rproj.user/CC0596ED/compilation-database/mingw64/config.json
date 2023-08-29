@@ -1,0 +1,27 @@
+{
+    "args": [
+        "-std=gnu++11",
+        "-IC:/Users/73581298C/AppData/Local/Programs/R/R-4.2.2/include",
+        "-DNDEBUG",
+        "-DEIGEN_DONT_VECTORIZE",
+        "-nostdinc",
+        "-U_MSC_VER",
+        "-D__GNUC__=10",
+        "-D__GNUC_MINOR__=3",
+        "-D__GNUC_PATCHLEVEL__=0",
+        "-IC:/rtools42/x86_64-w64-mingw32.static.posix/lib/gcc/x86_64-w64-mingw32.static.posix/10.3.0/include/c++",
+        "-IC:/rtools42/x86_64-w64-mingw32.static.posix/lib/gcc/x86_64-w64-mingw32.static.posix/10.3.0/include/c++/x86_64-w64-mingw32.static.posix",
+        "-IC:/rtools42/x86_64-w64-mingw32.static.posix/lib/gcc/x86_64-w64-mingw32.static.posix/10.3.0/include/c++/backward",
+        "-IC:/rtools42/x86_64-w64-mingw32.static.posix/lib/gcc/x86_64-w64-mingw32.static.posix/10.3.0/include",
+        "-IC:/rtools42/x86_64-w64-mingw32.static.posix/include",
+        "-IC:/rtools42/x86_64-w64-mingw32.static.posix/lib/gcc/x86_64-w64-mingw32.static.posix/10.3.0/include-fixed",
+        "-include",
+        "H:/Maribel/Paquetes/Github/LipidMS/.Rproj.user/CC0596ED/compilation-database/mingw64/cpp-definitions.h"
+    ],
+    "pch": "",
+    "is_cpp": true,
+    "hash": "1671091477",
+    "compiler": "17486434899767519736",
+    "rversion": "4.2.2",
+    "dbversion": 4
+}

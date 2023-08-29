@@ -50,6 +50,13 @@ peaklist with 6 columns (mz, RT, int, peakID, isotope and isoGroup).
 Annotate isotopes based on mass differences, retention time and peak
 correlation if required.
 }
+\references{
+Isotope annotation has been adapted from CAMERA algorithm: 
+Kuhl C, Tautenhahn R, Boettcher C, Larson TR, Neumann S (2012). “CAMERA: an 
+integrated strategy for compound spectra extraction and annotation of liquid 
+chromatography/mass spectrometry data sets.” Analytical Chemistry, 84, 283–289. 
+http://pubs.acs.org/doi/abs/10.1021/ac202450g.
+}
 \author{
 M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
 }
