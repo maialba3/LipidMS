@@ -9,7 +9,7 @@ joinAnnotationResults(msbatch, simplifyAnnotations = TRUE)
 \arguments{
 \item{msbatch}{msbatch}
 
-\item{simplifyAnnotation}{logical. If TRUE, only the most frequent id will be 
+\item{simplifyAnnotations}{logical. If TRUE, only the most frequent id will be 
 kept (recommended when only pool samples have been acquired in DIA or DDA). If 
 FALSE, all annotations will be shown.}
 }

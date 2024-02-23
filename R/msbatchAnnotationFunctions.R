@@ -73,44 +73,48 @@ annotatemsbatch <- function(msbatch,
   # lipid annotation in samples acquired in DIA or DDA mode
   toannotate <- which(msbatch$metaData$acquisitionmode %in% c("DIA", "DDA"))
   
-  if (parallel) {
-    cl <- makePSOCKcluster(ncores)
-    doParallel::registerDoParallel(cl)
-    `%d%` <- `%dopar%`
-  } else {
-    `%d%` <- `%do%`
-  }
-  x <- c()
-  msbatch$msobjects[toannotate] <- foreach::foreach(x = 1:length(toannotate)) %d% {
-    if (msbatch$msobjects[[toannotate[x]]]$metaData$generalMetadata$polarity == "positive"){
-      idPOS(msobject = msbatch$msobjects[[toannotate[x]]], 
-            ppm_precursor = 5,
-            ppm_products = 10,
-            rttol = 5,
-            coelCutoff = 0.8,
-            lipidClasses = lipidClassesPos,
-            dbs = dbs)
-    } else if (msbatch$msobjects[[toannotate[x]]]$metaData$generalMetadata$polarity == "negative"){
-      idNEG(msobject = msbatch$msobjects[[toannotate[x]]],
-            ppm_precursor = 5,
-            ppm_products = 10,
-            rttol = 5,
-            coelCutoff = 0.8,
-            lipidClasses = lipidClassesNeg,
-            dbs = dbs)
+  if (length(toannotate) > 0){
+    if (parallel) {
+      cl <- makePSOCKcluster(ncores)
+      doParallel::registerDoParallel(cl)
+      `%d%` <- `%dopar%`
+    } else {
+      `%d%` <- `%do%`
     }
+    x <- c()
+    msbatch$msobjects[toannotate] <- foreach::foreach(x = 1:length(toannotate)) %d% {
+      if (msbatch$msobjects[[toannotate[x]]]$metaData$generalMetadata$polarity == "positive"){
+        idPOS(msobject = msbatch$msobjects[[toannotate[x]]], 
+              ppm_precursor = ppm_precursor,
+              ppm_products = ppm_products,
+              rttol = rttol,
+              coelCutoff = coelCutoff,
+              lipidClasses = lipidClassesPos,
+              dbs = dbs)
+      } else if (msbatch$msobjects[[toannotate[x]]]$metaData$generalMetadata$polarity == "negative"){
+        idNEG(msobject = msbatch$msobjects[[toannotate[x]]],
+              ppm_precursor = ppm_precursor,
+              ppm_products = ppm_products,
+              rttol = rttol,
+              coelCutoff = coelCutoff,
+              lipidClasses = lipidClassesNeg,
+              dbs = dbs)
+      }
+    }
+    if (parallel){
+      parallel::stopCluster(cl)
+    }
+    
+    # remove previous annotations and write results on the features table
+    msbatch$features <- msbatch$features[, !colnames(msbatch$features) %in% 
+                                           c("LipidMSid", "Adduct", 
+                                             "confidenceLevel", "Score", 
+                                             "ScoreInt", "nsamples")]
+    msbatch <- joinAnnotationResults(msbatch, 
+                                     simplifyAnnotations = simplifyAnnotations)
+  } else {
+    message("No available files to search for lipid annotations (DDA or DIA acquired samples are required)")
   }
-  if (parallel){
-    parallel::stopCluster(cl)
-  }
-  
-  # remove previous annotations and write results on the features table
-  msbatch$features <- msbatch$features[, !colnames(msbatch$features) %in% 
-                                         c("LipidMSid", "Adduct", 
-                                           "confidenceLevel", "Score", 
-                                           "nsamples")]
-  msbatch <- joinAnnotationResults(msbatch, 
-                                   simplifyAnnotations = simplifyAnnotations)
   
   return(msbatch)
 }

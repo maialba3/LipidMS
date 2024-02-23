@@ -10,9 +10,9 @@ idNEG(
   ppm_products = 10,
   rttol = 5,
   coelCutoff = 0.8,
-  lipidClasses = c("FA", "FAHFA", "LPC", "LPE", "LPG", "LPI", "LPS", "PC", "PCo",
-    "PCp", "PE", "PEo", "PEp", "PG", "PI", "PS", "Sph", "SphP", "Cer", "CerP", "AcylCer",
-    "SM", "CL", "BA"),
+  lipidClasses = c("FA", "FAHFA", "LPC", "LPE", "LPG", "LPI", "LPS", "PC", "PCo", "PCp",
+    "PE", "PEo", "PEp", "PG", "PI", "PS", "Sph", "SphP", "Cer", "CerP", "AcylCer", "SM",
+    "CL", "BA"),
   dbs,
   verbose = TRUE
 )

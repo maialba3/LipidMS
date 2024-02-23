@@ -7,7 +7,7 @@
 MassPEo(PEo)
 }
 \arguments{
-\item{PEp}{character value indicating total number of carbons and
+\item{PEo}{character value indicating total number of carbons and
 double bounds}
 }
 \value{

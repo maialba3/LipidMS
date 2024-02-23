@@ -95,7 +95,7 @@ MassCerP <- function(cerP){
 #'
 #' Calculate formula and mass of acylceramides
 #'
-#' @param glccer character value indicating total number of carbons and double
+#' @param acylcer character value indicating total number of carbons and double
 #' bounds
 #'
 #' @return vector containing formula and mass
@@ -440,7 +440,7 @@ MassPE <- function(PE){
 #'
 #' Calculate formula and mass of plasmanyl PE
 #'
-#' @param PEp character value indicating total number of carbons and
+#' @param PEo character value indicating total number of carbons and
 #' double bounds
 #'
 #' @return vector containing formula and mass

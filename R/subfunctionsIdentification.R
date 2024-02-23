@@ -70,6 +70,7 @@ findCandidates <- function(MS1,
     return(candidates)
   }
 }
+
 # coelutingFrags
 #' Coeluting fragments extraction
 #'
@@ -112,6 +113,7 @@ coelutingFrags <- function(precursors,
   })
   return(coelfrags)
 }
+
 # ddaFrags
 #' MS/MS scan extraction of a precursor in DDA
 #'
@@ -152,7 +154,7 @@ ddaFrags <- function(candidates,
       f <- rawData[rawData$Scan == scanrt, c("mz", "RT", "int", "peakID")]
       f <- f[grepl("MS2", f$peakID),]
       if(nrow(f) > 0){
-        f$coelScore <- f$int/sum(f$int)
+        f$coelScore <- 0 # previously f$int/sum(f$int), now this value goes to scoreInt
         return(f)
       } else {
         return(data.frame())
@@ -425,7 +427,7 @@ chainFrags <- function (coelfrags,
         }
       }
     }
-    if (class(fragments) == "data.frame") {
+    if (is.data.frame(fragments)) {
       matches[[c]] = unique(fragments)
     } else {
       matches[[c]] = data.frame()
@@ -707,6 +709,7 @@ checkIntensityRules <- function(intrules,
 #' Prepare a readable output for LipidMS identification functions.
 #'
 #' @param candidates candidates data frame. Output of \link{findCandidates}.
+#' @param coelfrags list of coeluting fragments for each candidate
 #' @param clfrags vector containing the expected fragments for a given lipid
 #' class.
 #' @param classConf output of \link{checkClass}
@@ -719,11 +722,13 @@ checkIntensityRules <- function(intrules,
 #' @param acquisitionmode acquisition mode (DIA or DDA).
 #' 
 #' @details Coelution score for DIA data is calculated as the mean coelution 
-#' score of all fragments used for annotation, while for DDA data, it is 
-#' calculated as the sum relative intensity of those fragments in their MS2 scan.
+#' score of all fragments used for annotation, while for DDA data, the intensity
+#' score is given, which is calculated as the sum of the relative intensities of 
+#' the fragments used for annotation.
 #'
 #' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 organizeResults <- function(candidates,
+                            coelfrags,
                             clfrags,
                             classConf,
                             chainsComb,
@@ -740,16 +745,19 @@ organizeResults <- function(candidates,
           idlevel <- "Subclass"
           if (classConf$passed[c] == T){
             score <- mean(classConf$fragments[[c]]$coelScore, na.rm = T)
+            scoreInt <- sum(classConf$fragments[[c]]$int, na.rm = T)
           }
         } else {
           idlevel <- "MS-only"
           score <- 0
+          scoreInt <- 0
         }
         if (classConf$passed[c] == T ||
             classConf$passed[c] == "No class fragments"){
           results <- rbind(results,
-                           data.frame(ID = paste(class, "(", candidates$cb[c], ")",
-                                                 sep = ""),Class = class,
+                           data.frame(ID = paste(class, "(", candidates$cb[c], 
+                                                 ")", sep = ""),
+                                      Class = class,
                                       CDB = candidates$cb[c],
                                       FAcomp = candidates$cb[c],
                                       mz = candidates$mz[c],
@@ -760,6 +768,7 @@ organizeResults <- function(candidates,
                                       confidenceLevel = idlevel,
                                       peakID = candidates$peakID[c],
                                       Score = round(score, 3),
+                                      ScoreInt = round(scoreInt/sum(coelfrags[[c]]$int), 3),
                                       stringsAsFactors = F))
         }
       }
@@ -785,18 +794,21 @@ organizeResults <- function(candidates,
                 score <- sum(c(classConf$fragments[[c]]$coelScore,
                                 chainsComb$fragments[[c]]$coelScore), na.rm = T)
               }
-              
+              scoreInt <- sum(c(classConf$fragments[[c]]$int,
+                                chainsComb$fragments[[c]]$int), na.rm = T)
             } else {
               if (acquisitionmode == "DIA"){
                 score <-  mean(chainsComb$fragments[[c]]$coelScore, na.rm = T)
               } else {
                 score <- sum(chainsComb$fragments[[c]]$coelScore, na.rm = T)
               }
+              scoreInt <-  sum(chainsComb$fragments[[c]]$int, na.rm = T)
             }
             results <- rbind(results, data.frame(ID, Class, CDB, FAcomp, mz, RT,
                                                  int, Adducts, ppm, confidenceLevel,
                                                  peakID = candidates$peakID[c],
                                                  Score = round(score, 3),
+                                                 ScoreInt = round(scoreInt/sum(coelfrags[[c]]$int), 3),
                                                  stringsAsFactors = F))
           } else if (length(clfrags) > 0){
             confidenceLevel <- "Subclass"
@@ -805,10 +817,12 @@ organizeResults <- function(candidates,
             } else {
               score <- sum(classConf$fragments[[c]]$coelScore, na.rm = T)
             }
+            scoreInt <- sum(classConf$fragments[[c]]$int, na.rm = T)
             results <- rbind(results, data.frame(ID, Class, CDB, FAcomp, mz, RT,
                                                  int, Adducts, ppm, confidenceLevel,
                                                  peakID = candidates$peakID[c],
                                                  Score = round(score, 3),
+                                                 ScoreInt = round(scoreInt/sum(coelfrags[[c]]$int), 3),
                                                  stringsAsFactors = F))
           }
         }
@@ -846,12 +860,16 @@ organizeResults <- function(candidates,
                                    chainsComb$fragments[[c]][[comb]]$coelScore),
                                  na.rm = T)
                 }
+                scoreInt <- sum(c(classConf$fragments[[c]]$int,
+                                  chainsComb$fragments[[c]][[comb]]$int),
+                                na.rm = T)
               } else {
                 if (acquisitionmode == "DIA"){
                   score <-  mean(chainsComb$fragments[[c]][[comb]]$coelScore, na.rm = T)
                 } else {
                   score <-  sum(chainsComb$fragments[[c]][[comb]]$coelScore, na.rm = T)
                 }
+                scoreInt <- sum(chainsComb$fragments[[c]][[comb]]$int, na.rm = T)
               }
               FAcomp <- paste(chainsComb$selected[[c]][comb,], collapse = " ")
               results <- rbind(results, data.frame(ID, Class, CDB, FAcomp, mz,
@@ -859,6 +877,7 @@ organizeResults <- function(candidates,
                                                    confidenceLevel,
                                                    peakID = candidates$peakID[c],
                                                    Score = round(score, 3),
+                                                   ScoreInt = round(scoreInt/sum(coelfrags[[c]]$int), 3),
                                                    stringsAsFactors = F))
             }
           } else {
@@ -871,11 +890,13 @@ organizeResults <- function(candidates,
               } else {
                 score <- sum(classConf$fragments[[c]]$coelScore, na.rm = T)
               }
+              scoreInt <- sum(classConf$fragments[[c]]$int, na.rm = T)
               results <- rbind(results, data.frame(ID, Class, CDB, FAcomp, mz,
                                                    RT, int, Adducts, ppm,
                                                    confidenceLevel,
                                                    peakID = candidates$peakID[c],
                                                    Score = round(score, 3),
+                                                   ScoreInt = round(scoreInt/sum(coelfrags[[c]]$int), 3),
                                                    stringsAsFactors = F))
             }
           }
@@ -940,6 +961,9 @@ organizeResults <- function(candidates,
                                    chainsComb$fragments[[c]][[comb]]$coelScore),
                                  na.rm = T)
                 }
+                scoreInt <-  sum(c(classConf$fragments[[c]]$int,
+                                   chainsComb$fragments[[c]][[comb]]$int),
+                                 na.rm = T)
               } else {
                 if (acquisitionmode == "DIA"){
                   score <-  mean(chainsComb$fragments[[c]][[comb]]$coelScore,
@@ -948,6 +972,8 @@ organizeResults <- function(candidates,
                   score <-  sum(chainsComb$fragments[[c]][[comb]]$coelScore,
                                  na.rm = T)
                 }
+                scoreInt <-  sum(chainsComb$fragments[[c]][[comb]]$int,
+                                 na.rm = T)
               }
               FAcomp <- paste(chainsComb$selected[[c]][comb,], collapse = " ")
               results <- rbind(results, data.frame(ID, Class, CDB, FAcomp, mz, RT,
@@ -955,6 +981,7 @@ organizeResults <- function(candidates,
                                                    confidenceLevel,
                                                    peakID = candidates$peakID[c],
                                                    Score = round(score, 3),
+                                                   ScoreInt = round(scoreInt/sum(coelfrags[[c]]$int), 3),
                                                    stringsAsFactors = F))
             }
           } else {
@@ -967,11 +994,13 @@ organizeResults <- function(candidates,
               } else {
                 score <- sum(classConf$fragments[[c]]$coelScore, na.rm = T)
               }
+              scoreInt <- sum(classConf$fragments[[c]]$int, na.rm = T)
               results <- rbind(results, data.frame(ID, Class, CDB, FAcomp, mz,
                                                    RT, int, Adducts, ppm,
                                                    confidenceLevel,
                                                    peakID = candidates$peakID[c],
                                                    Score = round(score, 3),
+                                                   ScoreInt = round(scoreInt/sum(coelfrags[[c]]$int), 3),
                                                    stringsAsFactors = F))
             }
           }
@@ -981,12 +1010,10 @@ organizeResults <- function(candidates,
         keep <- rep(NA, nrow(results))
         for (r in 1:nrow(results)){
           if (is.na(keep[r])){
-            dup <- which(results$mz == results$mz[r] & results$RT ==
-                           results$RT[r])
+            dup <- which(results$mz == results$mz[r] & results$RT == results$RT[r])
             dup <- dup[dup >= r]
             if (length(dup) > 1){
-              rep <- duplicated(lapply(sapply(results$FAcomp[dup], strsplit,
-                                              " "), sort))
+              rep <- duplicated(lapply(sapply(results$FAcomp[dup], strsplit, " "), sort))
               rep <- dup[which(rep)]
               all <- c(r, rep)
               tokeep <- all[which.max(LipidMS::confLevels[
@@ -1078,7 +1105,9 @@ crossTables <- function(msobject,
     results <- results[order(factor(results$confidenceLevel,
                                     levels= c("FA position", "FA",
                                               "Subclass", "MSMS",
-                                              "MS-only")), -results$Score),]
+                                              "MS-only")), 
+                             -results$ScoreInt, 
+                             -results$Score),]
     
     # Neutral mass for lipids in the results table
     Form_Mn <- do.call(rbind, apply(results, 1, getFormula, dbs = dbs))
@@ -1089,6 +1118,7 @@ crossTables <- function(msobject,
     lipidMSadduct <- rep("", nrow(MS1))
     lipidMSlevel <- rep("", nrow(MS1))
     lipidMSscore <- rep("", nrow(MS1))
+    lipidMSscoreInt <- rep("", nrow(MS1))
     
     # Go over results and add unique annotations to the previous vectors 
     for (r in 1:nrow(results)){
@@ -1126,6 +1156,7 @@ crossTables <- function(msobject,
                 lipidMSlevel[rows[matches[i]]] <- as.character(results$confidenceLevel[r])
                 lipidMSadduct[rows[matches[i]]] <- as.character(adducts[m])
                 lipidMSscore[rows[matches[i]]] <- as.character(results$Score[r])
+                lipidMSscoreInt[rows[matches[i]]] <- as.character(results$ScoreInt[r])
                 
                 add <- FALSE
                 
@@ -1153,17 +1184,18 @@ crossTables <- function(msobject,
                   }
                 }
                 if (add){
-                  
                   # finally, if the new id has to be added, sort all ids based on
                   # annotation level and coelution score
                   conf <- confLevels[confLevels$level == results$confidenceLevel[r], "order"]
                   conf2 <- unlist(strsplit(lipidMSlevel[rows[matches[i]]], "\\|"))
                   conf2 <- sapply(conf2, function(x) confLevels[confLevels$level == x,"order"])
-                  
                   score <- results$Score[r]
                   score2 <- as.numeric(unlist(strsplit(lipidMSscore[rows[matches[i]]], "\\|")))
+                  scoreInt <- results$ScoreInt[r]
+                  scoreInt2 <- as.numeric(unlist(strsplit(lipidMSscoreInt[rows[matches[i]]], "\\|")))
                   
-                  ord <- order(c(conf, conf2), c(score, score2), decreasing = TRUE)
+                  ord <- order(c(conf, conf2), c(scoreInt, scoreInt2), 
+                               c(score, score2), decreasing = TRUE)
                   
                   if (length(ord) == 0){
                     # if anything goes wrong add the new id in at the last position
@@ -1179,7 +1211,9 @@ crossTables <- function(msobject,
                     lipidMSscore[rows[matches[i]]] <-
                       paste(lipidMSscore[rows[matches[i]]],
                             as.character(results$Score[r]), sep="|")
-                    
+                    lipidMSscoreInt[rows[matches[i]]] <-
+                      paste(lipidMSscoreInt[rows[matches[i]]],
+                            as.character(results$ScoreInt[r]), sep="|")
                   } else {
                     # else, add the new id and reorder
                     ids <- c(results$ID[r],
@@ -1190,10 +1224,13 @@ crossTables <- function(msobject,
                                unlist(strsplit(as.character(lipidMSadduct[rows[matches[i]]]), "\\|")))
                     score <- c(results$Score[r],
                                unlist(strsplit(as.character(lipidMSscore[rows[matches[i]]]), "\\|")))
+                    scoreInt <- c(results$ScoreInt[r],
+                               unlist(strsplit(as.character(lipidMSscoreInt[rows[matches[i]]]), "\\|")))
                     lipidMSid[rows[matches[i]]] <- paste(ids[ord], collapse="|")
                     lipidMSlevel[rows[matches[i]]] <- paste(conflev[ord], collapse="|")
                     lipidMSadduct[rows[matches[i]]] <- paste(adduc[ord], collapse="|")
                     lipidMSscore[rows[matches[i]]] <- paste(score[ord], collapse="|")
+                    lipidMSscoreInt[rows[matches[i]]] <- paste(scoreInt[ord], collapse="|")
                   }
                 }
               }
@@ -1207,13 +1244,15 @@ crossTables <- function(msobject,
                            LipidMSid = lipidMSid, 
                            Adduct = lipidMSadduct,
                            confidenceLevel = lipidMSlevel,
-                           Score = lipidMSscore)
+                           Score = lipidMSscore,
+                           ScoreInt = lipidMSscoreInt)
   } else {
     rawPeaks <- data.frame(MS1, 
                            LipidMSid = "", 
                            Adduct = "",
                            confidenceLevel = "",
-                           Score = "")
+                           Score = "",
+                           ScoreInt = "")
   }
   msobject$annotation$annotatedPeaklist <- rawPeaks
   

@@ -279,7 +279,7 @@ findPrecursor <- function(MS1, db, ppm, massdif, rt, n=1, charge=1){
     matches <- precursors[seq(1, length(precursors), 2)]
     ppms <- precursors[seq(2, length(precursors), 2)]
     prec <- MS1[matches,]
-    if (class(prec) == "numeric"){
+    if (is.numeric(prec)){
       prec <- as.data.frame(t(prec))
     }
     ppms <- ppms[prec$RT >= rt[1] & prec$RT <= rt[2]]
@@ -672,8 +672,8 @@ checkIntRules <- function(intrules, rates, intrequired, nchains, combinations,
 #' Find lisnks between MS1 peaks and precursors selected for MS2 in DDA.
 #'
 #' @param mz mz
-#' @param minint minimum intensity
-#' @param maxint maximum intensity
+#' @param minrt minimum intensity
+#' @param maxrt maximum intensity
 #' @param precursors data frame with all precursors
 #' @param ppm mass tolerance
 #'
@@ -728,7 +728,7 @@ chains <- function(id){
 #' Summarize annotation results from an msbatch into the features table
 #'
 #' @param msbatch msbatch
-#' @param simplifyAnnotation logical. If TRUE, only the most frequent id will be 
+#' @param simplifyAnnotations logical. If TRUE, only the most frequent id will be 
 #' kept (recommended when only pool samples have been acquired in DIA or DDA). If 
 #' FALSE, all annotations will be shown.
 #'
@@ -754,6 +754,7 @@ joinAnnotationResults <- function(msbatch, simplifyAnnotations = TRUE){
   adducts <- rep("", nrow(features))
   levels <- rep("", nrow(features))
   scores <- rep("", nrow(features))
+  scoresInt <- rep("", nrow(features))
   nsamples <- rep(0, nrow(features))
   
   # Search annotations
@@ -770,6 +771,9 @@ joinAnnotationResults <- function(msbatch, simplifyAnnotations = TRUE){
       adducts[g] <- paste(adducts[g], id$Adduct, sep = ";")
       levels[g] <- paste(levels[g], id$confidenceLevel, sep = ";")
       scores[g] <- paste(scores[g], id$Score, sep = ";")
+      scoresInt[g] <- paste(scoresInt[g], id$ScoreInt, sep = ";")
+      
+      if (is.null(id)){id <-  msbatch$msobjects[[s]]$annotation$annotatedPeaklist[c(),,drop=FALSE]}
       
       if (nrow(id) > 0){
         if (id$LipidMSid != ""){
@@ -784,6 +788,7 @@ joinAnnotationResults <- function(msbatch, simplifyAnnotations = TRUE){
   adducts <- gsub("^;", "", adducts)
   levels <- gsub("^;", "", levels)
   scores <- gsub("^;", "", scores)
+  scoresInt <- gsub("^;", "", scoresInt)
   
   n <- length(annotated)-1
   remove <- which(unlist(sapply(lipids, function(x) 
@@ -794,6 +799,7 @@ joinAnnotationResults <- function(msbatch, simplifyAnnotations = TRUE){
   adducts[remove] <- ""
   levels[remove] <- ""
   scores[remove] <- ""
+  scoresInt[remove] <- ""
   
   # If simplifyAnnotations is TRUE, keep only the most frequent id, 
   # else summarize results
@@ -805,10 +811,27 @@ joinAnnotationResults <- function(msbatch, simplifyAnnotations = TRUE){
       ads <- ads[ads != ""]
       levs <- unlist(strsplit(levels[m], "[;\\|]"))
       levs <- levs[levs != ""]
+      conf <- confLevels$order[unlist(sapply(levs, match, confLevels$level))]
       scs <- unlist(strsplit(scores[m], "[;\\|]"))
       scs <- scs[scs != ""]
+      scsInt <- unlist(strsplit(scoresInt[m], "[;\\|]"))
+      scsInt <- scsInt[scsInt != ""]
       
-      tableids <- sort(table(ids), decreasing = TRUE)
+      tableids <- sort(table(ids)[unique(ids)], decreasing = TRUE)
+      # namesids <- names(tableids)
+      # ord <- sapply(namesids, function(x) which(ids == x), simplify = FALSE)
+      
+      # from here until line 836, it is an update
+      nrep <- tableids[ids] 
+      ord <- order(nrep, conf, scsInt, scs, decreasing = TRUE) 
+      
+      ids <- ids[ord]
+      ads <- ads[ord]
+      levs <- levs[ord]
+      scs <- scs[ord]
+      scsInt <- scsInt[ord]
+      
+      tableids <- sort(table(ids)[unique(ids)], decreasing = TRUE)
       namesids <- names(tableids)
       ord <- sapply(namesids, function(x) which(ids == x), simplify = FALSE)
       
@@ -821,6 +844,7 @@ joinAnnotationResults <- function(msbatch, simplifyAnnotations = TRUE){
                                                                      confLevels$level)])]
           levels[m] <- unique(maxlevels[maxlevels %in% levs[ord[[1]]]])
           scores[m] <- round(max(as.numeric(scs[ord[[1]]])), 3)
+          scoresInt[m] <- round(max(as.numeric(scsInt[ord[[1]]])), 3)
           nsamples[m] <- length(ord[[1]])
         } else if (!simplifyAnnotations & length(ids) > 0) {
           lipids[m] <- paste(unlist(sapply(ord, function(x) unique(ids[x]))), 
@@ -835,6 +859,8 @@ joinAnnotationResults <- function(msbatch, simplifyAnnotations = TRUE){
             })), collapse=";")
           scores[m] <- paste(unlist(sapply(ord, function(x) round(max(as.numeric(scs[x])), 3))), 
                              collapse=";")
+          scoresInt[m] <- paste(unlist(sapply(ord, function(x) round(max(as.numeric(scsInt[x])), 3))), 
+                             collapse=";")
           nsamples[m] <- paste(unlist(sapply(ord, function(x) length(x))), 
                                collapse=";")
         }
@@ -844,8 +870,9 @@ joinAnnotationResults <- function(msbatch, simplifyAnnotations = TRUE){
   
   # Join info
   msbatch$features <- data.frame(features, LipidMSid = lipids, Adduct = adducts, 
-                                 confidenceLevel = levels, Score = scores, 
-                                 nsamples = nsamples, fmatrix)
+                                 confidenceLevel = levels, Score = scores,
+                                 ScoreInt = scoresInt, nsamples = nsamples, 
+                                 fmatrix)
   
   return(msbatch)
 }

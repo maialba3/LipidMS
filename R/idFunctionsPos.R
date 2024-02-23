@@ -408,7 +408,7 @@ idMGpos <- function(msobject,
                             ppm_products, dbs)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb = list(),
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb = list(),
                            intrules  = c(), intConf = list(), nchains = 0,
                            class="MG",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
@@ -633,7 +633,7 @@ idLPCpos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb,
                            intrules  = c(), intConf, nchains = 1, class="LPC",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
     
@@ -858,7 +858,7 @@ idLPEpos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb,
                            intrules  = c(), intConf, nchains = 1, class="LPE",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
     
@@ -1102,7 +1102,7 @@ idPCpos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="PC",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
     
@@ -1346,7 +1346,7 @@ idPCopos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="PCo",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
     
@@ -1590,7 +1590,7 @@ idPCppos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="PCp",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
     
@@ -1834,7 +1834,7 @@ idPEpos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="PE",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
     
@@ -2077,7 +2077,7 @@ idPEopos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="PEo",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
     
@@ -2320,7 +2320,7 @@ idPEppos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="PEp",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
     
@@ -2563,7 +2563,7 @@ idPGpos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="PG",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
     
@@ -2807,7 +2807,7 @@ idPIpos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="PI",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
     
@@ -3015,7 +3015,7 @@ idSphpos <- function(msobject,
                             ppm_products, dbs)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb = list(),
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb = list(),
                            intrules  = c(), intConf = list(), nchains = 0,
                            class="Sph",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
@@ -3224,7 +3224,7 @@ idSphPpos <- function(msobject,
     
     # prepare output
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb = list(),
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb = list(),
                            intrules  = c(), intConf = list(), nchains = 0,
                            class="SphP",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
@@ -3468,7 +3468,7 @@ idCerpos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="Cer",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
     
@@ -3713,7 +3713,7 @@ idCerPpos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="CerP",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
     
@@ -3957,7 +3957,7 @@ idSMpos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="SM",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
     
@@ -4181,7 +4181,7 @@ idCarpos <- function(msobject,
                                    nchains=1, chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb,
                            intrules  = c(), intConf, nchains = 1,
                            class="Carnitine",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
@@ -4407,7 +4407,7 @@ idCEpos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb,
                            intrules = c(),
                            intConf, nchains = 1, class="CE",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
@@ -4650,7 +4650,7 @@ idDGpos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 2, class="DG",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
     
@@ -4905,7 +4905,7 @@ idTGpos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb,
                            intrules, intConf, nchains = 3, class="TG",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
     
@@ -5155,7 +5155,7 @@ idAcylCerpos <- function(msobject,
                                    chainsComb)
     
     # prepare output
-    res <- organizeResults(candidates, clfrags, classConf, chainsComb, intrules,
+    res <- organizeResults(candidates, coelfrags, clfrags, classConf, chainsComb, intrules,
                            intConf, nchains = 3, class="AcylCer",
                            acquisitionmode = msobject$metaData$generalMetadata$acquisitionmode)
     

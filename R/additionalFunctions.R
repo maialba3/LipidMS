@@ -193,7 +193,7 @@ plotLipids <- function(msobject, span = 0.4, ppm = 10, verbose = TRUE){
     # Plot
     
     # save par parameters
-    oldpar <- graphics::par(no.readonly = TRUE)
+    oldpar <- graphics::par(no.readonly = TRUE, new = FALSE)
     on.exit(graphics::par(oldpar))
     
     colorsMS1 <- c("#42858C", "#FE9300", "#870E75", "#3E71A8", "#FE6900", 
@@ -1348,7 +1348,7 @@ getInclusionList <- function(df, dbs){
   }
   
   Form_Mn <- apply(results, 1, getFormula, dbs = dbs)
-  if (class(Form_Mn) == "matrix"){
+  if (is.matrix(Form_Mn)){
     new <- list()
     for (i in 1:ncol(Form_Mn)){
       new[[i]] <- c(Form_Mn[1,i], Form_Mn[2,i])
@@ -1361,6 +1361,7 @@ getInclusionList <- function(df, dbs){
   }
   Formula <- unlist(lapply(Form_Mn, "[[", 1))
   RT <- results$RT
+  RTminutes <- results$RTminutes
   Mn <- as.numeric(unlist(lapply(Form_Mn, "[[", 2)))
   adducts <- sapply(as.vector(results$Adduct), strsplit, ";")
   mzs <- rep(list(vector()), nrow(results))
@@ -1377,12 +1378,13 @@ getInclusionList <- function(df, dbs){
   for (i in 1:nrow(results)){
     for (a in 1:length(adducts[[i]])){
       inclusionList <- rbind(inclusionList,
-                             data.frame(Formula[i], RT[i], Mn[i],
+                             data.frame(Formula[i], RT[i], RTminutes[i], Mn[i],
                                         mzs[[i]][a], adducts[[i]][a],
                                         Name[i], stringsAsFactors = F))
     }
   }
-  colnames(inclusionList) <- c("Formula", "RT", "Mn", "mz", "Adduct", "LipidMSid")
+  colnames(inclusionList) <- c("Formula", "RT", "RTminutes", "Mn", "mz", 
+                               "Adduct", "LipidMSid")
   inclusionList <- unique(inclusionList)
   return(inclusionList)
 }
@@ -1578,6 +1580,7 @@ searchIsotopes <- function(msobject,
                       Formula = x["Formula"],
                       mz = mzs, 
                       RT = rts,  
+                      RTminutes = round(rts/60, 2),
                       int = intensities,
                       stringsAsFactors = F, row.names = 1:length(intensities)))
   })
@@ -1620,7 +1623,8 @@ searchIsotopesmsbatch <- function(msbatch,
   results <- data.frame(mz = msbatch$features$mz, 
                         RT = msbatch$features$RT,
                         iniRT = msbatch$features$iniRT,
-                        endRT = msbatch$features$endRT)
+                        endRT = msbatch$features$endRT,
+                        RTminutes = msbatch$features$RTminutes)
   results$LipidMSid <- unlist(sapply(msbatch$features$LipidMSid, function(x){
     id <- unlist(strsplit(x, "[\\|;]"))[1]
     if (is.na(id)){id <- ""}
@@ -1664,7 +1668,8 @@ searchIsotopesmsbatch <- function(msbatch,
       isotopes <- cbind(isotopes, iso$int)
     }
   }
-  colnames(isotopes) <- c("LipidMSid", "Isotope", "Adduct", "Formula", "mz", "RT",
+  colnames(isotopes) <- c("LipidMSid", "Isotope", "Adduct", "Formula", "mz", 
+                          "RT", "RTminutes",
                           msbatch$metaData$sample)
   
   return(isotopes)

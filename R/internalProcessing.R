@@ -957,14 +957,16 @@ getfeaturestable <- function(msbatch){
   }
   
   # save results in msbatch
-  featureTable <- data.frame(mz, minmz, maxmz, RT, minRT, maxRT, iniRT, endRT,
-                             npeaks = n, group, isotopes, isogroup, featureMatrix)
+  rtminutes <- round(RT/60, 2)
+  featureTable <- data.frame(mz, minmz, maxmz, RT, minRT, maxRT, iniRT, endRT, 
+                             rtminutes, npeaks = n, group, isotopes, isogroup, 
+                             featureMatrix)
   rownames(featureTable) <- make.names(paste(round(mz, 3), round(RT, 0), sep="_"), 
                                        unique = TRUE)
   
-  colnames(featureTable)[1:12] <- c("mz", "minmz", "maxmz", "RT", "minRT", "maxRT",
-                                    "iniRT", "endRT", "npeaks", "group", "isotope",
-                                    "isoGroup")
+  colnames(featureTable)[1:13] <- c("mz", "minmz", "maxmz", "RT", "minRT", "maxRT",
+                                    "iniRT", "endRT", "RTminutes", "npeaks", 
+                                    "group", "isotope", "isoGroup")
   
   msbatch$features <- featureTable
   

@@ -6,6 +6,7 @@
 \usage{
 organizeResults(
   candidates,
+  coelfrags,
   clfrags,
   classConf,
   chainsComb,
@@ -18,6 +19,8 @@ organizeResults(
 }
 \arguments{
 \item{candidates}{candidates data frame. Output of \link{findCandidates}.}
+
+\item{coelfrags}{list of coeluting fragments for each candidate}
 
 \item{clfrags}{vector containing the expected fragments for a given lipid
 class.}
@@ -42,8 +45,9 @@ Prepare a readable output for LipidMS identification functions.
 }
 \details{
 Coelution score for DIA data is calculated as the mean coelution 
-score of all fragments used for annotation, while for DDA data, it is 
-calculated as the sum relative intensity of those fragments in their MS2 scan.
+score of all fragments used for annotation, while for DDA data, the intensity
+score is given, which is calculated as the sum of the relative intensities of 
+the fragments used for annotation.
 }
 \author{
 M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>

@@ -7,7 +7,7 @@
 MassAcylCer(acylcer)
 }
 \arguments{
-\item{glccer}{character value indicating total number of carbons and double
+\item{acylcer}{character value indicating total number of carbons and double
 bounds}
 }
 \value{
