@@ -14,7 +14,7 @@
 #' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 LipidMSapp <- function() {
   if (interactive()){
-    shiny::runApp(system.file('LipidMSapp', package='LipidMS'))
+    shiny::runApp(system.file('LipidMSapp', package='LipidMS'), quiet = TRUE)
   }else {
     stop("Only available for interactive sessions")
   }

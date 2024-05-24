@@ -3,7 +3,7 @@
 #'
 #' Read mzXML file and initiate msobject
 #'
-#' @param file file path for a mzXML file
+#' @param file file path for a mzXML file.
 #' @param polarity character value: negative or positive.
 #'
 #' @return msobject
