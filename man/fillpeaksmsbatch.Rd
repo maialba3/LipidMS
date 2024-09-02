@@ -19,7 +19,7 @@ refill intensities at the features table.
 \details{
 Once grouping has been performed, areas are extracted again for each 
 peak and sample based on the peak parameters defined for each feature (mz and 
-tolerance and initial and end RT).
+tolerance and initial and final RT).
 }
 \examples{
 \dontrun{

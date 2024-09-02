@@ -3,7 +3,7 @@
 #'
 #' Read mzXML file and initiate msobject
 #'
-#' @param file file path for a mzXML file.
+#' @param file file path for a mzXML file
 #' @param polarity character value: negative or positive.
 #'
 #' @return msobject
@@ -65,7 +65,7 @@ readMSfile <- function(file, polarity){
                       collisionEnergy = collisionEnergy,
                       part = 0, clust = 0, peak = 0, Scan = scannum)
   
-  if (polarity == "positive"){pol <- "+"}else{pol <- "-"}
+  if (polarity == "positive") {pol <- "+"} else {pol <- "-"}
   keepPolarity <- scansMetadata$Scan[which(scansMetadata$polarity == pol)]
   scansMetadata <- scansMetadata[scansMetadata$Scan %in% keepPolarity,]
   scans <- scans[scans$Scan %in% keepPolarity,]
@@ -581,7 +581,7 @@ annotateIsotopes <- function(peaklist, rawScans, dmz, drt,
 #' 
 #' Extract peaks from all MS1 peaklists of the msobjects in a msbatch.
 #'
-#' @param msbatch msbatch.
+#' @param msbatch msbatch object
 #'
 #' @return data.frame with 6 columns (mz, RT, int, peakID, isotope and isoGroup).
 #'
@@ -689,7 +689,7 @@ clust <- function(values, mins, maxs, samples, unique.samples, maxdist, ppm){
   # mins: vector of minimum values
   # maxs: vector of maximum values
   # samples: vector indicating to which sample/cluster belongs each value from mins and maxs
-  # values, mins, maxs andy samples have the same length
+  # values, mins, maxs and samples have the same length
   # unique.samples can be TRUE or FALSE (whether or not a cluster can contain different values from the same sample)
   # maxdist: maximum distance allowed
   # ppm: TRUE or FALSE if maxdist is in ppm
@@ -832,10 +832,10 @@ clust <- function(values, mins, maxs, samples, unique.samples, maxdist, ppm){
 #'
 #' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
 rtcorrection <- function(rt, rtmodel){
-rtdevsmoothed <- predict(rtmodel, rt)
-rtdevsmoothed[is.na(rtdevsmoothed)] <- 0
-rt <- rt - rtdevsmoothed
-return(rt)
+  rtdevsmoothed <- predict(rtmodel, rt)
+  rtdevsmoothed[is.na(rtdevsmoothed)] <- 0
+  rt <- rt - rtdevsmoothed
+  return(rt)
 }
 
 # getfeaturestable
@@ -843,7 +843,7 @@ return(rt)
 #' 
 #' Write features table based on groups
 #'
-#' @param msbatch
+#' @param msbatch msbatch object
 #'
 #' @return data.frame
 #'
@@ -888,7 +888,7 @@ getfeaturestable <- function(msbatch){
   for (g in 1:nrow(msbatch$grouping$groupIndex)){
     gr <- msbatch$grouping$peaks[msbatch$grouping$peaks$groupID == g,]
     for (s in as.numeric(unique(gr$sample))){
-      featureMatrix[g, s] <- as.numeric(gr$int[gr$sample == s])
+      featureMatrix[g, s] <- sum(as.numeric(gr$int[gr$sample == s])) # sum() added
       n[g] <- n[g] + 1
     }
     mz[g] <- mean(gr$mz)
@@ -913,7 +913,7 @@ getfeaturestable <- function(msbatch){
   for (g in 1:length(mz)){
     gr <- which(peaks$groupID == g)
     for (s in as.numeric(unique(peaks$sample[gr]))){
-      index[g, s] <- gr[which(peaks$sample[gr] == s)]
+      index[g, s] <- max(gr[which(peaks$sample[gr] == s)]) # max() added 
     }
   }
   
@@ -973,5 +973,143 @@ getfeaturestable <- function(msbatch){
   return(msbatch)
 }
 
-
-
+# removeduplicatedpeaks
+#' Remove duplicated features after grouping step
+#' 
+#' Remove duplicated features after grouping step
+#'
+#' @param msbatch msbatch object 
+#' @param ppm mz tolerance in ppm
+#'
+#' @return msbatch
+#'
+#' @keywords internal
+#'
+#' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+removeduplicatedpeaks <- function(msbatch, 
+                                  ppm, 
+                                  dmz = 5, 
+                                  drt = 30,
+                                  thr_overlap = 0.7){
+  
+  peaks <- msbatch$features
+  peaks[is.na(peaks)] <- 0
+  idpeaks <- 1:nrow(peaks)
+  
+  #============================================================================#
+  # Create mz partitions based on dmz and drt
+  #============================================================================#
+  part <- .Call("agglom", as.numeric(peaks$mz),
+                as.numeric(peaks$RT), as.integer(1),
+                as.numeric(dmz), as.numeric(drt),
+                PACKAGE = "LipidMS")
+  
+  #============================================================================#
+  # For partitions with more than one feature, check if there is RT overlapping
+  #============================================================================#
+  dup <- as.numeric(names(table(part))[which(table(part) > 1)])
+  
+  count <- 0
+  toremove <- c()
+  tokeep <- c()
+  for (d in dup){
+    ss <- peaks[part == d,]
+    ss <- ss[order(ss$iniRT, decreasing = FALSE),]
+    # ss[,1:11]
+    # check overlapping
+    end <- FALSE
+    last <- list()
+    while (nrow(ss) > 1 & !end){
+      tocompare <- sapply(2:nrow(ss), function(x){
+        ss$group[which(ss$iniRT[x] < ss$endRT[1:(x-1)])]
+      }, simplify = FALSE)
+      ncomp <- sum(sapply(tocompare, length) > 0)
+      icomp <- 0
+      if (length(last) == length(tocompare)){
+        if(all(unlist(last) == unlist(tocompare))){
+          keepgoing <- FALSE
+        } else {
+          keepgoing <- TRUE
+        }
+      } else {
+        keepgoing <- TRUE
+      }
+      if (any(sapply(tocompare, length) > 0) & !end & keepgoing){
+        f <- which(sapply(tocompare, length) > 0)
+        
+        # overlapping %
+        for (i in f){
+          ss2 <- ss[!is.na(ss$mz),]
+          g1 <- tocompare[[i]][1]
+          g2 <- ss$group[i+1]
+          
+          if(g1 %in% ss2$group & g2 %in% ss2$group & 
+             !(g1 %in% toremove) & !(g2 %in% toremove)){
+            p1 <- which(ss2$group == g1)
+            p2 <- which(ss2$group == g2)
+            width_p1 <- ss2$endRT[p1] - ss2$iniRT[p1]
+            width_p2 <- ss2$endRT[p2] - ss2$iniRT[p2]
+            time_overlap <- (min(ss2$endRT[p1], ss2$endRT[p2]) -
+                               max(ss2$iniRT[p1], ss2$iniRT[p2]))
+            perc_overlap <- time_overlap / c(width_p1, width_p2)
+            
+            if (any(perc_overlap > thr_overlap)){
+              rem <- c(g1, g2)[which.max(perc_overlap)]
+              keep <- c(g1, g2)[which.min(perc_overlap)]
+              
+              # reorder raw data
+              msbatch$grouping$peaks$groupID[msbatch$grouping$groupIndex$start[rem]:
+                                               msbatch$grouping$groupIndex$end[rem]] <- keep
+              
+              toremove <- c(toremove, rem)
+              tokeep <- c(tokeep, keep)
+              count <- count + 1
+              
+              ss[which(ss$group == rem), 1:11] <- NA
+              icomp <- icomp + 1
+              
+              if (rem == g1 & nrow(ss[(!is.na(ss$mz)) & (!ss$group %in% toremove),, 
+                                      drop=FALSE]) > 1){
+                ss <- ss[!is.na(ss$mz),,drop=FALSE]
+                ss <- ss[!ss$group %in% toremove,,drop=FALSE]
+                break
+              }
+              
+            } else {
+              icomp <- icomp + 1
+            }
+          } else {
+            icomp <- icomp + 1
+          }
+        }
+        last <- tocompare
+        if (icomp == ncomp){
+          end <- TRUE
+        }
+      } else {
+        end <- TRUE
+      }
+    }
+  }
+  
+  # reorder peaks
+  msbatch$grouping$peaks <- msbatch$grouping$peaks[order(msbatch$grouping$peaks$groupID),]
+  
+  # create new index and feature table
+  i <- rle(msbatch$grouping$peaks$groupID)
+  end <- cumsum(i$lengths)
+  start <- c(1, end[-length(end)] + 1)
+  ind <- data.frame(start, end, length = i$lengths, value = i$values)
+  ind <- ind[ind$value != 0,]
+  ind$value <- as.numeric(as.factor(ind$value))
+  pID <- rep(0, nrow(msbatch$grouping$peaks))
+  for(x in 1:nrow(ind)){
+    pID[ind$start[x]:ind$end[x]] <- ind$value[x]
+  }
+  msbatch$grouping$peaks$groupID <- pID
+  msbatch$grouping$groupIndex <- ind
+  
+  msbatch <- getfeaturestable(msbatch)
+  
+  return(msbatch)
+}

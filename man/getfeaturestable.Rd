@@ -7,7 +7,7 @@
 getfeaturestable(msbatch)
 }
 \arguments{
-\item{msbatch}{}
+\item{msbatch}{msbatch object}
 }
 \value{
 data.frame

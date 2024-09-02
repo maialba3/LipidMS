@@ -765,20 +765,18 @@ joinAnnotationResults <- function(msbatch, simplifyAnnotations = TRUE){
     for(g in features$group){
       peakid <- peaks$peakID[peaks$sample == s & peaks$groupID == g]
       id <- msbatch$msobjects[[s]]$annotation$annotatedPeaklist[
-        msbatch$msobjects[[s]]$annotation$annotatedPeaklist$peakID == peakid,, drop = FALSE]
-      
-      lipids[g] <- paste(lipids[g], id$LipidMSid, sep = ";")
-      adducts[g] <- paste(adducts[g], id$Adduct, sep = ";")
-      levels[g] <- paste(levels[g], id$confidenceLevel, sep = ";")
-      scores[g] <- paste(scores[g], id$Score, sep = ";")
-      scoresInt[g] <- paste(scoresInt[g], id$ScoreInt, sep = ";")
+        msbatch$msobjects[[s]]$annotation$annotatedPeaklist$peakID %in% peakid,, drop = FALSE]
+      id <- id[id$LipidMSid != "",,drop=FALSE]
       
       if (is.null(id)){id <-  msbatch$msobjects[[s]]$annotation$annotatedPeaklist[c(),,drop=FALSE]}
       
       if (nrow(id) > 0){
-        if (id$LipidMSid != ""){
-          nsamples[g] <- nsamples[g]
-        }
+        lipids[g] <- paste(lipids[g], id$LipidMSid, sep = ";", collapse = ";")
+        adducts[g] <- paste(adducts[g], id$Adduct, sep = ";", collapse = ";")
+        levels[g] <- paste(levels[g], id$confidenceLevel, sep = ";", collapse = ";")
+        scores[g] <- paste(scores[g], id$Score, sep = ";", collapse = ";")
+        scoresInt[g] <- paste(scoresInt[g], id$ScoreInt, sep = ";", collapse = ";")
+        nsamples[g] <- nsamples[g]
       }
     }
   }

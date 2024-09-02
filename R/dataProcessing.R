@@ -33,7 +33,6 @@
 #' 
 #' Numeric arguments accept one or two values for MS1 and MS2, respectively.
 #' 
-#' 
 #' @seealso \link{batchdataProcessing} and \link{setmsbatch}
 #'
 #' @examples
@@ -816,6 +815,11 @@ alignmsbatch <- function(msbatch,
 #' used for grouping. Used to calculate minsamples in case it is missing.
 #' @param parallel logical. If TRUE, parallel processing is performed.
 #' @param ncores number of cores to be used in case parallel is TRUE.
+#' @param deleteduplicates logical. Whether or not duplicated features 
+#' should be removed after grouping based on the overlap between peak limits. 
+#' dmz and drt parameters are used to filter the potential duplicates. 
+#' @param thr_overlap_duplicates numeric value between 0 and 1 to establish the 
+#' percentage of overlap threshold to consider two features as duplicated. 
 #' @param verbose print information messages.
 #' 
 #' @return grouped msbatch
@@ -841,12 +845,14 @@ alignmsbatch <- function(msbatch,
 #' update minimum, maximum and mean values, else, set distance to NA and go back 
 #' to point 3.
 #' 
-#' Then this same clustring algorithm is executed again to group peaks based on 
+#' Then this same clustering algorithm is executed again to group peaks based on 
 #' their RT. In this case, distances between clusters which share peaks from the 
 #' same samples will be set to NA.
 #' 
 #' After groups have been defined, those clusters with a sample representation 
-#' over minsamples or minsamplesfrac will be used for building the feature table.
+#' over minsamples or minsamplesfrac will be used for building the feature table. 
+#' Finally, if deleteduplicates is set to TRUE, peaks overlap is checked to 
+#' avoid duplicated or wrongly defined features.
 #' 
 #' @references Partitioning algorithm has been imported from enviPick R-package:
 #' https://cran.r-project.org/web/packages/enviPick/index.html
@@ -865,6 +871,8 @@ groupmsbatch <- function(msbatch,
                          minsamplesfrac = 0.25,
                          parallel = FALSE,
                          ncores,
+                         deleteduplicates = TRUE,
+                         thr_overlap_duplicates = 0.7,
                          verbose = TRUE){
   
   #============================================================================#
@@ -1045,11 +1053,30 @@ groupmsbatch <- function(msbatch,
   msbatch$grouping$parameters$minsamples <- minsamples
   
   #============================================================================#
-  # Create feature table
+  # Create feature table 
   #============================================================================#
   if(verbose){cat("\nBuilding data matrix...")}
   msbatch <- getfeaturestable(msbatch)
-  if(verbose){cat("OK\n")}
+  if (deleteduplicates){
+    if(verbose){cat("OK")}
+  } else {
+    if(verbose){cat("OK\n")}
+  }
+  
+  
+  
+  #============================================================================#
+  # Delete duplicated features
+  #============================================================================#
+  if (deleteduplicates){
+    if(verbose){cat("\nRemoving duplicated features...")}
+    ininpeaks <- nrow(msbatch$features)
+    msbatch <- removeduplicatedpeaks(msbatch, dmz = dmz, drt = drt, 
+                                     thr_overlap = thr_overlap_duplicates)
+    endnpeaks <- nrow(msbatch$features)
+    if(verbose){cat(paste0(as.character(ininpeaks - endnpeaks), 
+                           " duplicated features removed...OK\n"))}
+  }
   
   #============================================================================#
   # Remove unnecessary data
@@ -1073,7 +1100,7 @@ groupmsbatch <- function(msbatch,
 #' 
 #' @details Once grouping has been performed, areas are extracted again for each 
 #' peak and sample based on the peak parameters defined for each feature (mz and 
-#' tolerance and initial and end RT).
+#' tolerance and initial and final RT).
 #'
 #' @examples
 #' \dontrun{
@@ -1088,7 +1115,7 @@ fillpeaksmsbatch <- function(msbatch){
   ##############################################################################
   # check msbatch structure
   if (!msbatch$grouping$grouped){
-    stop("msbatch needs to be grouped before filling peaks. Use groupmsbatch function.")
+    stop("msbatch needs to be grouped before filling peaks. Use groupmsbatch() function.")
   }
   if (!is.list(msbatch) | !all(names(msbatch) %in% c("metaData", "msobjects", "alignment", "grouping", "features")) | 
       !is.data.frame(msbatch$metaData) | !is.list(msbatch$msobjects) | !is.list(msbatch$alignment) | 
@@ -1111,7 +1138,6 @@ fillpeaksmsbatch <- function(msbatch){
   features <- msbatch$features[,!colnames(msbatch$features) %in% make.names(msbatch$metaData$sample)]
   fmatrix <- msbatch$features[,colnames(msbatch$features) %in% make.names(msbatch$metaData$sample)]
   # peaks <- msbatch$grouping$peaks
-  # 
   dmz <- msbatch$grouping$parameters$dmz
   
   #============================================================================#

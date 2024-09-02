@@ -44,40 +44,14 @@ shinyServer(function(input, output, session) {
   
   observe({
     req(input$file1, input$metadata)
-    tryCatch({
-      metadata2 <- read.csv(input$metadata$datapath, 
-                            sep=input$sep1, dec=input$dec1)
-      if (!all(c("sample", "acquisitionmode", "sampletype") %in% colnames(metadata2))){
-        stop()
-      }
-      if (!all(grepl(".mzXML", metadata2$sample))){
-        metadata2$sample[!grepl(".mzXML", metadata2$sample)] <- 
-          paste(metadata2$sample[!grepl(".mzXML", metadata2$sample)], ".mzXML", sep = "")
-      }
-      if (!all(metadata2$acquisitionmode %in% c("MS", "DIA", "DDA"))){
-        stop()
-      }
-      if (!any(metadata2$acquisitionmode %in% c("DIA", "DDA"))){
-        stop()
-      }
-      files <- data.frame(sample = input$file1$name)
-      metadata2 <- merge(metadata2, files, by = "sample")
-      output$metadata <- renderTable({metadata2[,c("sample", "acquisitionmode", "sampletype")]})
-    }, error = function(e){
-      output$metadata <- renderTable({data.frame(Warning = c("Check csv file format! \n", 
-                                                             "- Check the delimiter character. \n", 
-                                                             "- Make sure you have 3 columns named as: sample, acquisitionmode and sampletype in lowercase and without blank spaces: \n", 
-                                                             "-->    sample (name of the mzXML file) \n", 
-                                                             "-->    acquisitionmode (one of MS, DIA, DDA, and at least one file must be acquired in DIA or DDA) \n", 
-                                                             "-->    sampletype (sample groups)"))})
-    })
-    
-    if (nrow(metadata2) < 3 & input$analysis == "batch"){
-      output$messageanalysis <- renderText(paste0("Your data set only contains ", 
-                                                  nrow(metadata2), " samples. Consider performing single sample processing."))
-    } else {
-      output$messageanalysis <- renderText("")
+    metadata2 <- read.csv(input$metadata$datapath, sep=",")
+    if (!all(grepl(".mzXML", metadata2$sample))){
+      metadata2$sample <- paste(metadata2$sample, ".mzXML", sep = "")
     }
+    files <- data.frame(sample = input$file1$name,
+                        path = input$file1$datapath)
+    metadata2 <- merge(metadata2, files, by = "sample")
+    output$metadata <- renderTable({metadata2[,1:3]})
   })
   
   
@@ -86,7 +60,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$do, {
     req(input$file1, input$metadata)
     if (input$analysis == "single"){
-      metadata <- read.csv(input$metadata$datapath, sep=input$sep1, dec=input$dec1)
+      metadata <- read.csv(input$metadata$datapath, sep=",")
       if (!all(grepl(".mzXML", metadata$sample))){
         metadata$sample <- paste(metadata$sample, ".mzXML", sep = "")
       }
@@ -94,25 +68,25 @@ shinyServer(function(input, output, session) {
                           path = input$file1$datapath)
       metadata <- merge(metadata, files, by = "sample")
       msobjects <- singleProcessing(metadata$path, metadata$sample,
-                                    metadata$acquisitionmode, input$sI_polarity,
-                                    input$dmzagglom_ms1,input$dmzagglom_ms2,
-                                    input$drtagglom_ms1, input$drtagglom_ms2,
-                                    input$drtclust_ms1, input$drtclust_ms2,
-                                    input$minpeak_ms1, input$minpeak_ms2,
-                                    input$drtgap_ms1, input$drtgap_ms2,
-                                    input$drtminpeak_ms1, input$drtminpeak_ms2,
-                                    input$drtmaxpeak_ms1, input$drtmaxpeak_ms2,
-                                    input$recurs_ms1, input$recurs_ms2,
-                                    input$sb_ms1, input$sb_ms2,
-                                    input$sn_ms1, input$sn_ms2,
-                                    input$minint_ms1, input$minint_ms2,
-                                    input$weight_ms1, input$weight_ms2,
-                                    input$dmzIso_ms1, input$dmzIso_ms2,
-                                    input$drtIso_ms1, input$drtIso_ms2,
-                                    input$dmzprecursor, input$dmzproducts,
-                                    input$rttol, input$coelcutoff,
-                                    input$lipidClassesPos,
-                                    input$lipidClassesNeg)
+                                              metadata$acquisitionmode, input$sI_polarity,
+                                              input$dmzagglom_ms1,input$dmzagglom_ms2,
+                                              input$drtagglom_ms1, input$drtagglom_ms2,
+                                              input$drtclust_ms1, input$drtclust_ms2,
+                                              input$minpeak_ms1, input$minpeak_ms2,
+                                              input$drtgap_ms1, input$drtgap_ms2,
+                                              input$drtminpeak_ms1, input$drtminpeak_ms2,
+                                              input$drtmaxpeak_ms1, input$drtmaxpeak_ms2,
+                                              input$recurs_ms1, input$recurs_ms2,
+                                              input$sb_ms1, input$sb_ms2,
+                                              input$sn_ms1, input$sn_ms2,
+                                              input$minint_ms1, input$minint_ms2,
+                                              input$weight_ms1, input$weight_ms2,
+                                              input$dmzIso_ms1, input$dmzIso_ms2,
+                                              input$drtIso_ms1, input$drtIso_ms2,
+                                              input$dmzprecursor, input$dmzproducts,
+                                              input$rttol, input$coelcutoff,
+                                              input$lipidClassesPos,
+                                              input$lipidClassesNeg)
       
       output$summaryTable <- renderUI({
         lapply(1:length(msobjects), function(i) {
@@ -204,7 +178,7 @@ shinyServer(function(input, output, session) {
       )
       
     } else if (input$analysis == "batch"){
-      metadata <- read.csv(input$metadata$datapath, sep=input$sep1, dec=input$dec1)
+      metadata <- read.csv(input$metadata$datapath, sep=",")
       if (!all(grepl(".mzXML", metadata$sample))){
         metadata$sample <- paste(metadata$sample, ".mzXML", sep = "")
       }

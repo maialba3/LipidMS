@@ -173,12 +173,12 @@ extern "C"{
       /************************************************************************/
       /* assemble indices for return value of agglom **************************/
       /************************************************************************/
-      SEXP indexed(      SEXP index, /* must be sorted */
-				         SEXP intensity,
-                         SEXP minpeak,
-                         SEXP maxint,
-                         SEXP maxindex
-                         ){
+      SEXP indexed(SEXP index, /* must be sorted */
+				           SEXP intensity,
+                   SEXP minpeak,
+                   SEXP maxint,
+                   SEXP maxindex
+                   ){
 
             PROTECT(index = AS_NUMERIC(index));
             PROTECT(intensity = AS_NUMERIC(intensity));

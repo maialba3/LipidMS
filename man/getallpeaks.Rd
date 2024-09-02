@@ -7,7 +7,7 @@
 getallpeaks(msbatch)
 }
 \arguments{
-\item{msbatch}{msbatch.}
+\item{msbatch}{msbatch object}
 }
 \value{
 data.frame with 6 columns (mz, RT, int, peakID, isotope and isoGroup).

@@ -17,4 +17,4 @@ If you use this software in your research, please cite:
 
 References:
 
-  - Peak-picking algorithm has been imported from enviPick R-package (Martin Loos) (https://CRAN.R-project.org/package=enviPick)
+  - Peak-picking algorithm has been imported from enviPick R-package (Martin Loos) (https://github.com/blosloos/enviPick)

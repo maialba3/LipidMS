@@ -13,6 +13,8 @@ groupmsbatch(
   minsamplesfrac = 0.25,
   parallel = FALSE,
   ncores,
+  deleteduplicates = TRUE,
+  thr_overlap_duplicates = 0.7,
   verbose = TRUE
 )
 }
@@ -35,6 +37,13 @@ used for grouping. Used to calculate minsamples in case it is missing.}
 \item{parallel}{logical. If TRUE, parallel processing is performed.}
 
 \item{ncores}{number of cores to be used in case parallel is TRUE.}
+
+\item{deleteduplicates}{logical. Whether or not duplicated features 
+should be removed after grouping based on the overlap between peak limits. 
+dmz and drt parameters are used to filter the potential duplicates.}
+
+\item{thr_overlap_duplicates}{numeric value between 0 and 1 to establish the 
+percentage of overlap threshold to consider two features as duplicated.}
 
 \item{verbose}{print information messages.}
 }
@@ -66,12 +75,14 @@ two clusters.
 update minimum, maximum and mean values, else, set distance to NA and go back 
 to point 3.
 
-Then this same clustring algorithm is executed again to group peaks based on 
+Then this same clustering algorithm is executed again to group peaks based on 
 their RT. In this case, distances between clusters which share peaks from the 
 same samples will be set to NA.
 
 After groups have been defined, those clusters with a sample representation 
-over minsamples or minsamplesfrac will be used for building the feature table.
+over minsamples or minsamplesfrac will be used for building the feature table. 
+Finally, if deleteduplicates is set to TRUE, peaks overlap is checked to 
+avoid duplicated or wrongly defined features.
 }
 \examples{
 \dontrun{
