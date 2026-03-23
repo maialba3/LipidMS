@@ -21,6 +21,8 @@
 #' FALSE, all annotations will be shown.
 #' @param parallel logical.
 #' @param ncores number of cores to be used in case parallel is TRUE.
+#' @param global_gb numeric. Gigabytes to set as future.globals.maxSize **inside** the function.
+#' Defaults to `getOption("LipidMS.future.globals.maxSizeGB", Inf)`.
 #'
 #' @return msbatch
 #' 
@@ -51,7 +53,8 @@ annotatemsbatch <- function(msbatch,
                             dbs,
                             simplifyAnnotations = FALSE,
                             parallel = FALSE,
-                            ncores){
+                            ncores,
+                            global_gb = getOption("LipidMS.future.globals.maxSizeGB", Inf)){
   
   
   ##############################################################################
@@ -74,36 +77,43 @@ annotatemsbatch <- function(msbatch,
   toannotate <- which(msbatch$metaData$acquisitionmode %in% c("DIA", "DDA"))
   
   if (length(toannotate) > 0){
-    if (parallel) {
-      cl <- makePSOCKcluster(ncores)
-      doParallel::registerDoParallel(cl)
-      `%d%` <- `%dopar%`
-    } else {
-      `%d%` <- `%do%`
-    }
-    x <- c()
-    msbatch$msobjects[toannotate] <- foreach::foreach(x = 1:length(toannotate)) %d% {
-      if (msbatch$msobjects[[toannotate[x]]]$metaData$generalMetadata$polarity == "positive"){
-        idPOS(msobject = msbatch$msobjects[[toannotate[x]]], 
-              ppm_precursor = ppm_precursor,
-              ppm_products = ppm_products,
-              rttol = rttol,
-              coelCutoff = coelCutoff,
-              lipidClasses = lipidClassesPos,
-              dbs = dbs)
-      } else if (msbatch$msobjects[[toannotate[x]]]$metaData$generalMetadata$polarity == "negative"){
-        idNEG(msobject = msbatch$msobjects[[toannotate[x]]],
-              ppm_precursor = ppm_precursor,
-              ppm_products = ppm_products,
-              rttol = rttol,
-              coelCutoff = coelCutoff,
-              lipidClasses = lipidClassesNeg,
-              dbs = dbs)
+    if (!parallel) ncores <- 1L
+    
+    res <- .with_future_plan(
+      workers = ncores,
+      globals_gb = global_gb,
+      expr = {
+        future.apply::future_lapply(
+          toannotate,
+          function(ix){
+            mso <- msbatch$msobjects[[ix]]
+            if (mso$metaData$generalMetadata$polarity == "positive"){
+              idPOS(msobject = mso, 
+                    ppm_precursor = ppm_precursor,
+                    ppm_products = ppm_products,
+                    rttol = rttol,
+                    coelCutoff = coelCutoff,
+                    lipidClasses = lipidClassesPos,
+                    dbs = dbs)
+            } else {
+              idNEG(msobject = mso,
+                    ppm_precursor = ppm_precursor,
+                    ppm_products = ppm_products,
+                    rttol = rttol,
+                    coelCutoff = coelCutoff,
+                    lipidClasses = lipidClassesNeg,
+                    dbs = dbs)
+            }
+          },
+          future.seed = TRUE
+        )
       }
+    )
+    
+    for (k in seq_along(toannotate)) {
+      msbatch$msobjects[[toannotate[k]]] <- res[[k]]
     }
-    if (parallel){
-      parallel::stopCluster(cl)
-    }
+    
     
     # remove previous annotations and write results on the features table
     msbatch$features <- msbatch$features[, !colnames(msbatch$features) %in% 

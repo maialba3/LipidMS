@@ -18,6 +18,6 @@ numeric vector with the assigned clusters
 Calculate max distance between clusters.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

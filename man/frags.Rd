@@ -24,6 +24,6 @@ a database. It is used by identification functions to extract fragments of
 interest based on the fragmentation patterns of each class of lipid.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

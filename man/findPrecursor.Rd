@@ -29,6 +29,6 @@ This function is employed by all identification function in this package to
 find possible precursors in the fullMS function.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

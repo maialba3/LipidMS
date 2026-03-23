@@ -24,6 +24,6 @@ is used by identification functions to find candidates of each class of lipid
 based on full MS information.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

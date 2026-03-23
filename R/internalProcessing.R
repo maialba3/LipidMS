@@ -14,7 +14,7 @@
 readMSfile <- function(file, polarity){
   # 1. read data with readMzXmlFile
   ms <- readMzXmlData::readMzXmlFile(file.path(file))
-
+  
   # 2. Extract metaData (general and scan by scan)
   if (is.null(ms[[1]]$metaData$startTime)){
     startTime <- min(unlist(lapply(ms, function(x) x$metaData$retentionTime)))
@@ -53,7 +53,7 @@ readMSfile <- function(file, polarity){
         as.numeric(factor(scansMetadata$RT[scansMetadata$msLevel == l & scansMetadata$collisionEnergy == c]))
   }
   scansMetadata$Scan <- scanOrder
-
+  
   # 3. Extract scans
   mz <- unlist(lapply(ms, function(x) x$spectrum$mass))
   int <- unlist(lapply(ms, function(x) x$spectrum$intensity))
@@ -140,11 +140,11 @@ partitioning <- function(msobject,
   msobject$processing[[mslevel]]$parameters$dmzagglom <- dmzagglom
   msobject$processing[[mslevel]]$parameters$drtagglom <- drtagglom
   msobject$processing[[mslevel]]$parameters$minpeak <- minpeak
-
+  
   # order ms measures by increasing mz
   msobject$rawData[[mslevel]][[cE]] <- msobject$rawData[[mslevel]][[cE]][order(msobject$rawData[[mslevel]][[cE]]$mz,
-                                                   decreasing = FALSE),]
-
+                                                                               decreasing = FALSE),]
+  
   # Agglomerative partitioning: agglom function from enviPick package
   part <- .Call("agglom", 
                 as.numeric(msobject$rawData[[mslevel]][[cE]]$mz),
@@ -153,11 +153,11 @@ partitioning <- function(msobject,
                 as.numeric(dmzagglom), 
                 as.numeric(drtagglom),
                 PACKAGE = "LipidMS")
-
+  
   # Index of partitions: indexed function from enviPick package
-    # order ms measures by partition order
+  # order ms measures by partition order
   msobject$rawData[[mslevel]][[cE]] <- msobject$rawData[[mslevel]][[cE]][order(part,
-                                                               decreasing = FALSE),]
+                                                                               decreasing = FALSE),]
   part <- part[order(part, decreasing = FALSE)]
   maxit <- max(part)
   index <- .Call("indexed", 
@@ -169,17 +169,17 @@ partitioning <- function(msobject,
                  PACKAGE = "LipidMS")
   index <- index[index[,2] != 0,,drop = FALSE]
   colnames(index) <- c("start", "end", "length")
-
+  
   # Assign partition ID: partID function from enviPick
   partID <- .Call("partID", 
                   as.integer(index),
                   as.integer(nrow(msobject$rawData[[mslevel]][[cE]])),
                   PACKAGE = "LipidMS")
-
+  
   # save partitions
   msobject$rawData[[mslevel]][[cE]]$part <- partID
   msobject$processing[[mslevel]]$partIndex[[cE]] <- index
-
+  
   return(msobject)
 }
 
@@ -209,10 +209,10 @@ clustering <- function(msobject,
                        minpeak,
                        mslevel,
                        cE){
-
+  
   # save parameters
   msobject$processing[[mslevel]]$parameters$drtclust <- drtclust
-
+  
   startat <- 0
   roworder <- 1:nrow(msobject$rawData[[mslevel]][[cE]])
   for (k in 1:nrow(msobject$processing[[mslevel]]$partIndex[[cE]])) {
@@ -241,7 +241,7 @@ clustering <- function(msobject,
     }
   }
   msobject$rawData[[mslevel]][[cE]] <- msobject$rawData[[mslevel]][[cE]][roworder,]
-
+  
   # Index of clusters: indexed function from enviPick
   maxit <- max(msobject$rawData[[mslevel]][[cE]]$clust)
   index <- .Call("indexed",
@@ -253,17 +253,17 @@ clustering <- function(msobject,
                  PACKAGE = "LipidMS")
   index <- index[index[,2] != 0,,drop = FALSE]
   colnames(index) <- c("start", "end", "length")
-
+  
   # Assign cluster ID: partID function from enviPick
   clustID <- .Call("partID", 
                    as.integer(index),
                    as.integer(nrow(msobject$rawData[[mslevel]][[cE]])),
                    PACKAGE = "LipidMS")
-
+  
   # save clusters
   msobject$rawData[[mslevel]][[cE]]$clust <- clustID
   msobject$processing[[mslevel]]$clustIndex[[cE]] <- index
-
+  
   return(msobject)
 }
 
@@ -307,7 +307,7 @@ peakdetection <- function(msobject,
                           minint,
                           mslevel,
                           cE){
-
+  
   # save parameters
   msobject$processing[[mslevel]]$parameters$drtminpeak <- drtminpeak
   msobject$processing[[mslevel]]$parameters$drtmaxpeak <- drtmaxpeak
@@ -318,10 +318,10 @@ peakdetection <- function(msobject,
   msobject$processing[[mslevel]]$parameters$sb <- sb
   msobject$processing[[mslevel]]$parameters$sn <- sn
   msobject$processing[[mslevel]]$parameters$minint <- minint
-
+  
   msobject$rawData[[mslevel]][[cE]]$id <- 1:nrow(msobject$rawData[[mslevel]][[cE]])
   level <- as.numeric(gsub("MS", "", mslevel))
-
+  
   startat <- 0
   npeaks <- 0
   areas <- c()
@@ -377,7 +377,7 @@ peakdetection <- function(msobject,
     }
   }
   msobject$rawData[[mslevel]][[cE]] <- msobject$rawData[[mslevel]][[cE]][roworder,]
-
+  
   # assign peakID
   # Index of peaks: indexed function from enviPick
   maxit <- max(msobject$rawData[[mslevel]][[cE]]$peak)
@@ -402,7 +402,7 @@ peakdetection <- function(msobject,
       msobject$processing[[mslevel]]$peakIndex[[cE]] <- index
     }
   }
-
+  
   # create peaklist
   maxit <- max(msobject$rawData[[mslevel]][[cE]]$peak)
   peaklist <- data.frame()
@@ -410,7 +410,7 @@ peakdetection <- function(msobject,
     for (p in 1:nrow( msobject$processing[[mslevel]]$peakIndex[[cE]])){
       start <- msobject$processing[[mslevel]]$peakIndex[[cE]][p,1]
       end <- msobject$processing[[mslevel]]$peakIndex[[cE]][p,2]
-
+      
       mz <- mean(msobject$rawData[[mslevel]][[cE]]$mz[start:end])
       # mz <- weighted.mean(msobject$rawData[[mslevel]][[cE]]$mz[start:end],
       #                     msobject$rawData[[mslevel]][[cE]]$int[start:end])
@@ -423,7 +423,7 @@ peakdetection <- function(msobject,
       minRT <- min(msobject$rawData[[mslevel]][[cE]]$RT[start:end])
       maxRT <- max(msobject$rawData[[mslevel]][[cE]]$RT[start:end])
       peakid <- p
-
+      
       peaklist <- rbind(peaklist,
                         data.frame(mz = mz, RT = RT, int = sumint,
                                    minRT = minRT, maxRT = maxRT,
@@ -471,7 +471,7 @@ peakdetection <- function(msobject,
 #' chromatography/mass spectrometry data sets.” Analytical Chemistry, 84, 283–289. 
 #' http://pubs.acs.org/doi/abs/10.1021/ac202450g.
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 annotateIsotopes <- function(peaklist, rawScans, dmz, drt,
                              massdiff, charge, isotopeAb, m0mass, 
                              corThr, checkInt, checkCor){
@@ -587,7 +587,7 @@ annotateIsotopes <- function(peaklist, rawScans, dmz, drt,
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 getallpeaks <- function(msbatch){
   # extract peaks
   peakspersample <- unlist(lapply(msbatch$msobjects, function(x) nrow(x$peaklist$MS1)))
@@ -610,32 +610,36 @@ getallpeaks <- function(msbatch){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
-indexrtpart <- function(peaks, part, minsamples){
-  maxit <- max(part)
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
+indexrtpart <- function(peaks, part, minsamples) {
+  r <- rle(part)
+  end <- cumsum(r$lengths)
+  start <- c(1, head(end, -1) + 1)
+  values <- r$values
+  lengths <- r$lengths
   
-  i <- rle(part)
-  end <- cumsum(i$lengths)
-  start <- c(1, end[-length(end)] + 1)
-  ind <- data.frame(start, end, length = i$lengths, value = i$values)
-  ind <- ind[ind$value != 0,]
-  keep <- c()
-  for (i in 1:nrow(ind)){
-    # keep only partitions which meet the alignment requirements
-    s <- peaks$sample[ind$start[i]:ind$end[i]]
-    if(length(unique(s)) >= minsamples){
-      keep <- append(keep, TRUE)
-    } else {
-      keep <- append(keep, FALSE)
-    }
-  }
-  ind$value[!keep] <- 0
-  ind <- ind[keep,]
-  ind$value <- as.numeric(as.factor(ind$value))
+  # keep only partitions which meet the alignment requirements
+  valid <- values != 0
+  start <- start[valid]
+  end <- end[valid]
+  values <- values[valid]
+  lengths <- lengths[valid]
   
-  pID <- rep(0, nrow(peaks))
-  for(x in 1:nrow(ind)){
-    pID[ind$start[x]:ind$end[x]] <- ind$value[x]
+  keep <- mapply(function(s, e) {
+    length(unique(peaks$sample[s:e])) >= minsamples
+  }, start, end)
+  
+  start <- start[keep]
+  end <- end[keep]
+  values <- values[keep]
+  lengths <- lengths[keep]
+  
+  new_values <- seq_along(values)
+  ind <- data.frame(start = start, end = end, length = lengths[keep], value = new_values)
+  
+  pID <- integer(nrow(peaks))
+  for (i in seq_along(new_values)) {
+    pID[start[i]:end[i]] <- new_values[i]
   }
   
   return(list(index = ind, idvector = pID))
@@ -653,15 +657,20 @@ indexrtpart <- function(peaks, part, minsamples){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
-clustdist <- function(mins, maxs){
-  # calculate max distance between 2 clusters
-  cdiff <- matrix(nrow = length(mins), ncol = length(mins))
-  for (x in 1:(length(mins)-1)){
-    for(y in (x+1):length(maxs)){
-      cdiff[y, x] <- max(abs(mins[x] - maxs[y]), abs(mins[y] - maxs[x]))
-    }
-  }
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
+clustdist <- function(mins, maxs) {
+  n <- length(mins)
+  # Initialize with NA
+  cdiff <- matrix(NA_real_, nrow = n, ncol = n)
+  
+  idx <- which(lower.tri(cdiff))
+  row_idx <- row(cdiff)[idx]
+  col_idx <- col(cdiff)[idx]
+  
+  d1 <- abs(mins[row_idx] - maxs[col_idx])
+  d2 <- abs(mins[col_idx] - maxs[row_idx])
+  cdiff[idx] <- pmax(d1, d2)
+  
   return(cdiff)
 }
 
@@ -683,139 +692,88 @@ clustdist <- function(mins, maxs){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
-clust <- function(values, mins, maxs, samples, unique.samples, maxdist, ppm){
-  # values: vector of values to cluterize
-  # mins: vector of minimum values
-  # maxs: vector of maximum values
-  # samples: vector indicating to which sample/cluster belongs each value from mins and maxs
-  # values, mins, maxs and samples have the same length
-  # unique.samples can be TRUE or FALSE (whether or not a cluster can contain different values from the same sample)
-  # maxdist: maximum distance allowed
-  # ppm: TRUE or FALSE if maxdist is in ppm
-  
-  if (missing(mins) | missing(maxs)){
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
+clust <- function(values, mins, maxs, samples, unique.samples, maxdist, ppm) {
+  if (missing(mins) || missing(maxs)) {
     mins <- maxs <- values
   }
-  if (length(mins) > 1){
-    clust <- rep(0, length(mins)) # cluster id assigned
-    n <- rep(1, length(mins)) # n peaks assigned to each cluster. Initialize the algortihm with as many clusters as points
-    at <- list()
-    at <- lapply(1:length(samples), function(x) at[[x]] <- samples[x]) # samples represented within each cluster
-    atclust <- list()
-    atclust <- lapply(1:length(samples), function(x) atclust[[x]] <- x) # values assigned to each cluster
+  
+  n_points <- length(mins)
+  if (n_points <= 1) return(1)
+  
+  clust_ids <- seq_len(n_points)
+  cluster_sizes <- rep(1, n_points)
+  cluster_samples <- lapply(samples, function(x) x)
+  cluster_indices <- lapply(seq_len(n_points), function(i) i)
+  
+  distmat <- clustdist(mins, maxs)
+  distmat[distmat == -1] <- NA
+  
+  while (TRUE) {
+    mindist_idx <- which.min(distmat)
+    if (length(mindist_idx) == 0 || is.na(mindist_idx)) break
     
-    distmatrix <- clustdist(mins, maxs) # vector of distances calculated with clustdist
-    distmatrix[distmatrix == -1] <- NA
+    n1 <- ceiling(mindist_idx / n_points)
+    n2 <- mindist_idx - (n1 - 1) * n_points
     
-    mindist <- which.min(distmatrix)
-    n1 <- ceiling(mindist/length(mins))
-    n2 <- mindist-(length(mins)*(n1-1))
-    if (unique.samples){
-      do <- FALSE
-      while(!do){
-        if (any(at[[n1]] %in% at[[n2]])){
-          distmatrix[mindist] <- NA
-          if (any(!is.na(distmatrix))){
-            mindist <- which.min(distmatrix)
-            n1 <- ceiling(mindist/length(mins))
-            n2 <- mindist-(length(mins)*(n1-1))
-          } else {
-            do <- TRUE
-          }
-        } else {
-          do <- TRUE
-        }
-      }
+    if (n1 == n2 || n1 > length(mins) || n2 > length(mins)) {
+      distmat[mindist_idx] <- NA
+      next
     }
     
-    while(any(!is.na(distmatrix))){
-      # condition 1 to join two clusters: dist n2-n1 is the minimum distance between n2 and any other cluster
-      cond1 <- order(distmatrix[(length(mins)*(n1-1)+1):(length(mins)*n1)])[1] == n2
-      
-      # condition 2: dist n2-n1 is below maxdist 
-      if (ppm == TRUE){ # if maxdist is in ppm
-        dist <- abs(values[n2] - values[n1]) * 1e6 / values[n1]
-        cond2 <- dist  <= maxdist 
-      } else {
-        cond2 <- abs(values[n2] - values[n1])  <= maxdist 
-      }
-      
-      if(cond1 & cond2){ # if both conditions are true, join clusters y remove n2
-        mins[n1] <- min(mins[n1], mins[n2])
-        maxs[n1] <- max(maxs[n1], maxs[n2])
-        values[n1] <- (values[n1] * n[n1] + values[n2] * n[n2])/(n[n1] + n[n2]) # mean value
-        n[n1] <- n[n1] + n[n2]
-        mins <- mins[-n2]
-        maxs <- maxs[-n2]
-        values <- values[-n2]
-        samples <- samples[-n2]
-        at[[n1]] <- append(at[[n1]], at[[n2]])
-        at[[n2]] <- NULL
-        atclust[[n1]] <- append(atclust[[n1]], atclust[[n2]])
-        atclust[[n2]] <- NULL
-        
-        if (length(mins) > 1){ # update distances between clusters
-          distmatrix <- clustdist(mins, maxs)
-          
-          mindist <- which.min(distmatrix)
-          n1 <- ceiling(mindist/length(mins))
-          n2 <- mindist-(length(mins)*(n1-1))
-          any(at[[n1]] %in% at[[n2]])
-          if (unique.samples){
-            do <- FALSE
-            while(!do){
-              if (any(at[[n1]] %in% at[[n2]])){
-                distmatrix[mindist] <- NA
-                if (any(!is.na(distmatrix))){
-                  mindist <- which.min(distmatrix)
-                  n1 <- ceiling(mindist/length(mins))
-                  n2 <- mindist-(length(mins)*(n1-1))
-                } else {
-                  do <- TRUE
-                }
-              } else {
-                do <- TRUE
-              }
-            }
-          }
-        } else {
-          distmatrix[mindist] <- NA
-        }
-      } else {
-        distmatrix[mindist] <- NA
-        if(any(!is.na(distmatrix))){
-          mindist <- which.min(distmatrix)
-          n1 <- ceiling(mindist/length(mins))
-          n2 <- mindist-(length(mins)*(n1-1))
-          if (unique.samples){
-            do <- FALSE
-            while(!do){
-              if (any(at[[n1]] %in% at[[n2]])){
-                distmatrix[mindist] <- NA
-                if (any(!is.na(distmatrix))){
-                  mindist <- which.min(distmatrix)
-                  n1 <- ceiling(mindist/length(mins))
-                  n2 <- mindist-(length(mins)*(n1-1))
-                } else {
-                  do <- TRUE
-                }
-              } else {
-                do <- TRUE
-              }
-            }
-          }
-        }
-      }
+    # Ensure consistent ordering
+    if (n2 < n1) {
+      tmp <- n1; n1 <- n2; n2 <- tmp
     }
-    for (c in 1:length(atclust)){
-      pos <- atclust[[c]]
-      clust[pos] <- c
+    
+    # Sample uniqueness condition
+    if (unique.samples && any(cluster_samples[[n1]] %in% cluster_samples[[n2]])) {
+      distmat[mindist_idx] <- NA
+      next
     }
-  } else {
-    clust <- 1
+    
+    # Check distance condition
+    if (ppm) {
+      dist <- abs(values[n2] - values[n1]) * 1e6 / values[n1]
+    } else {
+      dist <- abs(values[n2] - values[n1])
+    }
+    if (dist > maxdist) {
+      distmat[mindist_idx] <- NA
+      next
+    }
+    
+    # Merge clusters
+    mins[n1] <- min(mins[n1], mins[n2])
+    maxs[n1] <- max(maxs[n1], maxs[n2])
+    values[n1] <- (values[n1] * cluster_sizes[n1] + values[n2] * cluster_sizes[n2]) / 
+      (cluster_sizes[n1] + cluster_sizes[n2])
+    cluster_sizes[n1] <- cluster_sizes[n1] + cluster_sizes[n2]
+    cluster_samples[[n1]] <- c(cluster_samples[[n1]], cluster_samples[[n2]])
+    cluster_indices[[n1]] <- c(cluster_indices[[n1]], cluster_indices[[n2]])
+    
+    # Remove n2
+    to_keep <- setdiff(seq_along(mins), n2)
+    mins <- mins[to_keep]
+    maxs <- maxs[to_keep]
+    values <- values[to_keep]
+    cluster_sizes <- cluster_sizes[to_keep]
+    cluster_samples <- cluster_samples[to_keep]
+    cluster_indices <- cluster_indices[to_keep]
+    
+    # Recompute distances
+    distmat <- clustdist(mins, maxs)
+    distmat[distmat == -1] <- NA
+    n_points <- length(mins)
   }
-  return(clust)
+  
+  # Assign final cluster IDs
+  result <- integer(length(values) + sum(sapply(cluster_indices, function(x) length(x)) - 1))
+  for (i in seq_along(cluster_indices)) {
+    result[cluster_indices[[i]]] <- i
+  }
+  
+  return(result)
 }
 
 # rtcorrection
@@ -830,7 +788,7 @@ clust <- function(values, mins, maxs, samples, unique.samples, maxdist, ppm){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 rtcorrection <- function(rt, rtmodel){
   rtdevsmoothed <- predict(rtmodel, rt)
   rtdevsmoothed[is.na(rtdevsmoothed)] <- 0
@@ -849,7 +807,7 @@ rtcorrection <- function(rt, rtmodel){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 getfeaturestable <- function(msbatch){
   # check msbatch structure
   if (!is.list(msbatch) | !all(names(msbatch) %in% c("metaData", "msobjects", "alignment", "grouping", "features")) | 
@@ -897,8 +855,8 @@ getfeaturestable <- function(msbatch){
     RT[g] <- mean(gr$RT)
     minRT[g] <- min(gr$RT, na.rm = TRUE)
     maxRT[g] <- max(gr$RT, na.rm = TRUE)
-    iniRT[g] <- median(gr$minRT, na.rm = TRUE)
-    endRT[g] <- median(gr$maxRT, na.rm = TRUE)
+    iniRT[g] <- min(gr$minRT, na.rm = TRUE)
+    endRT[g] <- max(gr$maxRT, na.rm = TRUE)
     # iso <- table(gr$isotope)
     # isotope[g] <- names(which.max(iso[!is.na(iso)]))
   }
@@ -985,7 +943,7 @@ getfeaturestable <- function(msbatch){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 removeduplicatedpeaks <- function(msbatch, 
                                   ppm, 
                                   dmz = 5, 
@@ -1015,7 +973,6 @@ removeduplicatedpeaks <- function(msbatch,
   for (d in dup){
     ss <- peaks[part == d,]
     ss <- ss[order(ss$iniRT, decreasing = FALSE),]
-    # ss[,1:11]
     # check overlapping
     end <- FALSE
     last <- list()

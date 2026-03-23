@@ -17,6 +17,6 @@ vector containing formula and mass
 Calculate formula and mass of PIP3
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

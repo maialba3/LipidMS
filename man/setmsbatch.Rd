@@ -31,5 +31,5 @@ msbatch <- setmsbatch(msobjectlist)
 \link{dataProcessing} and \link{batchdataProcessing}
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }

@@ -47,7 +47,7 @@ extern "C"{
             int *at;
             at = INTEGER_POINTER(outit);
             for(n = 0; n < leng; n++){*(at + n) = 0;}
-            SETLENGTH(outit, leng);
+            Rf_lengthgets(outit, leng);
             int *these;
             these = new int[leng];
             int *those;
@@ -163,7 +163,7 @@ extern "C"{
 
             delete[] these;
             delete[] those;
-            SETLENGTH(outit, leng);
+            Rf_lengthgets(outit, leng);
             UNPROTECT(6);
             return outit;
 
@@ -235,7 +235,7 @@ extern "C"{
                 *(at + (maxind*2) + atind) = counted;
             }
 
-            SETLENGTH(outit, maxind * 3);
+            Rf_lengthgets(outit, maxind * 3);
             UNPROTECT(6);
             return outit;
 

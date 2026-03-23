@@ -16,6 +16,6 @@ data.frame with 6 columns (mz, RT, int, peakID, isotope and isoGroup).
 Extract peaks from all MS1 peaklists of the msobjects in a msbatch.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

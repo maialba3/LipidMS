@@ -26,7 +26,8 @@ package.
 character values: "Cer", "CerP", "GlcCer", "SM", "Carnitine", "CE", "FA",
 "HFA", "Sph" (sphingoid bases), "SphP", "MG", "LPA", , "LPC",
 "LPE", "LPG", "LPI", "LPS", "FAHFA", "DG", "PC", "PE", "PG", "PI", "PS",
-"PA", "TG", "CL" or "all".
+"PA", "TG", "CL", "PCo", "PCp", "PEo", "PEp", "LPCo", "LPCp", "LPEo", "LPEp" 
+or "all".
 }
 \examples{
 fas <- c("8:0", "10:0", "12:0", "14:0", "14:1", "15:0", "16:0", "16:1",
@@ -34,6 +35,8 @@ fas <- c("8:0", "10:0", "12:0", "14:0", "14:1", "15:0", "16:0", "16:1",
 "20:3", "20:4", "20:5", "22:0", "22:1", "22:2", "22:3", "22:4", "22:5",
 "22:6", "24:0", "24:1", "26:0")
 sph <- c("16:0", "16:1", "18:0", "18:1")
+sn1alkyllipids <- c("16:0", "18:0", "18:1")
+sn1vinyllipids <- c("16:0", "18:0")
 newdb <- createLipidDB(lipid = "PC", chains = fas, chains2 = sph)
 
 }

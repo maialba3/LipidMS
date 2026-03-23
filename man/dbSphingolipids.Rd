@@ -21,6 +21,6 @@ insaturations.
 Creation of a database for Cer, CerP, GlcCer and SM
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

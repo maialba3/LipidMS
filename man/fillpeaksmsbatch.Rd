@@ -28,5 +28,5 @@ msbatch <- fillpeaksmsbatch(msbatch)
 
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }

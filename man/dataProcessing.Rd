@@ -101,5 +101,5 @@ http://pubs.acs.org/doi/abs/10.1021/ac202450g.
 \link{batchdataProcessing} and \link{setmsbatch}
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }

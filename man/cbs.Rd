@@ -26,6 +26,6 @@ structural information. It is used by identification functions to look for
 the structure of the previously chosen candidates.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

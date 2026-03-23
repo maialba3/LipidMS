@@ -21,5 +21,5 @@ and peakID (peakID to which it has been assigned).
 Calculate coelution score between two peaks.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }

@@ -1091,6 +1091,13 @@ crossTables <- function(msobject,
                         dbs){
   
   MS1 <- msobject$peaklist$MS1
+  
+  # add RTminutes in msobject annotatedPeaklist
+  MS1$RTminutes <- round(MS1$RT / 60, 2)
+  MS1 <- MS1[c(names(MS1)[1:which(names(MS1) == "maxRT")], 
+               "RTminutes", 
+               setdiff(names(MS1), c("RTminutes", names(MS1)[1:which(names(MS1) == "maxRT")]))) ]
+  
   results <- msobject$annotation$results
   
   if (nrow(results) > 0){

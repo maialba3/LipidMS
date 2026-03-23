@@ -20,6 +20,6 @@ bounds
 Given the structure of a lipid specie, it sums up the chains.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

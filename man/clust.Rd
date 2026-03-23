@@ -29,6 +29,6 @@ numeric vector with the assigned clusters
 Clustering for MS peaks based on mz or RT.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

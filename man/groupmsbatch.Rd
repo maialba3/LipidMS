@@ -15,6 +15,7 @@ groupmsbatch(
   ncores,
   deleteduplicates = TRUE,
   thr_overlap_duplicates = 0.7,
+  global_gb = getOption("LipidMS.future.globals.maxSizeGB", Inf),
   verbose = TRUE
 )
 }
@@ -44,6 +45,9 @@ dmz and drt parameters are used to filter the potential duplicates.}
 
 \item{thr_overlap_duplicates}{numeric value between 0 and 1 to establish the 
 percentage of overlap threshold to consider two features as duplicated.}
+
+\item{global_gb}{numeric. Gigabytes to set as future.globals.maxSize **inside** the function.
+Defaults to `getOption("LipidMS.future.globals.maxSizeGB", Inf)`.}
 
 \item{verbose}{print information messages.}
 }
@@ -95,5 +99,5 @@ Partitioning algorithm has been imported from enviPick R-package:
 https://cran.r-project.org/web/packages/enviPick/index.html
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }

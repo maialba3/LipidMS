@@ -15,8 +15,6 @@
 #' @param lipidClasses classes of interest to run the identification functions.
 #' @param dbs list of data bases required for annotation. By default, dbs
 #' contains the required data frames based on the default fragmentation rules.
-#' If these rules are modified, dbs may need to be supplied. See \link{createLipidDB}
-#' and \link{assignDB}.
 #' @param verbose print information messages.
 #' 
 #'
@@ -47,7 +45,7 @@ idNEG <- function(msobject,
                                    "AcylCer", "SM", "CL", "BA"),
                   dbs,
                   verbose = TRUE){
-
+  
   if (msobject$metaData$generalMetadata$polarity != "negative"){
     stop("Data wasn't acquired in negative mode")
   }
@@ -80,8 +78,8 @@ idNEG <- function(msobject,
   if ("FAHFA" %in% lipidClasses){
     if(verbose){cat("\n  Searching for FAHFA...")}
     msobject <-  idFAHFAneg(msobject = msobject, ppm_precursor = ppm_precursor,
-                         ppm_products = ppm_products, rttol = rttol,
-                         coelCutoff = coelCutoff, dbs = dbs, verbose = verbose)
+                            ppm_products = ppm_products, rttol = rttol,
+                            coelCutoff = coelCutoff, dbs = dbs, verbose = verbose)
     if(verbose){cat("OK")}
   }
   if ("LPC" %in% lipidClasses){
@@ -129,8 +127,8 @@ idNEG <- function(msobject,
   if ("PCo" %in% lipidClasses){
     if(verbose){cat("\n  Searching for PCo...")}
     msobject <-  idPConeg(msobject = msobject, ppm_precursor = ppm_precursor,
-                         ppm_products = ppm_products, rttol = rttol,
-                         coelCutoff = coelCutoff, dbs = dbs, verbose = verbose)
+                          ppm_products = ppm_products, rttol = rttol,
+                          coelCutoff = coelCutoff, dbs = dbs, verbose = verbose)
     if(verbose){cat("OK")}
   }
   if ("PCp" %in% lipidClasses){
@@ -206,22 +204,22 @@ idNEG <- function(msobject,
   if ("CerP" %in% lipidClasses){
     if(verbose){cat("\n  Searching for CerP...")}
     msobject <-  idCerPneg(msobject = msobject, ppm_precursor = ppm_precursor,
-                          ppm_products = ppm_products, rttol = rttol,
-                          coelCutoff = coelCutoff, dbs = dbs, verbose = verbose)
+                           ppm_products = ppm_products, rttol = rttol,
+                           coelCutoff = coelCutoff, dbs = dbs, verbose = verbose)
     if(verbose){cat("OK")}
   }
   if ("AcylCer" %in% lipidClasses){
     if(verbose){cat("\n  Searching for AcylCer...")}
     msobject <-  idAcylCerneg(msobject = msobject, ppm_precursor = ppm_precursor,
-                           ppm_products = ppm_products, rttol = rttol,
-                           coelCutoff = coelCutoff, dbs = dbs, verbose = verbose)
+                              ppm_products = ppm_products, rttol = rttol,
+                              coelCutoff = coelCutoff, dbs = dbs, verbose = verbose)
     if(verbose){cat("OK")}
   }
   if ("SM" %in% lipidClasses){
     if(verbose){cat("\n  Searching for SM...")}
     msobject <-  idSMneg(msobject = msobject, ppm_precursor = ppm_precursor,
-                          ppm_products = ppm_products, rttol = rttol,
-                          coelCutoff = coelCutoff, dbs = dbs, verbose = verbose)
+                         ppm_products = ppm_products, rttol = rttol,
+                         coelCutoff = coelCutoff, dbs = dbs, verbose = verbose)
     if(verbose){cat("OK")}
   }
   if ("CL" %in% lipidClasses){
@@ -234,11 +232,11 @@ idNEG <- function(msobject,
   if ("BA" %in% lipidClasses){
     if(verbose){cat("\n  Searching for Bile acids...")}
     msobject <-  idBAneg(msobject = msobject, ppm_precursor = ppm_precursor,
-                          ppm_products = ppm_products, rttol = rttol,
-                          coelCutoff = coelCutoff, dbs = dbs, verbose = verbose)
+                         ppm_products = ppm_products, rttol = rttol,
+                         coelCutoff = coelCutoff, dbs = dbs, verbose = verbose)
     if(verbose){cat("OK")}
   }
-
+  
   if(verbose){cat("\n Preparing output...")}
   msobject <- crossTables(msobject,
                           ppm = ppm_precursor, 
@@ -335,7 +333,8 @@ idFAneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) & 
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -536,7 +535,7 @@ idFAneg <- function(msobject,
 #' msobject <- idFAHFAneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idFAHFAneg <- function(msobject,
                        ppm_precursor = 5,
                        ppm_products = 10,
@@ -565,7 +564,8 @@ idFAHFAneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -766,7 +766,7 @@ idFAHFAneg <- function(msobject,
 #' msobject <- idLPCneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idLPCneg <- function(msobject,
                      ppm_precursor = 5,
                      ppm_products = 10,
@@ -791,7 +791,8 @@ idLPCneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -992,7 +993,7 @@ idLPCneg <- function(msobject,
 #' msobject <- idLPEneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idLPEneg <- function(msobject, ppm_precursor = 5,
                      ppm_products = 10,
                      rttol = 3,
@@ -1016,7 +1017,8 @@ idLPEneg <- function(msobject, ppm_precursor = 5,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -1216,7 +1218,7 @@ idLPEneg <- function(msobject, ppm_precursor = 5,
 #' msobject <- idLPGneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idLPGneg <- function(msobject,
                      ppm_precursor = 5,
                      ppm_products = 10,
@@ -1241,10 +1243,8 @@ idLPGneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
-    stop("Wrong msobject format")
-  }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -1444,7 +1444,7 @@ idLPGneg <- function(msobject,
 #' msobject <- idLPIneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idLPIneg <- function(msobject,
                      ppm_precursor = 5,
                      ppm_products = 10,
@@ -1469,7 +1469,8 @@ idLPIneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -1668,7 +1669,7 @@ idLPIneg <- function(msobject,
 #' msobject <- idLPSneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idLPSneg <- function(msobject,
                      ppm_precursor = 5,
                      ppm_products = 10,
@@ -1693,7 +1694,8 @@ idLPSneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -1909,7 +1911,7 @@ idLPSneg <- function(msobject,
 #' msobject <- idPCneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idPCneg <- function(msobject,
                     ppm_precursor = 5,
                     ppm_products = 10,
@@ -1938,7 +1940,8 @@ idPCneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -2157,7 +2160,7 @@ idPCneg <- function(msobject,
 #' msobject <- idPCneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idPConeg <- function(msobject,
                     ppm_precursor = 5,
                     ppm_products = 10,
@@ -2186,7 +2189,8 @@ idPConeg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -2405,7 +2409,7 @@ idPConeg <- function(msobject,
 #' msobject <- idPCpneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idPCpneg <- function(msobject,
                      ppm_precursor = 5,
                      ppm_products = 10,
@@ -2434,7 +2438,8 @@ idPCpneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -2654,7 +2659,7 @@ idPCpneg <- function(msobject,
 #' msobject <- idPEneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idPEneg <- function(msobject,
                     ppm_precursor = 5,
                     ppm_products = 10,
@@ -2683,7 +2688,8 @@ idPEneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -2899,7 +2905,7 @@ idPEneg <- function(msobject,
 #' msobject <- idPEoneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idPEoneg <- function(msobject,
                     ppm_precursor = 5,
                     ppm_products = 10,
@@ -2928,7 +2934,8 @@ idPEoneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -3144,7 +3151,7 @@ idPEoneg <- function(msobject,
 #' msobject <- idPEoneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idPEpneg <- function(msobject,
                      ppm_precursor = 5,
                      ppm_products = 10,
@@ -3173,7 +3180,8 @@ idPEpneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -3388,7 +3396,7 @@ idPEpneg <- function(msobject,
 #' msobject <- idPGneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idPGneg <- function(msobject, ppm_precursor = 5,
                     ppm_products = 10,
                     rttol = 3,
@@ -3416,7 +3424,8 @@ idPGneg <- function(msobject, ppm_precursor = 5,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -3632,7 +3641,7 @@ idPGneg <- function(msobject, ppm_precursor = 5,
 #' msobject <- idPIneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idPIneg <- function(msobject,
                     ppm_precursor = 5,
                     ppm_products = 10,
@@ -3661,7 +3670,8 @@ idPIneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -3876,7 +3886,7 @@ idPIneg <- function(msobject,
 #' msobject <- idPSneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idPSneg <- function(msobject,
                     ppm_precursor = 5,
                     ppm_products = 10,
@@ -3905,7 +3915,8 @@ idPSneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -4101,7 +4112,7 @@ idPSneg <- function(msobject,
 #' msobject <- idSphneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idSphneg <- function(msobject,
                      ppm_precursor = 5,
                      ppm_products = 10,
@@ -4124,7 +4135,8 @@ idSphneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -4308,7 +4320,7 @@ idSphneg <- function(msobject,
 #' msobject <- idSphPneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idSphPneg <- function(msobject,
                       ppm_precursor = 5,
                       ppm_products = 10,
@@ -4332,7 +4344,8 @@ idSphPneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -4535,7 +4548,7 @@ idSphPneg <- function(msobject,
 #' msobject <- idCerneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idCerneg <- function(msobject,
                      ppm_precursor = 5,
                      ppm_products = 10,
@@ -4564,7 +4577,8 @@ idCerneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -4779,7 +4793,7 @@ idCerneg <- function(msobject,
 #' msobject <- idCerPneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idCerPneg <- function(msobject,
                      ppm_precursor = 5,
                      ppm_products = 10,
@@ -4808,7 +4822,8 @@ idCerPneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -5026,7 +5041,7 @@ idCerPneg <- function(msobject,
 #' msobject <- idAcylCerneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idAcylCerneg <- function(msobject,
                       ppm_precursor = 5,
                       ppm_products = 10,
@@ -5056,7 +5071,8 @@ idAcylCerneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) &
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -5275,7 +5291,7 @@ idAcylCerneg <- function(msobject,
 #' msobject <- idCLneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idCLneg <- function(msobject,
                     ppm_precursor = 5,
                     ppm_products = 10,
@@ -5306,7 +5322,8 @@ idCLneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) & 
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -5506,7 +5523,7 @@ idCLneg <- function(msobject,
 #' msobject <- idBAneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idBAneg <- function(msobject,
                     ppm_precursor = 5,
                     ppm_products = 10,
@@ -5529,7 +5546,8 @@ idBAneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) & 
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){
@@ -5777,7 +5795,7 @@ idBAneg <- function(msobject,
 #' msobject <- idSMneg(msobject)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 idSMneg <- function(msobject,
                     ppm_precursor = 5,
                     ppm_products = 10,
@@ -5806,7 +5824,8 @@ idSMneg <- function(msobject,
   if (!all(c("metaData", "processing", "rawData", "peaklist") %in% names(msobject))){
     stop("Wrong msobject format")
   }
-  if (!all(c("MS1", "MS2") %in% names(msobject$rawData))){
+  if (!all(c("MS1", "MS2") %in% names(msobject$rawData)) & 
+      msobject$metaData$generalMetadata$acquisitionmode == "DDA"){
     stop("Wrong msobject format")
   }
   if (!msobject$metaData$generalMetadata$acquisitionmode %in% c("DIA", "DDA")){

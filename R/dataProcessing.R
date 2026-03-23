@@ -52,7 +52,7 @@
 #' chromatography/mass spectrometry data sets.” Analytical Chemistry, 84, 283–289. 
 #' http://pubs.acs.org/doi/abs/10.1021/ac202450g.
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 dataProcessing <- function(file, 
                            acquisitionmode, 
                            polarity,
@@ -130,7 +130,7 @@ dataProcessing <- function(file,
       msobject <- partitioning(msobject, dmzagglom = dmzagglom1, drtagglom = drtagglom1,
                                minpeak = minpeak1, mslevel = "MS1", cE = cE)
       if(verbose){cat("OK")}
-        if(verbose){cat("\n     clustering...")}
+      if(verbose){cat("\n     clustering...")}
       msobject <- clustering(msobject, dmzagglom = dmzagglom1, drtclust = drtclust1,
                              minpeak = minpeak1, mslevel = "MS1", cE = cE)
       if(verbose){cat("OK")}
@@ -177,7 +177,7 @@ dataProcessing <- function(file,
       msobject$rawData$MS2 <- do.call(rbind, msobject$rawData$MS2)
       msobject$rawData$MS2 <- msobject$rawData$MS2[,c("mz", "RT", "int", "peak", "Scan")]
       colnames(msobject$rawData$MS2) <- c("mz", "RT", "int", "peakID", "Scan")
-      # msobject$rawData$MS2 <- msobject$rawData$MS2[!grepl("_0$", msobject$rawData$MS2$peakID),] # keep all raw data
+      msobject$rawData$MS2 <- msobject$rawData$MS2[!grepl("_0$", msobject$rawData$MS2$peakID),]
     }
   } else if (acquisitionmode == "DDA"){
     ############################################################################
@@ -251,7 +251,7 @@ dataProcessing <- function(file,
     msobject$processing$MS2$peakIndex <- NULL
   }
   msobject$annotation <- list()
-    
+  
   return(msobject)
 }
 
@@ -275,7 +275,7 @@ dataProcessing <- function(file,
 #' msbatch <- setmsbatch(msobjectlist)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 setmsbatch <- function(msobjectlist, 
                        metadata){
   
@@ -289,7 +289,7 @@ setmsbatch <- function(msobjectlist,
     metadata <- data.frame(sample, acquisitionmode, sampletype)
   } else {
     if (is.character(metadata)){
-      metadata <- read.csv(metadata, header = TRUE)
+      metadata <- utils::read.csv(metadata, header = TRUE)
     }
     if(is.data.frame(metadata)){
       if(!all(c("sample", "acquisitionmode", "sampletype") %in% colnames(metadata))){
@@ -368,6 +368,8 @@ setmsbatch <- function(msobjectlist,
 #' @param drtIso time windows for isotope matching. 
 #' @param parallel logical.
 #' @param ncores number of cores to be used in case parallel is TRUE.
+#' @param global_gb numeric. Gigabytes to set as future.globals.maxSize **inside** the function.
+#' Defaults to `getOption("LipidMS.future.globals.maxSizeGB", Inf)`.
 #' @param verbose print information messages.
 #'
 #' @return msbatch
@@ -398,7 +400,7 @@ setmsbatch <- function(msobjectlist,
 #' @references Peak-picking algorithm has been imported from enviPick R-package:
 #' https://cran.r-project.org/web/packages/enviPick/index.html
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 batchdataProcessing <- function(files, 
                                 metadata, 
                                 polarity,
@@ -418,6 +420,7 @@ batchdataProcessing <- function(files,
                                 drtIso = 5, 
                                 parallel = FALSE,
                                 ncores,
+                                global_gb = getOption("LipidMS.future.globals.maxSizeGB", Inf),
                                 verbose = TRUE){
   #============================================================================#
   # check arguments
@@ -427,7 +430,7 @@ batchdataProcessing <- function(files,
          (sample, acquisitionmode, sampletype) or a csv file")
   } else {
     if (is.character(metadata)){
-      metadata <- read.csv(metadata, header = TRUE)
+      metadata <- utils::read.csv(metadata, header = TRUE)
     }
     if(is.data.frame(metadata)){
       if(!all(c("sample", "acquisitionmode", "sampletype") %in% colnames(metadata))){
@@ -492,36 +495,41 @@ batchdataProcessing <- function(files,
   # Process samples
   #============================================================================#
   if (parallel) {
-    cl <- makePSOCKcluster(ncores)
-    doParallel::registerDoParallel(cl)
-    `%d%` <- `%dopar%`
+    if (missing(ncores)) stop("ncores argument is required if parallel is TRUE")
   } else {
-    `%d%` <- `%do%`
+    ncores <- 1L
   }
-  f <- c()
-  msobjects <- foreach::foreach(f = 1:nrow(metadata)) %d% {
-    dataProcessing(metadata$sample[f],
-                   metadata$acquisitionmode[f],
-                   polarity = polarity,
-                   dmzagglom = dmzagglom,
-                   drtagglom = drtagglom,
-                   drtclust = drtclust,
-                   minpeak = minpeak,
-                   drtgap = drtgap,
-                   drtminpeak = drtminpeak,
-                   drtmaxpeak = drtmaxpeak,
-                   recurs = recurs,
-                   sb = sb,
-                   sn = sn,
-                   minint = minint,
-                   weight = weight,
-                   dmzIso = dmzIso,
-                   drtIso = drtIso,
-                   verbose = verbose)
-  }
-  if (parallel){
-    parallel::stopCluster(cl)
-  }
+  
+  msobjects <- .with_future_plan(
+    workers = ncores,
+    globals_gb = global_gb,
+    expr = {
+      future.apply::future_lapply(
+        seq_len(nrow(metadata)),
+        function(i){
+          LipidMS::dataProcessing(metadata$sample[i],
+                         metadata$acquisitionmode[i],
+                         polarity = polarity,
+                         dmzagglom = dmzagglom,
+                         drtagglom = drtagglom,
+                         drtclust = drtclust,
+                         minpeak = minpeak,
+                         drtgap = drtgap,
+                         drtminpeak = drtminpeak,
+                         drtmaxpeak = drtmaxpeak,
+                         recurs = recurs,
+                         sb = sb,
+                         sn = sn,
+                         minint = minint,
+                         weight = weight,
+                         dmzIso = dmzIso,
+                         drtIso = drtIso,
+                         verbose = verbose)
+        },
+        future.seed = TRUE
+      )
+    }
+  )
   msbatch <- setmsbatch(msobjects, metadata)
   
   return(msbatch)
@@ -542,6 +550,8 @@ batchdataProcessing <- function(files,
 #' @param span span parameter for loess rt deviation smoothing.
 #' @param parallel logical. If TRUE, parallel processing will be performed.
 #' @param ncores number of cores to be used in case parallel is TRUE.
+#' @param global_gb numeric. Gigabytes to set as future.globals.maxSize **inside** the function.
+#' Defaults to `getOption("LipidMS.future.globals.maxSizeGB", Inf)`.
 #' @param verbose print information messages.
 #' 
 #' @return aligned msbatch
@@ -584,7 +594,7 @@ batchdataProcessing <- function(files,
 #' msbatch <- alignmsbatch(msbatch)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 alignmsbatch <- function(msbatch, 
                          dmz = 5, 
                          drt = 30, 
@@ -593,34 +603,36 @@ alignmsbatch <- function(msbatch,
                          span = 0.4, 
                          parallel = FALSE, 
                          ncores,
+                         global_gb = getOption("LipidMS.future.globals.maxSizeGB", Inf),
                          verbose = TRUE){
+  
   #============================================================================#
   # Check arguments
   #============================================================================#
-  ##############################################################################
-  # check msbatch structure
-  if (!is.list(msbatch) | !all(names(msbatch) %in% c("metaData", "msobjects", "alignment", "grouping", "features")) | 
-      !is.data.frame(msbatch$metaData) | !is.list(msbatch$msobjects) | !is.list(msbatch$alignment) | 
-      !is.list(msbatch$grouping) | !is.data.frame(msbatch$features)){
+  if (!is.list(msbatch) | 
+      !all(names(msbatch) %in% c("metaData", "msobjects", "alignment", "grouping", "features")) | 
+      !is.data.frame(msbatch$metaData) | 
+      !is.list(msbatch$msobjects) | 
+      !is.list(msbatch$alignment) | 
+      !is.list(msbatch$grouping) | 
+      !is.data.frame(msbatch$features)){
     stop("Wrong msbatch format")
   }
-  ##############################################################################
-  # check that all msobjects have an mslevel 1
+  
   whichmslevel1 <- which(unlist(lapply(msbatch$msobjects, function(x) 
     1 %in% unique(x$metaData$scansMetadata$msLevel))))
+  
   if (length(whichmslevel1) != nrow(msbatch$metaData)){
     warning("Removing samples with no MS1 level for alignment")
     msbatch$metaData <- msbatch$metaData[whichmslevel1,]
     msbatch$msobjects <- msbatch$msobjects[whichmslevel1]
   }
-  ##############################################################################
-  # set minsamples for alignment
+  
   if (missing(minsamples)){
     minsamples <- floor(minsamplesfrac * length(msbatch$msobjects))
   }
   if (minsamples < 1){minsamples <- 1}
-  ##############################################################################
-  # Check parallel
+  
   if (parallel){
     if (missing(ncores)){
       stop("ncores argument is required if parallel is TRUE")
@@ -632,107 +644,146 @@ alignmsbatch <- function(msbatch,
   }
   
   #============================================================================#
-  # Extract peaks from all samples
+  # Extract peaks
   #============================================================================#
   peaks <- getallpeaks(msbatch)
   
   #============================================================================#
-  # Create mz partitions based on dmz and drt
+  # Create mz partitions
   #============================================================================#
   if(verbose){cat("\nCreating m.z partitions...")}
-  part <- .Call("agglom", as.numeric(peaks$mz),
-                as.numeric(peaks$RT), as.integer(1),
-                as.numeric(dmz), as.numeric(drt),
-                PACKAGE = "LipidMS")
-  peaks <- peaks[order(part, decreasing = FALSE),] 
-  part <- part[order(part, decreasing = FALSE)]
   
-  ##############################################################################
-  # index partitions
+  part <- .Call("agglom", 
+                as.numeric(peaks$mz),
+                as.numeric(peaks$RT), 
+                as.integer(1),
+                as.numeric(dmz), 
+                as.numeric(drt),
+                PACKAGE = "LipidMS")
+  
+  peaks <- peaks[order(part, decreasing = FALSE),] 
+  part  <- part[order(part, decreasing = FALSE)]
+  
   partIndex <- indexrtpart(peaks, part, minsamples)
   peaks$partID <- partIndex$idvector
   msbatch$alignment$partIndex <- partIndex$index
+  
   if(verbose){cat("OK")}
   
   #============================================================================#
-  # Create RT clusters for each mz partition. Duplicate samples are not allowed 
-  # in the same cluster
+  # RT Clustering inside partitions
   #============================================================================#
   if(verbose){cat("\nClustering peaks by RT...")}
-  ##############################################################################
-  # Clusterize (in parallel if required)
-  if (parallel) {
-    cl <- makePSOCKcluster(ncores)
-    doParallel::registerDoParallel(cl)
-    `%d%` <- `%dopar%`
-  } else {
-    `%d%` <- `%do%`
-  }
-  clus <- foreach::foreach(p = 1:nrow(msbatch$alignment$partIndex)) %d% {
-    start <- msbatch$alignment$partIndex[p, 1]
-    end <- msbatch$alignment$partIndex[p, 2]
-    measures <- peaks[start:end,]
-    clusters <- clust(values = measures$RT, 
-                      mins = measures$minRT, 
-                      maxs = measures$maxRT, 
-                      samples = measures$sample,
-                      unique.samples = TRUE,
-                      maxdist = drt,
-                      ppm = FALSE)
-    return(list(start = start, end = end, clusters = clusters))
-  }
-  if (parallel){
-    parallel::stopCluster(cl)
-  }
   
-  ##############################################################################
-  # Merge clust results
+  # Pre-extract vectors needed by workers (RAM optimization)
+  peaks_RT     <- peaks$RT
+  peaks_minRT  <- peaks$minRT
+  peaks_maxRT  <- peaks$maxRT
+  peaks_sample <- peaks$sample
+  
+  blocks <- lapply(1:nrow(msbatch$alignment$partIndex), function(i) {
+    c(start = msbatch$alignment$partIndex[i, 1],
+      end   = msbatch$alignment$partIndex[i, 2])
+  })
+  
+  if (!parallel) ncores <- 1L
+  if (parallel && missing(ncores)) stop("ncores argument is required if parallel is TRUE")
+  
+  clus <- .with_future_plan(
+    workers = ncores,
+    globals_gb = global_gb,
+    expr = {
+      future.apply::future_lapply(
+        blocks,
+        function(block) {
+          start <- block[["start"]]
+          end   <- block[["end"]]
+          
+          result <- tryCatch({
+            loadNamespace("LipidMS")
+            R.utils::withTimeout({
+              
+              clusters <- clust(
+                values  = peaks_RT[start:end],
+                mins    = peaks_minRT[start:end],
+                maxs    = peaks_maxRT[start:end],
+                samples = peaks_sample[start:end],
+                unique.samples = TRUE,
+                maxdist = drt,
+                ppm = FALSE
+              )
+              
+              list(start = start, end = end, clusters = clusters)
+              
+            }, timeout = 30, onTimeout = "error")
+          }, TimeoutException = function(e) {
+            list(start = start, end = end, clusters = 1:(end - start + 1))
+          }, error = function(e) {
+            list(start = start, end = end, clusters = 1:(end - start + 1))
+          })
+          
+          return(result)
+        },
+        future.globals = list(
+          drt = drt,
+          peaks_RT = peaks_RT,
+          peaks_minRT = peaks_minRT,
+          peaks_maxRT = peaks_maxRT,
+          peaks_sample = peaks_sample
+        )
+      )
+    }
+  )
+  
+  #============================================================================#
+  # Merge results
+  #============================================================================#
   startat <- 0
   clusts <- rep(0, nrow(peaks))
   roworder <- 1:nrow(peaks)
+  
   for (p in 1:nrow(msbatch$alignment$partIndex)){
     start <- clus[[p]]$start
-    end <- clus[[p]]$end
+    end   <- clus[[p]]$end
     clusters <- clus[[p]]$clusters + startat
     clusts[start:end] <- clusters
     roworder[start:end] <- roworder[start:end][order(clusters, decreasing = FALSE)]
     startat <- max(clusters)
   }
+  
   peaks <- peaks[roworder,]
   clusts <- clusts[roworder]
   
-  ##############################################################################
-  # index clusters
+  #============================================================================#
+  # Index clusters
+  #============================================================================#
   clustIndex <- indexrtpart(peaks, clusts, minsamples)
   peaks$clustID <- clustIndex$idvector
   msbatch$alignment$clustIndex <- clustIndex$index
+  
   if(verbose){cat("OK")}
   
   #============================================================================#
-  # Create a RT matrix for each group (rows) and sample (columns)
+  # Build RT deviation matrix
   #============================================================================#
   if(verbose){cat("\nEstimating RT deviation...")}
-  ##############################################################################
-  # rtgroupsMatrix
+  
   rtgroupsMatrix <- matrix(nrow = nrow(msbatch$alignment$clustIndex), 
                            ncol = length(msbatch$msobjects))
+  
   for (c in 1:nrow(msbatch$alignment$clustIndex)){
     start <- msbatch$alignment$clustIndex[c,1]
-    end <- msbatch$alignment$clustIndex[c,2]
+    end   <- msbatch$alignment$clustIndex[c,2]
     cluster <- peaks[start:end,]
     for (s in as.numeric(unique(cluster$sample))){
-      rtgroupsMatrix[c, s] <- as.numeric(cluster$RT[cluster$sample == s])
+      rtgroupsMatrix[c, s] <- cluster$RT[cluster$sample == s]
     }
   }
   
-  ##############################################################################
-  # sort by median rt
   rtmedian <- apply(rtgroupsMatrix, 1, median, na.rm = TRUE)
   rtgroupsMatrix <- rtgroupsMatrix[order(rtmedian, decreasing = FALSE),]
   rtmedian <- sort(rtmedian, decreasing = FALSE)
   
-  ##############################################################################
-  # rtdevMatrix: differences between median RT and individual samples RT
   rtdevMatrix <- rtgroupsMatrix - rtmedian
   if(verbose){cat("OK")}
   
@@ -740,59 +791,61 @@ alignmsbatch <- function(msbatch,
   # RT correction
   #============================================================================#
   if(verbose){cat("\nAligning samples...")}
+  
   rtdevcorrected <- list()
-  rtmodels <- list()
+  
   for (i in 1:length(msbatch$msobjects)){
-    ############################################################################
-    # Adjust rt dev with loess
-    rtlo <- tryCatch({loess(rtdevMatrix[,i] ~ rtmedian, span = span, degree = 1, 
-                            family = "gaussian")}, error = function(e){NA})
-    rtmodels[[i]] <- rtlo
+    
+    rtlo <- tryCatch({
+      loess(rtdevMatrix[,i] ~ rtmedian, span = span, degree = 1, 
+            family = "gaussian")
+    }, error = function(e){NA})
     
     if (length(rtlo) > 1){
-      ##########################################################################
-      # correct raw scans RT (in metaData)
-      rt <- msbatch$msobjects[[i]]$metaData$scansMetadata$RT
-      msbatch$msobjects[[i]]$metaData$scansMetadata$RT <- rtcorrection(rt, rtlo)
-      rtdevcorrected[[i]] <- list(RT = rt, 
-                                  RTdev = rt - msbatch$msobjects[[i]]$metaData$scansMetadata$RT) 
       
-      ##########################################################################
-      # correct raw scans RT (in MS1 and MS2)
-      mslevels <- c("MS1", "MS2")[which(c("MS1", "MS2") %in% names(msbatch$msobjects[[i]]$rawData))]
+      # Correct metaData RT
+      rt <- msbatch$msobjects[[i]]$metaData$scansMetadata$RT
+      corrected <- rtcorrection(rt, rtlo)
+      msbatch$msobjects[[i]]$metaData$scansMetadata$RT <- corrected
+      
+      rtdevcorrected[[i]] <- list(RT = rt, RTdev = rt - corrected)
+      
+      # Correct raw scans RT
+      mslevels <- c("MS1", "MS2")[c("MS1","MS2") %in% names(msbatch$msobjects[[i]]$rawData)]
       for (mslevel in mslevels){
         rt <- msbatch$msobjects[[i]]$rawData[[mslevel]]$RT
         msbatch$msobjects[[i]]$rawData[[mslevel]]$RT <- rtcorrection(rt, rtlo)
       }
       
-      ##########################################################################
-      # correct peaklist RT (in MS1 and MS2)
-      mslevels <- c("MS1", "MS2")[which(c("MS1", "MS2") %in% names(msbatch$msobjects[[i]]$peaklist))]
+      # Correct peaklist RT
+      mslevels <- c("MS1","MS2")[c("MS1","MS2") %in% names(msbatch$msobjects[[i]]$peaklist)]
       for (mslevel in mslevels){
         rt <- msbatch$msobjects[[i]]$peaklist[[mslevel]]$RT
         msbatch$msobjects[[i]]$peaklist[[mslevel]]$RT <- rtcorrection(rt, rtlo)
       }
+      
     } else {
-      rtdevcorrected[[i]] <- list(RT = rt, 
-                                  RTdev = rep(0, length(rt))) 
+      rtdevcorrected[[i]] <- list(RT = rt, RTdev = rep(0, length(rt)))
     }
   }
+  
   if(verbose){cat("OK\n")}
   
   #============================================================================#
-  # Save results in msbatch
-  #============================================================================
+  # Save results
+  #============================================================================#
   msbatch$alignment$aligned <- TRUE
   msbatch$alignment$peaks <- peaks
   msbatch$alignment$parameters$dmz <- dmz
   msbatch$alignment$parameters$drt <- drt
   msbatch$alignment$parameters$minsamplesfrac <- minsamplesfrac
   msbatch$alignment$parameters$span <- span
+  
   msbatch$alignment$partIndex <- NULL
   msbatch$alignment$clustIndex <- NULL
   msbatch$alignment$rtdevMatrix <- NULL
-  # msbatch$alignment$rtmodels <- rtmodels
   msbatch$alignment$rtdevcorrected <- rtdevcorrected
+  
   msbatch$grouping <- list()
   msbatch$features <- data.frame()
   
@@ -820,6 +873,8 @@ alignmsbatch <- function(msbatch,
 #' dmz and drt parameters are used to filter the potential duplicates. 
 #' @param thr_overlap_duplicates numeric value between 0 and 1 to establish the 
 #' percentage of overlap threshold to consider two features as duplicated. 
+#' @param global_gb numeric. Gigabytes to set as future.globals.maxSize **inside** the function.
+#' Defaults to `getOption("LipidMS.future.globals.maxSizeGB", Inf)`.
 #' @param verbose print information messages.
 #' 
 #' @return grouped msbatch
@@ -862,7 +917,7 @@ alignmsbatch <- function(msbatch,
 #' msbatch <- groupmsbatch(msbatch)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 groupmsbatch <- function(msbatch, 
                          dmz = 5, 
                          drtagglom = 30, 
@@ -873,6 +928,7 @@ groupmsbatch <- function(msbatch,
                          ncores,
                          deleteduplicates = TRUE,
                          thr_overlap_duplicates = 0.7,
+                         global_gb = getOption("LipidMS.future.globals.maxSizeGB", Inf),
                          verbose = TRUE){
   
   #============================================================================#
@@ -911,6 +967,9 @@ groupmsbatch <- function(msbatch,
       message("ncores is greater than available cores. ", ncores, " will be used.")
     }
   }
+  if (!parallel) {
+    ncores <- 1L
+  }
   
   #============================================================================#
   # Extract peaks from all samples
@@ -939,31 +998,73 @@ groupmsbatch <- function(msbatch,
   # Create mz clusters for each partition.
   #============================================================================#
   if(verbose){cat("\nClustering peaks by m.z...")}
+  
+  #--------------------------------------------------------------------------#
+  # RAM-friendly: use index ranges + column vectors instead of storing
+  # full data.frame slices (measures = peaks[start:end, ]) in each block
+  #--------------------------------------------------------------------------#
+  peaks_RT     <- peaks$RT
+  peaks_minRT  <- peaks$minRT
+  peaks_maxRT  <- peaks$maxRT
+  peaks_sample <- peaks$sample
+  
   ##############################################################################
   # Clusterize (in parallel if required)
-  if (parallel) {
-    cl <- makePSOCKcluster(ncores)
-    doParallel::registerDoParallel(cl)
-    `%d%` <- `%dopar%`
-  } else {
-    `%d%` <- `%do%`
-  }
-  clus <- foreach::foreach(p = 1:nrow(msbatch$grouping$partIndex)) %d% {
-    start <- msbatch$grouping$partIndex[p, 1]
-    end <- msbatch$grouping$partIndex[p, 2]
-    measures <- peaks[start:end,]
-    clusters <- clust(values = measures$mz,
-                      mins = measures$mz,
-                      maxs = measures$mz,
-                      samples = measures$sample,
-                      unique.samples = FALSE,
-                      maxdist = dmz,
-                      ppm = TRUE)
-    return(list(start = start, end = end, clusters = clusters))
-  }
-  if (parallel){
-    parallel::stopCluster(cl)
-  }
+  blocks <- lapply(1:nrow(msbatch$grouping$partIndex), function(i) {
+    c(start = msbatch$grouping$partIndex[i, 1],
+      end   = msbatch$grouping$partIndex[i, 2])
+  })
+  
+  clus <- .with_future_plan(
+    workers = ncores,
+    globals_gb = global_gb,
+    expr = {
+      future.apply::future_lapply(
+        blocks,
+        function(block) {
+          loadNamespace("LipidMS")
+          start <- block[["start"]]
+          end   <- block[["end"]]
+          
+          result <- tryCatch({
+            R.utils::withTimeout({
+              # use views on pre-exported vectors instead of a local data.frame
+              values  <- peaks_RT[start:end]
+              mins    <- peaks_minRT[start:end]
+              maxs    <- peaks_maxRT[start:end]
+              samples <- peaks_sample[start:end]
+              
+              clusters <- clust(
+                values = values,
+                mins = mins,
+                maxs = maxs,
+                samples = samples,
+                unique.samples = TRUE,
+                maxdist = drt,
+                ppm = FALSE
+              )
+              list(start = start, end = end, clusters = clusters)
+            }, timeout = 30, onTimeout = "error")
+          }, TimeoutException = function(e) {
+            list(start = start, end = end,
+                 clusters = seq_len(end - start + 1))
+          }, error = function(e) {
+            list(start = start, end = end,
+                 clusters = seq_len(end - start + 1))
+          })
+          return(result)
+        },
+        future.globals = list(
+          drt = drt,
+          peaks_RT = peaks_RT,
+          peaks_minRT = peaks_minRT,
+          peaks_maxRT = peaks_maxRT,
+          peaks_sample = peaks_sample
+        ),
+        future.stdout = FALSE
+      )
+    }
+  )
   
   ##############################################################################
   # merge clust results
@@ -992,31 +1093,69 @@ groupmsbatch <- function(msbatch,
   # Create RT clusters for each mz cluster
   #============================================================================#
   if(verbose){cat("\nGrouping peaks by RT...")}
+  
+  # tras reordenar peaks, volvemos a tomar vistas de columnas actualizadas
+  peaks_RT     <- peaks$RT
+  peaks_minRT  <- peaks$minRT
+  peaks_maxRT  <- peaks$maxRT
+  peaks_sample <- peaks$sample
+  
   ##############################################################################
   # Clusterize (in parallel if required)
-  if (parallel) {
-    cl <- makePSOCKcluster(ncores)
-    doParallel::registerDoParallel(cl)
-    `%d%` <- `%dopar%`
-  } else {
-    `%d%` <- `%do%`
-  }
-  gr <- foreach::foreach(c = 1:nrow(msbatch$grouping$clustIndex)) %d% {
-    start <- msbatch$grouping$clustIndex[c, 1]
-    end <- msbatch$grouping$clustIndex[c, 2]
-    measures <- peaks[start:end,]
-    groups <- clust(values = measures$RT,
-                    mins = measures$RT,
-                    maxs = measures$RT,
-                    samples = measures$sample,
-                    unique.samples = TRUE,
-                    maxdist = drt,
-                    ppm = FALSE)
-    return(list(start = start, end = end, groups = groups))
-  }
-  if (parallel){
-    parallel::stopCluster(cl)
-  }
+  blocks2 <- lapply(1:nrow(msbatch$grouping$clustIndex), function(i) {
+    c(start = msbatch$grouping$clustIndex[i, 1],
+      end   = msbatch$grouping$clustIndex[i, 2])
+  })
+  
+  gr <- .with_future_plan(
+    workers = ncores,
+    globals_gb = global_gb,
+    expr = {
+      future.apply::future_lapply(
+        blocks2,
+        function(block) {
+          loadNamespace("LipidMS")
+          start <- block[["start"]]
+          end   <- block[["end"]]
+          
+          result <- tryCatch({
+            R.utils::withTimeout({
+              values  <- peaks_RT[start:end]
+              mins    <- peaks_minRT[start:end]
+              maxs    <- peaks_maxRT[start:end]
+              samples <- peaks_sample[start:end]
+              
+              clusters <- clust(
+                values = values,
+                mins = mins,
+                maxs = maxs,
+                samples = samples,
+                unique.samples = TRUE,
+                maxdist = drt,
+                ppm = FALSE
+              )
+              list(start = start, end = end, clusters = clusters)
+            }, timeout = 30, onTimeout = "error")
+          }, TimeoutException = function(e) {
+            list(start = start, end = end,
+                 clusters = seq_len(end - start + 1))
+          }, error = function(e) {
+            list(start = start, end = end,
+                 clusters = seq_len(end - start + 1))
+          })
+          return(result)
+        },
+        future.globals = list(
+          drt = drt,
+          peaks_RT = peaks_RT,
+          peaks_minRT = peaks_minRT,
+          peaks_maxRT = peaks_maxRT,
+          peaks_sample = peaks_sample
+        ),
+        future.stdout = FALSE
+      )
+    }
+  )
   
   ##############################################################################
   # Merge clust results
@@ -1026,7 +1165,7 @@ groupmsbatch <- function(msbatch,
   for (c in 1:nrow(msbatch$grouping$clustIndex)){
     start <- gr[[c]]$start
     end <- gr[[c]]$end
-    groups <- gr[[c]]$groups + startat
+    groups <- gr[[c]]$clusters + startat
     group[start:end] <- groups
     roworder[start:end] <- roworder[start:end][order(groups, decreasing = FALSE)]
     startat <- max(groups)
@@ -1062,8 +1201,6 @@ groupmsbatch <- function(msbatch,
   } else {
     if(verbose){cat("OK\n")}
   }
-  
-  
   
   #============================================================================#
   # Delete duplicated features
@@ -1107,7 +1244,7 @@ groupmsbatch <- function(msbatch,
 #' msbatch <- fillpeaksmsbatch(msbatch)
 #' }
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 fillpeaksmsbatch <- function(msbatch){
   #============================================================================#
   # Check arguments

@@ -33,9 +33,7 @@ Only applied if rawData info is supplied. By default, 0.8.}
 \item{lipidClasses}{classes of interest to run the identification functions.}
 
 \item{dbs}{list of data bases required for annotation. By default, dbs
-contains the required data frames based on the default fragmentation rules.
-If these rules are modified, dbs may need to be supplied. See \link{createLipidDB}
-and \link{assignDB}.}
+contains the required data frames based on the default fragmentation rules.}
 
 \item{verbose}{print information messages.}
 }

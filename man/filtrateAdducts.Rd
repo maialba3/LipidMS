@@ -17,6 +17,6 @@ In case some feature has been annotated to different candidate species,
 this function removes the one with less adducts assigned.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

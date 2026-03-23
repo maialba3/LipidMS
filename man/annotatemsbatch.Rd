@@ -18,7 +18,8 @@ annotatemsbatch(
   dbs,
   simplifyAnnotations = FALSE,
   parallel = FALSE,
-  ncores
+  ncores,
+  global_gb = getOption("LipidMS.future.globals.maxSizeGB", Inf)
 )
 }
 \arguments{
@@ -50,6 +51,9 @@ FALSE, all annotations will be shown.}
 \item{parallel}{logical.}
 
 \item{ncores}{number of cores to be used in case parallel is TRUE.}
+
+\item{global_gb}{numeric. Gigabytes to set as future.globals.maxSize **inside** the function.
+Defaults to `getOption("LipidMS.future.globals.maxSizeGB", Inf)`.}
 }
 \value{
 msbatch

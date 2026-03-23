@@ -783,7 +783,8 @@ rtdevplot <- function(msbatch, colorbygroup = TRUE){
 #' character values: "Cer", "CerP", "GlcCer", "SM", "Carnitine", "CE", "FA",
 #' "HFA", "Sph" (sphingoid bases), "SphP", "MG", "LPA", , "LPC",
 #' "LPE", "LPG", "LPI", "LPS", "FAHFA", "DG", "PC", "PE", "PG", "PI", "PS",
-#' "PA", "TG", "CL" or "all".
+#' "PA", "TG", "CL", "PCo", "PCp", "PEo", "PEp", "LPCo", "LPCp", "LPEo", "LPEp" 
+#' or "all".
 #'
 #' @examples
 #' fas <- c("8:0", "10:0", "12:0", "14:0", "14:1", "15:0", "16:0", "16:1",
@@ -791,6 +792,8 @@ rtdevplot <- function(msbatch, colorbygroup = TRUE){
 #' "20:3", "20:4", "20:5", "22:0", "22:1", "22:2", "22:3", "22:4", "22:5",
 #' "22:6", "24:0", "24:1", "26:0")
 #' sph <- c("16:0", "16:1", "18:0", "18:1")
+#' sn1alkyllipids <- c("16:0", "18:0", "18:1")
+#' sn1vinyllipids <- c("16:0", "18:0")
 #' newdb <- createLipidDB(lipid = "PC", chains = fas, chains2 = sph)
 #'
 #' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
@@ -821,6 +824,32 @@ createLipidDB <- function(lipid, chains, chains2){
     if (lipid == "AcylCer"){
       customizedDataSets[["acylcerdb"]] <- data.frame(formula=db$formula,
                                                  total=db$total, Mass=as.numeric(db$Mass), stringsAsFactors = F)
+    }
+  } else if (sum(lipid == "PCo" || lipid == "PEo") == 1){
+    db <- dbPlasmalogens(chains = c("16:0", "18:0", "18:1"), chains2 = chains, lipid = lipid)
+    db <- data.frame(formula=db$formula, total=db$total,
+                     Mass=as.numeric(db$Mass), ID = paste(lipid, "(", db$total, ")", sep=""),
+                     stringsAsFactors = F)
+    if (lipid == "PCo"){
+      customizedDataSets[["pcodb"]] <- data.frame(formula=db$formula, total=db$total,
+                                                  Mass=as.numeric(db$Mass), stringsAsFactors = F)
+    }
+    if (lipid == "PEo"){
+      customizedDataSets[["peodb"]] <- data.frame(formula=db$formula, total=db$total,
+                                                   Mass=as.numeric(db$Mass), stringsAsFactors = F)
+    }
+  } else if (sum(lipid == "PCp" || lipid == "PEp") == 1){
+    db <- dbPlasmalogens(chains = c("16:0", "18:0"), chains2 = chains, lipid = lipid)
+    db <- data.frame(formula=db$formula, total=db$total,
+                     Mass=as.numeric(db$Mass), ID = paste(lipid, "(", db$total, ")", sep=""),
+                     stringsAsFactors = F)
+    if (lipid == "PCp"){
+      customizedDataSets[["pcpdb"]] <- data.frame(formula=db$formula, total=db$total,
+                                                  Mass=as.numeric(db$Mass), stringsAsFactors = F)
+    }
+    if (lipid == "PEp"){
+      customizedDataSets[["pepdb"]] <- data.frame(formula=db$formula, total=db$total,
+                                                   Mass=as.numeric(db$Mass), stringsAsFactors = F)
     }
   } else if (sum(lipid == "FA" || lipid == "HFA" || lipid == "Carnitine" ||
                  lipid == "LPA" || lipid == "LPE" || lipid == "LPG" ||
@@ -891,6 +920,19 @@ createLipidDB <- function(lipid, chains, chains2){
       customizedDataSets[["sphPdb"]] <- data.frame(formula=db$formula, total=db$total,
                                                    Mass=as.numeric(db$Mass), stringsAsFactors = F)
     }
+  } else if (sum(lipid == "LPEo" || lipid == "LPAo" ||
+                 lipid == "LPCp" || lipid == "LPCo" || lipid == "LPEp") == 1){
+    if (lipid %in% c("LPCo", "LPEo", "LPAo")){
+      db <- dbOneChain(chains = c("16:0", "18:0", "18:1"), lipid = lipid)
+      db <- data.frame(formula=db$formula, total=db$total,
+                       Mass=as.numeric(db$Mass), ID = paste(lipid, "(", db$total, ")", sep=""),
+                       stringsAsFactors = F)
+    } else if (lipid %in% c("LPCp", "LPEp")) {
+      db <- dbOneChain(chains = c("16:0", "18:0"), lipid = lipid)
+      db <- data.frame(formula=db$formula, total=db$total,
+                       Mass=as.numeric(db$Mass), ID = paste(lipid, "(", db$total, ")", sep=""),
+                       stringsAsFactors = F)
+    }
     if (lipid == "LPEo"){
       customizedDataSets[["lysopeodb"]] <-
         data.frame(formula=db$formula, total=db$total,
@@ -919,8 +961,7 @@ createLipidDB <- function(lipid, chains, chains2){
   } else if (sum(lipid == "DG" || lipid == "PC" || lipid == "PE" ||
                  lipid == "PG" || lipid == "PI" || lipid == "PS" || lipid == "PIP" ||
                  lipid == "PIP2" ||lipid == "PIP3" || lipid == "FAHFA" ||
-                 lipid == "PA") == 1 || lipid == "PEo" || lipid == "PCp" ||
-             lipid == "PCo" || lipid == "PEp"){
+                 lipid == "PA") == 1){
     db <- dbTwoChains(chains = chains, lipid = lipid)
     db <- data.frame(formula=db$formula, total=db$total,
                      Mass=as.numeric(db$Mass), ID = paste(lipid, "(", db$total, ")", sep=""),
@@ -968,26 +1009,6 @@ createLipidDB <- function(lipid, chains, chains2){
     if (lipid == "PA"){
       customizedDataSets[["padb"]] <- data.frame(formula=db$formula, total=db$total,
                                                  Mass=as.numeric(db$Mass), stringsAsFactors = F)
-    }
-    if (lipid == "PEo"){
-      customizedDataSets[["peodb"]] <-
-        data.frame(formula=db$formula, total=db$total,
-                   Mass=as.numeric(db$Mass), stringsAsFactors = F)
-    }
-    if (lipid == "PCp"){
-      customizedDataSets[["pcpdb"]] <-
-        data.frame(formula=db$formula, total=db$total,
-                   Mass=as.numeric(db$Mass), stringsAsFactors = F)
-    }
-    if (lipid == "PCo"){
-      customizedDataSets[["pcodb"]] <-
-        data.frame(formula=db$formula, total=db$total,
-                   Mass=as.numeric(db$Mass), stringsAsFactors = F)
-    }
-    if (lipid == "PEp"){
-      customizedDataSets[["pepdb"]] <-
-        data.frame(formula=db$formula, total=db$total,
-                   Mass=as.numeric(db$Mass), stringsAsFactors = F)
     }
   } else if (lipid == "TG") {
     db <- dbThreeChains(chains = chains, lipid = lipid)
@@ -1135,47 +1156,47 @@ createLipidDB <- function(lipid, chains, chains2){
     cl <- data.frame(formula=cl$formula, total=cl$total,
                      Mass=as.numeric(cl$Mass), ID = paste("CL(", cl$total,
                                                           ")", sep=""), stringsAsFactors = F)
-    peo <- dbTwoChains(chains = chains, lipid = "PEo")
+    peo <- dbPlasmalogens(chains = c("16:0", "18:0", "18:1"), chains2 = chains, lipid = "PEo")
     peo <- data.frame(formula=peo$formula, total=peo$total,
                       Mass=as.numeric(peo$Mass),
                       ID = paste("PEo(", peo$total, ")", sep=""),
                       stringsAsFactors = F)
-    lysopeo <- dbOneChain(chains = chains, lipid = "LPEo")
+    lysopeo <- dbOneChain(chains = c("16:0", "18:0", "18:1"), lipid = "LPEo")
     lysopeo <- data.frame(formula=lysopeo$formula, total=lysopeo$total,
                           Mass=as.numeric(lysopeo$Mass),
                           ID = paste("LPEo(", lysopeo$total, ")", sep=""),
                           stringsAsFactors = F)
-    lysopao <- dbOneChain(chains = chains, lipid = "LPAo")
+    lysopao <- dbOneChain(chains = c("16:0", "18:0", "18:1"), lipid = "LPAo")
     lysopao <- data.frame(formula=lysopao$formula, total=lysopao$total,
                           Mass=as.numeric(lysopao$Mass),
                           ID = paste("LPAo(", lysopao$total, ")", sep=""),
                           stringsAsFactors = F)
-    pcp <- dbTwoChains(chains = chains, lipid = "PCp")
+    pcp <- dbPlasmalogens(chains = c("16:0", "18:0"), chains2 = chains, lipid = "PCp")
     pcp <- data.frame(formula=pcp$formula, total=pcp$total,
                       Mass=as.numeric(pcp$Mass),
                       ID = paste("PCp(", pcp$total, ")", sep=""),
                       stringsAsFactors = F)
-    lysopcp <- dbOneChain(chains = chains, lipid = "LPCp")
+    lysopcp <- dbOneChain(chains = c("16:0", "18:0"), lipid = "LPCp")
     lysopcp <- data.frame(formula=lysopcp$formula, total=lysopcp$total,
                           Mass=as.numeric(lysopcp$Mass),
                           ID = paste("LPCp(", lysopcp$total, ")", sep=""),
                           stringsAsFactors = F)
-    pco <- dbTwoChains(chains = chains, lipid = "PCo")
+    pco <- dbPlasmalogens(chains = c("16:0", "18:0", "18:1"), chains2 = chains, lipid = "PCo")
     pco <- data.frame(formula=pco$formula, total=pco$total,
                       Mass=as.numeric(pco$Mass),
                       ID = paste("PCo(", pco$total, ")", sep=""),
                       stringsAsFactors = F)
-    lysopco <- dbOneChain(chains = chains, lipid = "LPCo")
+    lysopco <- dbOneChain(chains = c("16:0", "18:0", "18:1"), lipid = "LPCo")
     lysopco <- data.frame(formula=lysopco$formula, total=lysopco$total,
                           Mass=as.numeric(lysopco$Mass),
                           ID = paste("LPCo(", lysopco$total, ")", sep=""),
                           stringsAsFactors = F)
-    pep <- dbTwoChains(chains = chains, lipid = "PEp")
+    pep <- dbPlasmalogens(chains = c("16:0", "18:0"), chains2 = chains, lipid = "PEp")
     pep <- data.frame(formula=pep$formula, total=pep$total,
                       Mass=as.numeric(pep$Mass),
-                      ID = paste("PEp(", pco$total, ")", sep=""),
+                      ID = paste("PEp(", pep$total, ")", sep=""),
                       stringsAsFactors = F)
-    lysopep <- dbOneChain(chains = chains, lipid = "LPEp")
+    lysopep <- dbOneChain(chains = c("16:0", "18:0"), lipid = "LPEp")
     lysopep <- data.frame(formula=lysopep$formula, total=lysopep$total,
                           Mass=as.numeric(lysopep$Mass),
                           ID = paste("LPEp(", lysopep$total, ")", sep=""),
@@ -1251,7 +1272,7 @@ assignDB <- function(){
   dbs[["smdb"]] <- LipidMS::smdb
   dbs[["fadb"]] <- LipidMS::fadb
   dbs[["hfadb"]] <- LipidMS::hfadb
-  dbs[["carnitinedb"]] <- LipidMS::carnitinesdb
+  dbs[["carnitinedb"]] <- LipidMS::carnitinedb
   dbs[["lysopadb"]] <- LipidMS::lysopadb
   dbs[["lysopaodb"]] <- LipidMS::lysopaodb
   dbs[["lysopedb"]] <- LipidMS::lysopedb

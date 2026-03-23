@@ -1,15 +1,23 @@
 Package: LipidMS
 Type: Package
 Title: Lipid Annotation for LC-MS/MS DDA or DIA Data
-Version: 3.0.6
-Author: M Isabel Alcoriza-Balaguer
+Version: 3.1.3
+Authors@R: c(
+  person(given = c("M Isabel"),
+         family = "Alcoriza-Balaguer",
+         email  = "maribel_alcoriza@iislafe.es",
+         role   = c("aut","cre")),
+  person(given = c("Celia"),
+         family = "Regal-Marques",
+         email  = "celia_regal@iislafe.es",
+         role   = "aut"))
 Maintainer: M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 Description: Lipid annotation in untargeted LC-MS lipidomics based on fragmentation rules. Alcoriza-Balaguer MI, Garcia-Canaveras JC, Lopez A, Conde I, Juan O, Carretero J, Lahoz A (2019) <doi:10.1021/acs.analchem.8b03409>.
-Depends: R (>= 4.0), shiny, utils, parallel, doParallel, foreach
+Depends: R (>= 4.0), ggplot2, future, future.apply
 License: GPL (>= 2)
 LazyData: TRUE
-RoxygenNote: 7.3.1
-Imports: readMzXmlData, CHNOSZ, scales, shinythemes, stats, graphics, grDevices, iterators
+RoxygenNote: 7.3.3
+Imports: readMzXmlData, utils, CHNOSZ, scales, stats, graphics, grDevices, iterators, patchwork, DT, R.utils, parallel, parallelly
 Encoding: UTF-8
-Suggests: knitr, rmarkdown
+Suggests: knitr, rmarkdown, shiny, shinythemes, shinyjs, plotly
 VignetteBuilder: knitr

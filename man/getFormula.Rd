@@ -21,6 +21,6 @@ Data frame
 Get formula and neutral mass for annotated compounds.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

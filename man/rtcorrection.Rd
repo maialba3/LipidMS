@@ -18,6 +18,6 @@ corrected rt vector.
 Correct RT based on a rtmodel.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

@@ -22,6 +22,6 @@ This function checks if the sum up of the chains structure match the
 precursor structure. It is used by \link{combineChains}.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

@@ -20,6 +20,6 @@ list with two elements: index and vector with the assigned partitions.
 Index partitions or clusters assigned during alignment.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

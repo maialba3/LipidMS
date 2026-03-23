@@ -10,7 +10,7 @@
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassSph <- function(Sph){
   cb <- unlist(strsplit(Sph, "[: ]"))
   C <- as.numeric(cb[1])
@@ -33,7 +33,7 @@ MassSph <- function(Sph){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassSphP <- function(SphP){
   cb <- unlist(strsplit(SphP, "[: ]"))
   C <- as.numeric(cb[1])
@@ -56,7 +56,7 @@ MassSphP <- function(SphP){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassCer <- function(cer){
   cb <- unlist(strsplit(cer, "[: ]"))
   C <- as.numeric(cb[1])
@@ -79,7 +79,7 @@ MassCer <- function(cer){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassCerP <- function(cerP){
   cb <- unlist(strsplit(cerP, "[: ]"))
   C <- as.numeric(cb[1])
@@ -102,7 +102,7 @@ MassCerP <- function(cerP){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassAcylCer <- function(acylcer){
   cb <- unlist(strsplit(acylcer, "[: ]"))
   C <- as.numeric(cb[1])
@@ -125,7 +125,7 @@ MassAcylCer <- function(acylcer){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassGlcCer <- function(glccer){
   cb <- unlist(strsplit(glccer, "[: ]"))
   C <- as.numeric(cb[1])+6
@@ -148,7 +148,7 @@ MassGlcCer <- function(glccer){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassSM <- function(SM){
   cb <- unlist(strsplit(SM, "[: ]"))
   C <- as.numeric(cb[1])+5
@@ -171,7 +171,7 @@ MassSM <- function(SM){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassCarnitines <- function(carnitine){
   cb <- unlist(strsplit(carnitine, "[: ]"))
   C <- as.numeric(cb[1])+7
@@ -194,7 +194,7 @@ MassCarnitines <- function(carnitine){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassCE <- function(CE){
   cb <- unlist(strsplit(CE, "[: ]"))
   C <- as.numeric(cb[1])+27
@@ -217,7 +217,7 @@ MassCE <- function(CE){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassFA <- function(FA){
   cb <- unlist(strsplit(FA, "[: ]"))
   C <- as.numeric(cb[1])
@@ -240,7 +240,7 @@ MassFA <- function(FA){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassHFA <- function(HFA){
   cb <- unlist(strsplit(HFA, "[: ]"))
   C <- as.numeric(cb[1])
@@ -263,7 +263,7 @@ MassHFA <- function(HFA){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassFAHFA <- function(FAHFA){
   cb <- unlist(strsplit(FAHFA, "[: ]"))
   C <- as.numeric(cb[1])
@@ -286,7 +286,7 @@ MassFAHFA <- function(FAHFA){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassLysoPA <- function(LPA){
   cb <- unlist(strsplit(LPA, "[: ]"))
   C <- as.numeric(cb[1])+3
@@ -309,7 +309,7 @@ MassLysoPA <- function(LPA){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassLysoPAo <- function(LPAo){
   cb <- unlist(strsplit(LPAo, "[: ]"))
   C <- as.numeric(cb[1])+3
@@ -332,7 +332,7 @@ MassLysoPAo <- function(LPAo){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassPA <- function(PA){
   cb <- unlist(strsplit(PA, "[: ]"))
   C <- as.numeric(cb[1])+3
@@ -355,7 +355,7 @@ MassPA <- function(PA){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassLysoPE <- function(LPE){
   cb <- unlist(strsplit(LPE, "[: ]"))
   C <- as.numeric(cb[1])+5
@@ -378,7 +378,7 @@ MassLysoPE <- function(LPE){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassLysoPEo <- function(LPEo){
   cb <- unlist(strsplit(LPEo, "[: ]"))
   C <- as.numeric(cb[1])+5
@@ -401,7 +401,7 @@ MassLysoPEo <- function(LPEo){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassLysoPEp <- function(LPEp){
   cb <- unlist(strsplit(LPEp, "[: ]"))
   C <- as.numeric(cb[1])+5
@@ -424,7 +424,7 @@ MassLysoPEp <- function(LPEp){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassPE <- function(PE){
   cb <- unlist(strsplit(PE, "[: ]"))
   C <- as.numeric(cb[1])+5
@@ -447,7 +447,7 @@ MassPE <- function(PE){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassPEo <- function(PEo){
   cb <- unlist(strsplit(PEo, "[: ]"))
   C <- as.numeric(cb[1])+5
@@ -470,7 +470,7 @@ MassPEo <- function(PEo){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassPEp <- function(PEp){
   cb <- unlist(strsplit(PEp, "[: ]"))
   C <- as.numeric(cb[1])+5
@@ -493,7 +493,7 @@ MassPEp <- function(PEp){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassLysoPG <- function(LPG){
   cb <- unlist(strsplit(LPG, "[: ]"))
   C <- as.numeric(cb[1])+6
@@ -516,7 +516,7 @@ MassLysoPG <- function(LPG){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassPG <- function(PG){
   cb <- unlist(strsplit(PG, "[: ]"))
   C <- as.numeric(cb[1])+6
@@ -539,7 +539,7 @@ MassPG <- function(PG){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassLysoPI <- function(LPI){
   cb <- unlist(strsplit(LPI, "[: ]"))
   C <- as.numeric(cb[1])+9
@@ -562,7 +562,7 @@ MassLysoPI <- function(LPI){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassPI <- function(PI){
   cb <- unlist(strsplit(PI, "[: ]"))
   C <- as.numeric(cb[1])+9
@@ -585,7 +585,7 @@ MassPI <- function(PI){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassPIP <- function(PIP){
   cb <- unlist(strsplit(PIP, "[: ]"))
   C <- as.numeric(cb[1])+9
@@ -608,7 +608,7 @@ MassPIP <- function(PIP){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassPIP2 <- function(PIP2){
   cb <- unlist(strsplit(PIP2, "[: ]"))
   C <- as.numeric(cb[1])+9
@@ -631,7 +631,7 @@ MassPIP2 <- function(PIP2){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassPIP3 <- function(PIP3){
   cb <- unlist(strsplit(PIP3, "[: ]"))
   C <- as.numeric(cb[1])+9
@@ -654,7 +654,7 @@ MassPIP3 <- function(PIP3){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassLysoPS <- function(LPS){
   cb <- unlist(strsplit(LPS, "[: ]"))
   C <- as.numeric(cb[1])+6
@@ -677,7 +677,7 @@ MassLysoPS <- function(LPS){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassPS <- function(PS){
   cb <- unlist(strsplit(PS, "[: ]"))
   C <- as.numeric(cb[1])+6
@@ -700,7 +700,7 @@ MassPS <- function(PS){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassLysoPC <- function(LPC){
   cb <- unlist(strsplit(LPC, "[: ]"))
   C <- as.numeric(cb[1])+8
@@ -723,7 +723,7 @@ MassLysoPC <- function(LPC){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassLysoPCp <- function(LPCp){
   cb <- unlist(strsplit(LPCp, "[: ]"))
   C <- as.numeric(cb[1])+8
@@ -746,7 +746,7 @@ MassLysoPCp <- function(LPCp){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassLysoPCo <- function(LPCo){
   cb <- unlist(strsplit(LPCo, "[: ]"))
   C <- as.numeric(cb[1])+8
@@ -769,7 +769,7 @@ MassLysoPCo <- function(LPCo){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassPC <- function(PC){
   cb <- unlist(strsplit(PC, "[: ]"))
   C <- as.numeric(cb[1])+8
@@ -792,7 +792,7 @@ MassPC <- function(PC){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassPCp <- function(PCp){
   cb <- unlist(strsplit(PCp, "[: ]"))
   C <- as.numeric(cb[1])+8
@@ -815,7 +815,7 @@ MassPCp <- function(PCp){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassPCo <- function(PCo){
   cb <- unlist(strsplit(PCo, "[: ]"))
   C <- as.numeric(cb[1])+8
@@ -838,7 +838,7 @@ MassPCo <- function(PCo){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassMG <- function(MG){
   cb <- unlist(strsplit(MG, "[: ]"))
   C <- as.numeric(cb[1])+3
@@ -861,7 +861,7 @@ MassMG <- function(MG){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassDG <- function(DG){
   cb <- unlist(strsplit(DG, "[: ]"))
   C <- as.numeric(cb[1])+3
@@ -884,7 +884,7 @@ MassDG <- function(DG){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassTG <- function(TG){
   cb <- unlist(strsplit(TG, "[: ]"))
   C <- as.numeric(cb[1])+3
@@ -907,7 +907,7 @@ MassTG <- function(TG){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 MassCL <- function(CL){
   cb <- unlist(strsplit(CL, "[: ]"))
   C <- as.numeric(cb[1])+9
@@ -932,7 +932,7 @@ MassCL <- function(CL){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 dbSphingolipids <- function(chains, chains2, lipid){
   comb <- vector()
   if (lipid == "AcylCer"){
@@ -980,7 +980,7 @@ dbSphingolipids <- function(chains, chains2, lipid){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 dbOneChain <- function(chains, lipid){
   fas <- unique(chains)
   if (lipid == "Carnitine"){
@@ -1039,7 +1039,7 @@ dbOneChain <- function(chains, lipid){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 dbTwoChains <- function(chains, lipid){
   fas <- rep(chains, 2)
   comb <- unique(utils::combn(fas, 2, simplify=F))
@@ -1081,6 +1081,42 @@ dbTwoChains <- function(chains, lipid){
   return(db)
 }
 
+# dbPlasmalogens
+#' Creation of a database for PCo, PCp, PEo and PEp
+#'
+#' Creation of a database for PCo, PCp, PEo and PEp
+#'
+#' @param chains character vector indicating the FAs to be employed for sn1
+#' @param chains2 character vector indicating the FAs to be employed for sn2
+#' @param lipid character value indication the class of lipid.
+#'
+#' @return data frame containing formula, mass and total number of carbons and
+#' insaturations.
+#'
+#' @keywords internal
+#'
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
+dbPlasmalogens <- function(chains, chains2, lipid){
+  comb <- vector()
+  for (i in chains2){
+    comb <- append(comb, sapply(chains, paste, i, collapse=" "))
+  }
+  comb <- unique(comb)
+  total  <- unique(unlist(lapply(comb, sumChains, n = 2)))
+  if (lipid == "PCo"){
+    fm <- lapply(total, MassPCo)
+  } else if (lipid == "PCp"){
+    fm <- lapply(total, MassPCp)
+  } else if (lipid == "PEo"){
+    fm <- lapply(total, MassPEo)
+  } else if (lipid == "PEp"){
+    fm <- lapply(total, MassPEp)
+  }
+  db <- data.frame(formula=unlist(lapply(fm, "[[", 1)), total=total,
+                   Mass=as.numeric(unlist(lapply(fm, "[[", 2))), stringsAsFactors = F)
+  return(db)
+}
+
 # dbThreeChains
 #' Creation of a database for TG.
 #'
@@ -1094,7 +1130,7 @@ dbTwoChains <- function(chains, lipid){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 dbThreeChains <- function(chains, lipid){
   fas <- rep(chains, 3)
   comb <- unique(utils::combn(fas, 3, simplify=F))
@@ -1121,7 +1157,7 @@ dbThreeChains <- function(chains, lipid){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 dbFourChains <- function(chains, lipid){
   fas <- rep(chains, 4)
   comb <- unique(utils::combn(fas, 4, simplify=F))
@@ -1150,7 +1186,7 @@ dbFourChains <- function(chains, lipid){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 getFormula <- function(df, dbs){
   lipidClass <- df["Class"]
   cdb <- df["CDB"]
@@ -1160,7 +1196,7 @@ getFormula <- function(df, dbs){
   if (lipidClass == "BA"){
     db <- dbs$badb
   } else if (lipidClass == "Carnitine"){
-    db <- dbs$carnitinesdb
+    db <- dbs$carnitinedb
   } else if (lipidClass == "Cer"){
     db <- dbs$cerdb
   } else if (lipidClass == "CL"){

@@ -30,7 +30,7 @@ extern "C"{
     int leng = lengMins*lengMaxs;
     SEXP cdiff;
     PROTECT(cdiff = NEW_NUMERIC(leng));
-    SETLENGTH(cdiff, leng);
+    Rf_lengthgets(cdiff, leng);
     double *cdiffv;
     cdiffv = NUMERIC_POINTER(cdiff);
     for(int n = 0; n < leng; n++){
@@ -43,7 +43,7 @@ extern "C"{
       }
     }
     
-    SETLENGTH(cdiff, leng);
+    Rf_lengthgets(cdiff, leng);
     UNPROTECT(3);
     
     return cdiff;

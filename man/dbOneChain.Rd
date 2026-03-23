@@ -21,6 +21,6 @@ Creation of a database for Carnitines, CE, FA, HFA, LPL, MG, sphingoid
 bases and sphingoid bases phosphate.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

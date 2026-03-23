@@ -58,6 +58,6 @@ chromatography/mass spectrometry data sets.” Analytical Chemistry, 84, 283–2
 http://pubs.acs.org/doi/abs/10.1021/ac202450g.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

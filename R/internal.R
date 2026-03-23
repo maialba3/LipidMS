@@ -12,7 +12,7 @@
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 sumChains <- function(chains, n){
   cb <- unlist(strsplit(chains, "[: ]"))
   if (n == 1){
@@ -50,7 +50,7 @@ sumChains <- function(chains, n){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 mzMatch <- function(mz, mzvector, ppm){
   matches_ppm <- vector()
   for (i in 1:length(mzvector)){
@@ -80,7 +80,7 @@ mzMatch <- function(mz, mzvector, ppm){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 cbs <- function(mz, ppm, db, charge=0){
   cb <- as.vector(db[abs(db["Mass"]+charge-mz) <
       ppm*(db["Mass"]+charge)/1000000, "total"])
@@ -108,7 +108,7 @@ cbs <- function(mz, ppm, db, charge=0){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 filtermsms <- function(fragments, frag, ppm){
   sel <- fragments[which(abs((fragments$mz - frag)/frag)*1000000 < ppm),]
   sel <- sel[which.max(sel$coelScore),]
@@ -131,7 +131,7 @@ filtermsms <- function(fragments, frag, ppm){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 frags <- function(df, ppm, db,  mdiff, charge, n){
   if (nrow(df) > 0){
     cb <- data.frame(0, 0, 0, 0, 0, 0)
@@ -174,7 +174,7 @@ frags <- function(df, ppm, db,  mdiff, charge, n){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 joinfrags <- function(df){
   new <- vector()
   for (f in unique(df$cb)){
@@ -199,7 +199,7 @@ joinfrags <- function(df){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 diffcb <- function(total, frag, db){
   fas <- db$total
   total <- unlist(strsplit(total, ":"))
@@ -230,7 +230,7 @@ diffcb <- function(total, frag, db){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 select <- function (chains, parent, n){
   chains <- unlist(strsplit(chains, "[: ]"))
   if (n == 3) {
@@ -271,7 +271,7 @@ select <- function (chains, parent, n){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 findPrecursor <- function(MS1, db, ppm, massdif, rt, n=1, charge=1){
   precursors <- unlist(lapply(abs(n*db$Mass+massdif)/abs(charge), mzMatch,
                               MS1$mz, ppm))
@@ -324,7 +324,7 @@ findPrecursor <- function(MS1, db, ppm, massdif, rt, n=1, charge=1){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 crossAdducts <- function(df1, df2, rttol, rawData, coelCutoff){
   if (nrow(df2) > 0 & nrow(df1) == 0){
     df <- df2
@@ -393,7 +393,7 @@ crossAdducts <- function(df1, df2, rttol, rawData, coelCutoff){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 filtrateAdducts <- function(df){
   if (nrow(df) > 0){
     toremove <- c()
@@ -431,7 +431,7 @@ filtrateAdducts <- function(df){
 #'
 #' #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 coelutionScore <- function(peak1, peak2, rawData){
   if (nrow(rawData) > 0){
     chrom1 <- rawData[rawData$peakID == peak1, c("int", "Scan")]
@@ -504,7 +504,7 @@ coelutionScore <- function(peak1, peak2, rawData){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 checkIntRules <- function(intrules, rates, intrequired, nchains, combinations,
                           sn){
   if (nchains == 1){
@@ -681,7 +681,7 @@ checkIntRules <- function(intrules, rates, intrequired, nchains, combinations,
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 findMS2precursor <- function(mz, minrt, maxrt, precursors, ppm){
   fprec <- precursors[which(precursors$RT >= minrt &
                               precursors$RT <= maxrt),]
@@ -710,7 +710,7 @@ findMS2precursor <- function(mz, minrt, maxrt, precursors, ppm){
 #'
 #' @keywords internal
 #'
-#' @author M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+#' @author M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 chains <- function(id){
   if(grepl("[\\_]", id)){
     position <- FALSE
@@ -873,4 +873,349 @@ joinAnnotationResults <- function(msbatch, simplifyAnnotations = TRUE){
                                  fmatrix)
   
   return(msbatch)
+}
+
+
+# dbsAdducts
+#' Create tables containing the m/z of lipids along with their preferred adducts
+#'
+#' Create tables containing the m/z of lipids along with their preferred adducts
+#' for each polarity
+#'
+#' @param file path csv with classes to predict
+#' @param sep Character. Field separator used when reading the CSV file.
+#' @param sep_adducts Character. Separator used to split multiple adducts within
+#' the "Adducts" column of the file.
+#' @param polarity character value: 'negative', 'positive'.
+#' @param classes A vector containing the lipid classes for which retention time
+#' is to be predicted. If classes = NULL, predictions will be made for all classes
+#' where there are candidates and data to create a model.
+#'
+#' @return dbs_modif
+#'
+#' @keywords internal
+#'
+#' @author Celia Regal Marques <celia_regal@iislafe.es>
+dbsAdducts <- function(file = NULL, sep = ";", sep_adducts = ",",
+                       polarity, classes = NULL) {
+  # Load the mapping between lipid classes and their adducts
+  db_mapping <- combineClassesAdducts()
+  
+  # If a CSV file is provided, read the lipid classes and their adducts
+  if (!is.null(file)) {
+    classes_df <- readFileLipidClasses(file, sep, sep_adducts)
+    
+    # Create a structured list of lipid classes with their database names and adducts
+    classes_list <- lapply(names(classes_df), function(class_name) {
+      class_name_lower <- tolower(class_name)
+      if(class_name_lower %in% names(db_mapping)) {
+        class_info <- db_mapping[[class_name_lower]]
+        list(class = class_info$class,
+             name_db = class_info$name_db,
+             adducts = classes_df[[class_name]]
+        )
+      } else { NULL }
+    })
+    names(classes_list) <- tolower(names(classes_df))
+    
+  } else {
+    # If no CSV is provided, select the appropriate adducts based on polarity
+    if (polarity == "positive" | polarity == "Positive") { # Positive polarity...
+      
+      # Filter db_mapping by requested classes if provided
+      if (!is.null(classes)) {
+        classes <- tolower(classes)
+        db_mapping <- db_mapping[names(db_mapping) %in% classes]
+      }
+      
+      # Keep only lipid classes that have positive adducts
+      lipidClasses <- sapply(db_mapping, function(x)
+        if (!is.logical(x$pos) || !is.na(x$pos)) x$class else NA)
+      lipidClasses <- lipidClasses[!is.na(lipidClasses)]
+      
+      db_mapping <- db_mapping[names(db_mapping) %in% names(lipidClasses)]
+      
+      classes_list <- lapply(db_mapping, function(x) {
+        x$adducts <- x$pos
+        x$pos <- NULL
+        x$neg <- NULL
+        x
+      })
+      
+    } else if (polarity == "negative" | polarity == "Negative") { # Negative polarity...
+      
+      # Filter db_mapping by requested classes if provided
+      if (!is.null(classes)) {
+        classes <- tolower(classes)
+        db_mapping <- db_mapping[names(db_mapping) %in% classes]
+      }
+      
+      # Keep only lipid classes that have negative adducts
+      lipidClasses <- sapply(db_mapping, function(x)
+        if (!is.logical(x$neg) || !is.na(x$neg)) x$class else NA)
+      lipidClasses <- lipidClasses[!is.na(lipidClasses)]
+      
+      db_mapping <- db_mapping[names(db_mapping) %in% names(lipidClasses)]
+      
+      classes_list <- lapply(db_mapping, function(x) {
+        x$adducts <- x$neg
+        x$pos <- NULL
+        x$neg <- NULL
+        x
+      })
+    }
+  }
+  
+  # Add the m/z of the lipids with their preferred adducts
+  dbs <- LipidMS::assignDB()
+  db_adducts <- dbs[["adductsTable"]]
+  dbs_modif <- c()
+  for (i in 1:length(classes_list)) {
+    lipidClass <- classes_list[[i]]$class
+    adducts <- classes_list[[i]]$adducts
+    db <- dbs[[classes_list[[i]]$name_db]]
+    if (!is.data.frame(db) && !(is.list(db) && length(db) == 0)) {
+      db <- db[[1]]
+    } else if (is.list(db) && length(db) == 0) {
+      next
+    }
+    
+    mz_adducts <- c()
+    for (a in 1:length(adducts)) {
+      adduct <- adducts[a]
+      db$x <- db$Mass + ((db_adducts[c(db_adducts$adduct==adduct),"mdiff"] *
+                            abs(db_adducts[c(db_adducts$adduct==adduct),"n"]))/
+                           abs(db_adducts[c(db_adducts$adduct==adduct),"charge"]))
+      names(db)[names(db) == "x"] <- adduct
+    }
+    dbs_modif[[lipidClass]] <- db
+  }
+  
+  return(dbs_modif)
+}
+
+# readFileLipidClasses
+#' Allows reading a CSV that contains lipid classes and adducts to perform
+#' annotations and retention time predictions.
+#'
+#' Allows reading a CSV that contains lipid classes and adducts to perform
+#' annotations and retention time predictions.
+#'
+#' @param file csv with classes to predict
+#' @param sep Character. Field separator used when reading the CSV file.
+#' @param sep_adducts Character. Separator used to split multiple adducts within the "Adducts" column of the file.
+#'
+#' @return lipidClasses, a list with Classes and Adducts
+#'
+#' @keywords internal
+#'
+#' @author Celia Regal Marques <celia_regal@iislafe.es>
+readFileLipidClasses <- function(file = NULL, sep = ";", sep_adducts = ",") {
+  # Obtain lipid classes and adducts from a CSV file
+  if (!is.null(file)) {
+    
+    # Load the mapping between lipid classes and their adducts
+    db_mapping <- combineClassesAdducts()
+    
+    # Read the CSV file into a data frame
+    if (is.character(file)) {
+      lipidClasses_csv <- read.table(file, header = TRUE, sep = sep)
+    }
+    
+    # Ensure required columns "Classes" and "Adducts" are present
+    if (nrow(lipidClasses_csv) > 0 &
+        all(names(lipidClasses_csv) %in% c("Classes", "Adducts"))) {
+      # Normalize class names: convert to lowercase and map to standardized names
+      lipidClasses_csv$Classes <- tolower(lipidClasses_csv$Classes)
+      lipidClasses_csv$Classes <- sapply(lipidClasses_csv$Classes, function(x) {
+        if (x %in% names(db_mapping)) {
+          return(db_mapping[[x]][[1]])  # First element is the standardized form
+        } else {
+          return(x)  # Keep original if not found in mapping
+        }
+      })
+    }
+    
+    # Remove any whitespace from the "Adducts" column
+    lipidClasses_csv$Adducts <- gsub(" ", "", lipidClasses_csv$Adducts)
+    
+    # Step 1: Group duplicated classes and merge their adducts
+    unique_classes <- unique(lipidClasses_csv$Classes)
+    lipidClasses_grouped <- data.frame(Classes = character(),
+                                       Adducts = character(),
+                                       stringsAsFactors = FALSE)
+    
+    for (cls in unique_classes) {
+      # Select all rows corresponding to the same class
+      rows <- lipidClasses_csv$Classes == cls
+      # Concatenate unique adducts for that class
+      adducts_combined <- paste(unique(lipidClasses_csv$Adducts[rows]), collapse = sep_adducts)
+      lipidClasses_grouped <- rbind(lipidClasses_grouped,
+                                    data.frame(Classes = cls,
+                                               Adducts = adducts_combined,
+                                               stringsAsFactors = FALSE))
+    }
+    
+    lipidClasses <- list()
+    error_msg <- character()
+    
+    # Validate adducts for each class
+    for (i in seq_len(nrow(lipidClasses_grouped))) {
+      class_name <- lipidClasses_grouped$Classes[i]
+      adducts_raw <- unique(unlist(strsplit(lipidClasses_grouped$Adducts[i], sep_adducts)))
+      
+      # Check valid and invalid adducts against database
+      dbs <- LipidMS::assignDB()
+      valid_adducts <- adducts_raw[adducts_raw %in% dbs$adductsTable$adduct]
+      invalid_adducts <- setdiff(adducts_raw, valid_adducts)
+      
+      # Save valid adducts in the result list
+      lipidClasses[[class_name]] <- valid_adducts
+      
+      # Collect error messages for invalid adducts
+      if (length(invalid_adducts) > 0) {
+        msg <- paste0("The class '", class_name, "' contains invalid adduct(s): ",
+                      paste(invalid_adducts, collapse = sep_adducts))
+        error_msg <- c(error_msg, msg)
+      }
+    }
+    
+    # If invalid adducts were found, stop and show error with allowed options
+    if (length(error_msg) > 0) {
+      all_valid_adducts <- paste(unique(dbs$adductsTable$adduct), collapse = ", ")
+      full_msg <- paste(c(error_msg,
+                          paste0("\nThe allowed adducts are: ", all_valid_adducts)),
+                        collapse = "\n")
+      stop(full_msg)
+    }
+  }
+  
+  return(lipidClasses)
+}
+
+# combineClassesAdducts
+#' Creates a list that maps lipid classes with their database name and default adducts.
+#'
+#' Creates a list that maps lipid classes with their database name and default adducts.
+#' annotations and retention time predictions.
+#'
+#' @return db_mapping, a list with Classes and Adducts
+#'
+#' @keywords internal
+#'
+#' @author Celia Regal Marques <celia_regal@iislafe.es>
+combineClassesAdducts <- function() {
+
+  dbs <- assignDB()
+
+  db_mapping <- list(
+    "cer" = list(class = "Cer",
+                 name_db = "cerdb",
+                 pos =  eval(formals(idCerpos)$adducts),
+                 neg = eval(formals(idCerneg)$adducts)),
+    "cerp" = list(class = "CerP",
+                  name_db = "cerPdb",
+                  pos = eval(formals(idCerPpos)$adducts),
+                  neg = eval(formals(idCerPneg)$adducts)),
+    "sm" = list(class = "SM",
+                name_db = "smdb",
+                pos = eval(formals(idSMpos)$adducts),
+                neg = eval(formals(idSMneg)$adducts)),
+    "fa" = list(class = "FA",
+                name_db = "fadb",
+                pos = NA,
+                neg = eval(formals(idFAneg)$adducts)),
+    "carnitine" = list(class = "Carnitine",
+                       name_db = "carnitinedb",
+                       pos = eval(formals(idCarpos)$adducts),
+                       neg = NA),
+    "lpe" = list(class = "LPE",
+                 name_db = "lysopedb",
+                 pos = eval(formals(idLPEpos)$adducts),
+                 neg = eval(formals(idLPEneg)$adducts)),
+    "lpg" = list(class = "LPG",
+                 name_db = "lysopgdb",
+                 pos = NA,
+                 neg = eval(formals(idLPGneg)$adducts)),
+    "lpi" = list(class = "LPI",
+                 name_db = "lysopidb",
+                 pos = NA,
+                 neg = eval(formals(idLPIneg)$adducts)),
+    "lps" = list(class = "LPS",
+                 name_db = "lysopsdb",
+                 pos = NA,
+                 neg = eval(formals(idLPSneg)$adducts)),
+    "lpc" = list(class = "LPC",
+                 name_db = "lysopcdb",
+                 pos = eval(formals(idLPCpos)$adducts),
+                 neg = eval(formals(idLPCneg)$adducts)),
+    "mg" = list(class = "MG",
+                name_db = "mgdb",
+                pos = eval(formals(idMGpos)$adducts),
+                neg = NA),
+    "ce" = list(class = "CE",
+                name_db = "CEdb",
+                pos = eval(formals(idCEpos)$adducts),
+                neg = NA),
+    "sph" = list(class = "Sph",
+                 name_db = "sphdb",
+                 pos = eval(formals(idSphpos)$adducts),
+                 neg = eval(formals(idSphneg)$adducts)),
+    "sphp" = list(class = "SphP",
+                  name_db = "sphPdb",
+                  pos = eval(formals(idSphPpos)$adducts),
+                  neg = eval(formals(idSphPneg)$adducts)),
+    "fahfa" = list(class = "FAHFA",
+                   name_db = "fahfadb",
+                   pos = NA,
+                   neg = eval(formals(idFAHFAneg)$adducts)),
+    "pc" = list(class = "PC",
+                name_db = "pcdb",
+                pos = eval(formals(idPCpos)$adducts),
+                neg = eval(formals(idPCneg)$adducts)),
+    "pco" = list(class = "PCo",
+                 name_db = "pcodb",
+                 pos = eval(formals(idPCopos)$adducts),
+                 neg = eval(formals(idPConeg)$adducts)),
+    "pcp" = list(class = "PCp",
+                 name_db = "pcpdb",
+                 pos = eval(formals(idPCppos)$adducts),
+                 neg = eval(formals(idPCpneg)$adducts)),
+    "pe" = list(class = "PE",
+                name_db = "pedb",
+                pos = eval(formals(idPEpos)$adducts),
+                neg = eval(formals(idPEneg)$adducts)),
+    "peo" = list(class = "PEo",
+                 name_db = "peodb",
+                 pos = eval(formals(idPEopos)$adducts),
+                 neg = eval(formals(idPEoneg)$adducts)),
+    "pep" = list(class = "PEp",
+                 name_db = "pepdb",
+                 pos = eval(formals(idPEppos)$adducts),
+                 neg = eval(formals(idPEpneg)$adducts)),
+    "pg" = list(class = "PG",
+                name_db = "pgdb",
+                pos = eval(formals(idPGpos)$adducts),
+                neg = eval(formals(idPGneg)$adducts)),
+    "pi" = list(class = "PI",
+                name_db = "pidb",
+                pos = eval(formals(idPIpos)$adducts),
+                neg = eval(formals(idPIneg)$adducts)),
+    "ps" = list(class = "PS",
+                name_db = "psdb",
+                pos = NA,
+                neg = eval(formals(idPSneg)$adducts)),
+    "dg" = list(class = "DG",
+                name_db = "dgdb",
+                pos = eval(formals(idDGpos)$adducts),
+                neg = NA),
+    "tg" = list(class = "TG",
+                name_db = "tgdb",
+                pos = eval(formals(idTGpos)$adducts),
+                neg = NA),
+    "cl" = list(class = "CL",
+                name_db = "cldb",
+                pos = NA,
+                neg = eval(formals(idCLneg)$adducts))
+  )
 }

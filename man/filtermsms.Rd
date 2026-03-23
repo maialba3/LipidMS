@@ -22,6 +22,6 @@ of mz values with certain tolerance. It is used by identification functions
 to look for the generic fragments of each class of lipid.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

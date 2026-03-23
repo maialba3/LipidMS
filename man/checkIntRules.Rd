@@ -43,6 +43,6 @@ need to look for their intensities. This will depend on the chain fragments
 rules defined previiously.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

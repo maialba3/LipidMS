@@ -4,7 +4,10 @@
 \alias{LipidMSapp}
 \title{LipidMS shiny app}
 \usage{
-LipidMSapp()
+LipidMSapp(max_upload_mb = getOption("LipidMS.shiny.maxRequestSizeMB", Inf))
+}
+\arguments{
+\item{max_upload_mb}{max size to upload}
 }
 \description{
 Interactive UI for LipidMS

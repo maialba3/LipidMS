@@ -25,6 +25,7 @@ batchdataProcessing(
   drtIso = 5,
   parallel = FALSE,
   ncores,
+  global_gb = getOption("LipidMS.future.globals.maxSizeGB", Inf),
   verbose = TRUE
 )
 }
@@ -71,6 +72,9 @@ within the drtminpeak window are required to define a peak.}
 
 \item{ncores}{number of cores to be used in case parallel is TRUE.}
 
+\item{global_gb}{numeric. Gigabytes to set as future.globals.maxSize **inside** the function.
+Defaults to `getOption("LipidMS.future.globals.maxSizeGB", Inf)`.}
+
 \item{verbose}{print information messages.}
 }
 \value{
@@ -111,5 +115,5 @@ https://cran.r-project.org/web/packages/enviPick/index.html
 \link{dataProcessing} and \link{setmsbatch}
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@iislafe.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }

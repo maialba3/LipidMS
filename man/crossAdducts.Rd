@@ -28,6 +28,6 @@ This function crosses tables of precursor candidates identified using different
 adducts.
 }
 \author{
-M Isabel Alcoriza-Balaguer <maialba@alumni.uv.es>
+M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
 }
 \keyword{internal}

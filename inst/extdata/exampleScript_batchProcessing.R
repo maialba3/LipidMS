@@ -52,6 +52,20 @@ minsamplesfracgroup <- 0.25
 parallel <- TRUE
 ncores <- 2
 
+###################
+# Annotation Filtering
+distC <- 5
+distribution <- "gamma"
+score <- 0.5
+filter_plot <- TRUE
+
+###################
+# RT prediction
+classes <- NULL
+dmz <- 5
+ppm = TRUE
+predict_plot = TRUE
+
 
 #==============================================================================#
 # Processing
@@ -85,6 +99,7 @@ save(msbatch, file="msbatch.rda.gz", compress = TRUE)
 msbatch <- alignmsbatch(msbatch, dmz = dmzalign, drt = drtalign, span = span, 
                         minsamplesfrac = minsamplesfracalign, 
                         parallel = parallel, ncores = ncores)
+
 
 ###################
 # Grouping

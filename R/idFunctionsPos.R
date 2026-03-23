@@ -42,11 +42,11 @@ idPOS <- function(msobject,
                   coelCutoff = 0.8,
                   lipidClasses = c("MG", "LPC", "LPE", "PC", "PCo", "PCp", "PE", 
                                    "PEo", "PEp", "PG", "PI", "Sph", "SphP", "Cer", 
-                                   "AcylCer", "CerP", "SM", "Carnitines", "CE", 
+                                   "AcylCer", "CerP", "SM", "Carnitine", "CE", 
                                    "DG", "TG"),
                   dbs,
                   verbose = TRUE){
-
+  
   if (msobject$metaData$generalMetadata$polarity != "positive"){
     stop("Data wasn't acquired in positive mode")
   }
@@ -59,16 +59,16 @@ idPOS <- function(msobject,
   }
   if (!all(lipidClasses %in% c("MG", "LPC", "LPE", "PC", "PCo", "PCp", "PE", 
                                "PEo", "PEp", "PG", "PI", "Sph", "SphP", "Cer", 
-                               "AcylCer", "CerP", "SM", "Carnitines", "CE", "DG", 
+                               "AcylCer", "CerP", "SM", "Carnitine", "CE", "DG", 
                                "TG"))){
     stop("Lipid classes allowed for positive annotation are: MG, LPC, LPE, PC,
           PCo, PCp, PE, PEo, PEp, PG, PI, Sph, SphP, Cer, CerP, AcylCer, SM, 
-          Carnitines, CE, DG and TG")
+          Carnitine, CE, DG and TG")
   }
   if (missing(dbs)){
     dbs <- assignDB()
   }
-
+  
   if(verbose){cat("\n Starting annotation...")}
   if ("MG" %in% lipidClasses){
     if(verbose){cat("\n  Searching for MG...")}
@@ -191,7 +191,7 @@ idPOS <- function(msobject,
                          coelCutoff = coelCutoff, dbs = dbs, verbose = verbose)
     if(verbose){cat("OK")}
   }
-  if ("Carnitines" %in% lipidClasses){
+  if ("Carnitine" %in% lipidClasses){
     if(verbose){cat("\n  Searching for Carnitines...")}
     msobject <-  idCarpos(msobject = msobject, ppm_precursor = ppm_precursor,
                           ppm_products = ppm_products, rttol = rttol,
