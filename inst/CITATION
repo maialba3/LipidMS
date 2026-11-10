@@ -1,0 +1,70 @@
+pkgVer <- function(pkg) {
+    if (!exists("meta") || is.null(meta)) meta <- packageDescription(pkg)
+    ver <- meta$Version
+    paste0(
+        "https://github.com/maialba3/", pkg,
+        " - R package version ", ver
+    )
+}
+
+c(
+    bibentry(
+        bibtype = "Manual",
+        title = "LipidMS: Lipid Annotation for LC-MS/MS DDA or DIA Data",
+        author = personList(
+            as.person("M Isabel Alcoriza-Balaguer"),
+            as.person("Celia Regal-Marques")
+        ),
+        year = format(Sys.Date(), "%Y"),
+        url = "https://www.bioconductor.org/packages/LipidMS",
+        note = pkgVer("LipidMS"),
+        doi = "10.18129/B9.bioc.LipidMS"
+    ),
+
+    bibentry(
+        bibtype = "Article",
+        title = paste(
+            "LipidMS: An R Package for Lipid Annotation in Untargeted",
+            "Liquid Chromatography-Data Independent Acquisition-Mass",
+            "Spectrometry Lipidomics"
+        ),
+        author = personList(
+            as.person("María Isabel Alcoriza-Balaguer"),
+            as.person("Juan Carlos García-Cañaveras"),
+            as.person("Adrián López"),
+            as.person("Isabel Conde"),
+            as.person("Oscar Juan"),
+            as.person("Julián Carretero"),
+            as.person("Agustín Lahoz")
+        ),
+        journal = "Analytical Chemistry",
+        year = "2019",
+        volume = "91",
+        number = "1",
+        pages = "836--845",
+        doi = "10.1021/acs.analchem.8b03409",
+        url = "https://doi.org/10.1021/acs.analchem.8b03409"
+    ),
+
+    bibentry(
+        bibtype = "Article",
+        title = paste(
+            "LipidMS 3.0: an R-package and a web-based tool for",
+            "LC-MS/MS data processing and lipid annotation"
+        ),
+        author = personList(
+            as.person("María Isabel Alcoriza-Balaguer"),
+            as.person("Juan Carlos García-Cañaveras"),
+            as.person("Francisco Javier Ripoll-Esteve"),
+            as.person("Marta Roca"),
+            as.person("Agustín Lahoz")
+        ),
+        journal = "Bioinformatics",
+        year = "2022",
+        volume = "38",
+        number = "20",
+        pages = "4826--4828",
+        doi = "10.1093/bioinformatics/btac581",
+        url = "https://doi.org/10.1093/bioinformatics/btac581"
+    )
+)
