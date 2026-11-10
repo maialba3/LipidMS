@@ -1,7 +1,10 @@
 .Rproj.user
+dev
+*.Rproj
 .Rhistory
 .RData
-.Ruserdata
-src/*.o
-src/*.so
-src/*.dll
+.httr-oauth
+.DS_Store
+.quarto
+inst/doc
+.github

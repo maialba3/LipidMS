@@ -9,18 +9,18 @@ LipidMSapp(max_upload_mb = getOption("LipidMS.shiny.maxRequestSizeMB", Inf))
 \arguments{
 \item{max_upload_mb}{max size to upload}
 }
+\value{
+A Shiny application object.
+}
 \description{
 Interactive UI for LipidMS
 }
 \examples{
 \dontrun{
-# example data files can be download from github.com/maialba3/LipidMSv2.0_exampleFiles
-
-library(LipidMS)
 LipidMSapp()
 }
 
 }
 \author{
-M Isabel Alcoriza-Balaguer <maribel_alcoriza@iislafe.es>
+M Isabel Alcoriza-Balaguer \href{mailto:maribel_alcoriza@iislafe.es}{maribel_alcoriza@iislafe.es}
 }
